@@ -29,7 +29,7 @@ export default function EditUserScreen() {
   const [loading, setLoading] = useState(false);
   const [cam, setCam] = useState(false);
   const { t } = useTranslation();
-  let CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/diuyzbt14/upload";
+  let CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dlsyquban/upload";
   const [userData, setUserData] = useState({
     uuid: '',
     appUser: '',

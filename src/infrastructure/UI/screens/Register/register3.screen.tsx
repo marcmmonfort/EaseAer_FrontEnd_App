@@ -61,7 +61,7 @@ export default function ScreenRegisterC() {
   const [loading, setLoading] = useState(false);
   const [cam, setCam] = useState(false);
   const navigation = useNavigation();
-  let CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/diuyzbt14/upload";
+  let CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dlsyquban/upload";
   
   const handleCameraPress = async () => {
     setCam(true);

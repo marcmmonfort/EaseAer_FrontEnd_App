@@ -33,7 +33,7 @@ export default function ProfileScreen() {
   const [loading, setLoading] = useState(false);
   const [cam, setCam] = useState(false);
   const [icon, setIcon] = useState(<MaterialCommunityIcons name="store" size={24} color="black"/>);
-  let CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/diuyzbt14/upload";
+  let CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dlsyquban/upload";
   const navigation = useNavigation();
 
   // BEREAL

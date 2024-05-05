@@ -32,7 +32,7 @@ export default function PublicationUpScreenA() {
 
  
   const navigation = useNavigation();
-  let CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/diuyzbt14/upload";
+  let CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dlsyquban/upload";
 
   const handleCameraPress = async () => {
     setCam(true);

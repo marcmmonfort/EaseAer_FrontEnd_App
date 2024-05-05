@@ -49,7 +49,6 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
       
-      
         <Stack.Screen
           name="Splash"
           options={{ headerShown: false }}
@@ -60,8 +59,7 @@ export default function App() {
           options={{ headerShown: false }}
           component={LoginScreen}
         />
-        
-        
+
         <Stack.Screen
           name="ScreenRegisterA"
           options={{ headerShown: false }}
@@ -104,19 +102,16 @@ export default function App() {
           component={HomeScreen}
         />
         
-
-        
         <Stack.Screen
           name="ChatA"
           component={ChatA}
         />
         
-      <Stack.Screen
+        <Stack.Screen
           name="ChatB"
           component={ChatB}
         />
          
-        
         <Stack.Screen
           name="Register"
           options={{ headerShown: false }}
