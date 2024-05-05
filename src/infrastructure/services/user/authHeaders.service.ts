@@ -6,8 +6,8 @@ export class AuthHeaderService{
         if (tokenData) {
             const token = JSON.parse(tokenData);
             console.log("Estoy enseñando el token:"+token);
-            console.log("Remix AAAAAAAAAAAAAAAAAA (parsed value):", JSON.parse(tokenData));
-            return { Authorization: 'Bearer ' + token }; // for Spring Boot back-end
+            console.log("Remix (Parsed Value):", JSON.parse(tokenData));
+            return { Authorization: 'Bearer ' + token };
         }
         else(console.log("Token not found"));
     } catch (error: any) {

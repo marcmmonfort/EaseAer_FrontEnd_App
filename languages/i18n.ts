@@ -33,8 +33,6 @@ i18next
         
         de:
             translationDE,
-        
-
     },
     react:{
         useSuspense:false,

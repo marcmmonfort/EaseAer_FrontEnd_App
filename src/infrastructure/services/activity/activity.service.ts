@@ -3,8 +3,9 @@ import { AuthHeaderService } from "../user/authHeaders.service";
 import { CommentEntity } from "../../../domain/comment/comment.entity";
 import { ActivityEntity } from "../../../domain/activity/activity.entity";
 
-//const  API_URL = "https://api.lplan.es:443/";
-const  API_URL = "http://147.83.7.158:5432/";
+// const API_URL = "https://api.lplan.es:443/";
+// const API_URL = "http://147.83.7.158:5432/";
+const API_URL = "http://localhost:5432/";
 
 export class ActivityService {
 

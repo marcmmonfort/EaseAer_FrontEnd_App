@@ -2,13 +2,18 @@ import axios from "axios";
 import { AuthHeaderService } from "../user/authHeaders.service";
 import { RatingsEntity } from "../../../domain/ratings/ratings.entity";
 
+/*
 let API_URL="";
-
 if (process.env.NODE_ENV === 'production') {
     API_URL = "http://147.83.7.158:5432";
 } else {
     API_URL = "http://localhost:5432";
 }
+*/
+
+// const API_URL = "https://api.lplan.es:443/";
+// const API_URL = "http://147.83.7.158:5432/";
+const API_URL = "http://localhost:5432/";
 
 export class RatingsService {
   

@@ -1,8 +1,9 @@
 import axios from "axios";
 import { AuthHeaderService } from "./authHeaders.service";
 
-//const API_URL = "https://api.lplan.es:443/user";
-const  API_URL = "http://147.83.7.158:5432/user";
+// const API_URL = "https://api.lplan.es:443/";
+// const API_URL = "http://147.83.7.158:5432/";
+const API_URL = "http://localhost:5432/";
 
 export class CRUDService{
     static async getUser(userId: string) {
