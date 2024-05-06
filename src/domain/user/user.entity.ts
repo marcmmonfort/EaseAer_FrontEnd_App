@@ -1,26 +1,26 @@
 export interface UserEntity {
-    uuid:string;
+    uuid: string;
     appUser: string;
     nameUser: string;
     surnameUser: string;
-    mailUser:string;
+    mailUser: string;
     photoUser: string;
     birthdateUser: Date;
-    genderUser: "male" | "female";
-    ocupationUser?: string;
+    genderUser: "male" | "female" | "other";
     descriptionUser: string;
-    roleUser: "admin" | "common" | "verified" | "business";
+    roleUser: "pax" | "company" | "admin" | "tech";
     privacyUser: boolean;
+    recordGameUser?: number;
+    flightsUser: [string];
     deletedUser: boolean;
-    followersUser?: [string];
-    followedUser?: [string];
-}
-
-export interface AuthEntity{
-    mailUser:string;
-    passwordUser:string;
-}
-
-export interface UserAuthEntity extends UserEntity{
-    passwordUser:string;
-}
+  }
+  
+  export interface AuthEntity {
+    mailUser: string;
+    passwordUser: string;
+  }
+  
+  export interface UserAuthEntity extends UserEntity {
+    passwordUser: string;
+  }
+  
