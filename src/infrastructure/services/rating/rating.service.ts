@@ -30,122 +30,94 @@ const API_URL = "http://localhost:5432/";
 
 export class RatingService{
 
-    
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By ID: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting User By ID (Token Problems)");
-        }
-    }
-
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting User By EMail (Token Problems)");
-        }
-    }
-
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Searching Users (Token Problems)");
-        }
-    }
-
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
+    // CASE 1: routeRatings.get("/ratings/all", checkJwt, ratingsCtrl.getAllRatingsCtrl);
+    static async getAllRatings() {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "ratings/all", { headers: token });
+                return response;
+            } catch (error) {
+                console.error("Error Getting All Ratings: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
+            console.log("Error Getting All Ratings (Token Problems)");
         }
     }
 
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
-        const token = await AuthHeaderService.authHeader()
+    // CASE 2: routeRatings.get("/rating/getraters/:uuid", checkJwt, ratingsCtrl.getUsersWhoHaveRatedCtrl);
+    static async getUsersWhoHaveRated(uuid: string) {
+        const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting All Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "rating/getraters/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting The ID Of The Raters: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting All Users (Token Problems)");
+            console.log("Error Getting The ID Of The Raters (Token Problems)");
         }
     }
 
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
+    // CASE 3: routeRatings.post("/rating/add", checkJwt, ratingsCtrl.insertRatingCtrl);
+    static async insertRating(rating: RatingsEntity) {
+        const token = await AuthHeaderService.authHeader();
         try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
+            const response = await axios.post(API_URL + "rating/add", rating, { headers: token });
             return response;
         } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
+            console.error('Error Creating Rating: ', error);
             throw error;
-        }
-        } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
         }
     }
 
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    // CASE 4: routeRatings.put("/rating/update/:uuid", checkJwt, ratingsCtrl.updateRatingCtrl);
+    static async updateRating(rating: RatingsEntity) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
-        try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
-            return response;
-        } catch (error) {
-            console.error("Error Editing User: ", error);
-            throw error;
-        }
+            try {  
+                const response = await axios.put(API_URL + "rating/update/" + rating.uuid, rating, {headers: token});
+                return response;
+            } catch (error) {
+                console.error("Error Editing Rating: ", error);
+                throw error;
+            }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
+    // CASE 5: routeRatings.get("/rating/getaverage/:idRatedObject/:ratingType", checkJwt, ratingsCtrl.getAverageValueRatingCtrl); // No acaba de ir.
+    static async getAverageValueRating(idRatedObject: string, ratingType: string) {
+        const token=await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "rating/getaverage/" + idRatedObject + "/" + ratingType, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Average Of Rating: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting Average Of Rating (Token Problems)");
+        }
+    } 
+
+    // CASE 6: routeRatings.get("/rating/get/:idRatedObject/:ratingType", checkJwt, ratingsCtrl.getRatingCtrl);
+    static async getRatingCtrl(idRatedObject: string, ratingType: string) {
+        const token=await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "rating/get/" + idRatedObject + "/" + ratingType, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Rating By ID And Type: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting Rating By ID And Type (Token Problems)");
+        }
+    }
 
 }

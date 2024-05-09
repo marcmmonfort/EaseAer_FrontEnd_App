@@ -30,122 +30,112 @@ const API_URL = "http://localhost:5432/";
 
 export class PrizeService{
 
-    
+    // CREATE 1: routePrize.post("/prize/create", prizeCtrl.createPrizeCtrl);
+    static async createPrize(prize: PrizeEntity) {
+        const token = await AuthHeaderService.authHeader();
+        try {
+            const response = await axios.post(API_URL + "prize/create", prize, { headers: token });
+            return response;
+        } catch (error) {
+            console.error('Error Creating Prize: ', error);
+            throw error;
+        }
+    }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
+    // CREATE 2: routePrize.get("/prize/getbyid/:uuid", checkJwt, prizeCtrl.getPrizeByIdCtrl);
+    static async getPrizeById(uuid: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By ID: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "prize/getbyid/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Prize By ID: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By ID (Token Problems)");
+            console.log("Error Getting Prize By ID (Token Problems)");
         }
     }
 
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
+    // CREATE 3: routePrize.get("/prize/getavailable/:points", checkJwt, prizeCtrl.getPrizesAvailableCtrl);
+    static async getPrizesAvailable(points: number) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "prize/getavailable/" + points, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Prizes Available By Points: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By EMail (Token Problems)");
+            console.log("Error Getting Prizes Available By Points (Token Problems)");
         }
     }
 
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
+    // CREATE 4: routePrize.get("/prize/getbyshop/:shop", checkJwt, prizeCtrl.getPrizesByShopCtrl);
+    static async getPrizesByShop(shop: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "prize/getbyshop/" + shop, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Prizes Available By Shop: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Searching Users (Token Problems)");
+            console.log("Error Getting Prizes Available By Shop (Token Problems)");
         }
     }
 
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
+    // CREATE 5: routePrize.get("/prize/listall", checkJwt, prizeCtrl.listPrizesCtrl);
+    static async listPrizes() {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "prize/listall", { headers: token });
+                return response;
+            } catch (error) {
+                console.error("Error Getting All Prizes: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
+            console.log("Error Getting All Prizes (Token Problems)");
         }
     }
 
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
+    // CREATE 6: routePrize.get("/prize/all/count/docs", checkJwt, prizeCtrl.getNumPrizesCtrl);
+    static async getNumPrizes() {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting All Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "prize/all/count/docs", { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Number Of Prizes: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting All Users (Token Problems)");
+            console.log("Error Getting Number Of Prizes (Token Problems)");
         }
     }
 
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
-        }
-    }
-
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    // CREATE 7: routePrize.put("/prize/update/:uuid", checkJwt, prizeCtrl.updatePrizeCtrl);
+    static async updateUser(prize: PrizeEntity) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
-        try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
-            return response;
-        } catch (error) {
-            console.error("Error Editing User: ", error);
-            throw error;
-        }
+            try {  
+                const response = await axios.put(API_URL + "prize/update/" + prize.uuid, prize, {headers: token});
+                return response;
+            } catch (error) {
+                console.error("Error Editing Prize: ", error);
+                throw error;
+            }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
+    // CREATE 8: routePrize.delete("/prize/delete/:uuid", checkJwt, prizeCtrl.deletePrizeCtrl);
 
 }

@@ -30,122 +30,112 @@ const API_URL = "http://localhost:5432/";
 
 export class ServiceService{
 
-    
+    // CASE 1: routeService.post("/service/create", serviceCtrl.createServiceCtrl);
+    static async createService(service: ServiceEntity) {
+        const token = await AuthHeaderService.authHeader();
+        try {
+            const response = await axios.post(API_URL + "service/create", service, { headers: token });
+            return response;
+        } catch (error) {
+            console.error('Error Creating Service: ', error);
+            throw error;
+        }
+    }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
+    // CASE 2: routeService.get("/service/getbyid/:uuid", checkJwt, serviceCtrl.getServiceByIdCtrl);
+    static async getServiceById(uuid: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By ID: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "service/getbyid/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Service By ID: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By ID (Token Problems)");
+            console.log("Error Getting Service By ID (Token Problems)");
         }
     }
 
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
+    // CASE 3: routeService.get("/service/getbylocation/:location", checkJwt, serviceCtrl.getServiceByLocationCtrl);
+    static async getServiceByLocation(location: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "service/getbylocation/" + location, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Service By Location: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By EMail (Token Problems)");
+            console.log("Error Getting Service By Location (Token Problems)");
         }
     }
 
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
+    // CASE 4: routeService.get("/service/all", checkJwt, serviceCtrl.listServicesCtrl);
+    static async listServices() {
+        const token = await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "service/all", { headers: token });
+                return response;
+            } catch (error) {
+                console.error("Error Getting All Services: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting All Services (Token Problems)");
+        }
+    }
+
+    // CASE 5: routeService.get("/service/getbytype/:type", checkJwt, serviceCtrl.listServicesByTypeCtrl);
+    static async listServicesByType(type: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "service/getbytype/" + type, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Service By Type: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Searching Users (Token Problems)");
+            console.log("Error Getting Service By Type (Token Problems)");
         }
     }
 
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
-        const token = await AuthHeaderService.authHeader()
+    // CASE 6: routeService.get("/service/opened/:time", checkJwt, serviceCtrl.listOpenedServicesCtrl);
+    static async listOpenedServices(time: Date) {
+        const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "service/opened/" + time, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Service By Schedule: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
+            console.log("Error Getting Service By Schedule (Token Problems)");
         }
     }
 
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting All Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting All Users (Token Problems)");
-        }
-    }
-
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
-        }
-    }
-
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    // CASE 7: routeService.put("/service/update/:uuid", checkJwt, serviceCtrl.updateServiceCtrl);
+    static async updateService(service: ServiceEntity) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
-        try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
-            return response;
-        } catch (error) {
-            console.error("Error Editing User: ", error);
-            throw error;
-        }
+            try {  
+                const response = await axios.put(API_URL + "service/update/" + service.uuid, service, {headers: token});
+                return response;
+            } catch (error) {
+                console.error("Error Editing Service: ", error);
+                throw error;
+            }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
+    // CASE 8: routeService.delete("/service/delete/:uuid", checkJwt, serviceCtrl.deleteServiceCtrl);
 
 }
