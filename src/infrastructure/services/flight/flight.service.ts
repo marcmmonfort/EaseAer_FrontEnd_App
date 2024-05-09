@@ -30,122 +30,128 @@ const API_URL = "http://localhost:5432/";
 
 export class FlightService{
 
-    
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
+    // CASE 1: routeFlight.get("/flight/getbyid/:uuid", checkJwt, flightCtrl.getFlightByIdCtrl);
+    static async getFlightById(uuid: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By ID: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "flight/getbyid/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Flight By ID: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By ID (Token Problems)");
+            console.log("Error Getting Flight By ID (Token Problems)");
         }
     }
 
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
+    // CASE 2: routeFlight.get("/flight/flightsby/:airport/:startDate/:endDate", flightCtrl.getFlightsByAirportAndIntervalCtrl);
+    static async getFlightsByAirportAndInterval(airport: string, startDate: Date, endDate: Date) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "flight/flightsby/" + airport + "/" + startDate + "/" + endDate, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Flights By Airport And Interval: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By EMail (Token Problems)");
+            console.log("Error Getting Flights (Token Problems)");
         }
     }
 
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
+    // CASE 3: routeFlight.get("/flight/departuresby/:originFlight/:startDate/:endDate", flightCtrl.getDeparturesByAirportAndIntervalCtrl);
+    static async getDeparturesByAirportAndInterval(originFlight: string, startDate: Date, endDate: Date) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "flight/departuresby/" + originFlight + "/" + startDate + "/" + endDate, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Departures By Airport And Interval: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Searching Users (Token Problems)");
+            console.log("Error Getting Departures (Token Problems)");
         }
     }
 
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
+    // CASE 4: routeFlight.get("/flight/arrivalsby/:destinationFlight/:startDate/:endDate", flightCtrl.getArrivalsByAirportAndIntervalCtrl);
+    static async getArrivalsByAirportAndInterval(destinationFlight: string, startDate: Date, endDate: Date) {
+        const token=await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "flight/arrivalsby/" + destinationFlight + "/" + startDate + "/" + endDate, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Arrivals By Airport And Interval: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting Arrivals (Token Problems)");
+        }
+    }
+
+    // CASE 5: routeFlight.get("/flight/all/count/docs", checkJwt, flightCtrl.getNumFlightsCtrl);
+    static async getNumFlights() {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "flight/all/count/docs", { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Number Of Flights: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
+            console.log("Error Getting Number Of Flights (Token Problems)");
         }
     }
 
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
-        const token = await AuthHeaderService.authHeader()
+    // CASE 6: routeFlight.get("/flight/bycompany/:companyName/:startDate/:endDate", flightCtrl.getFlightsByCompanyCtrl);
+    static async getFlightsByCompany(companyName: string, startDate: Date, endDate: Date) {
+        const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting All Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "flight/bycompany/" + companyName + "/" + startDate + "/" + endDate, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Flights By Company: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting All Users (Token Problems)");
+            console.log("Error Getting Flights (Token Problems)");
         }
     }
 
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
+    // CASE 7: routeFlight.post("/flight/createflight", flightCtrl.createFlightCtrl);
+    static async createFlight(flight: FlightEntity) {
+        const token = await AuthHeaderService.authHeader();
         try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
+            const response = await axios.post(API_URL + "flight/createflight", flight, { headers: token });
             return response;
         } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
+            console.error('Error Creating Flight: ', error);
             throw error;
-        }
-        } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
         }
     }
 
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    // CASE 8: routeFlight.put("/flight/update/:uuid", checkJwt, flightCtrl.updateFlightByIdCtrl);
+    static async updateFlightById(flight: FlightEntity) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
         try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
+            const response = await axios.put(API_URL + "flight/update/" + flight.uuid, flight, {headers: token});
             return response;
         } catch (error) {
-            console.error("Error Editing User: ", error);
+            console.error("Error Editing Flight: ", error);
             throw error;
         }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
+    // CASE 9: routeFlight.delete("/flight/delete/:uuid", checkJwt, flightCtrl.deleteFlightCtrl);
 
 }

@@ -30,122 +30,96 @@ const API_URL = "http://localhost:5432/";
 
 export class LocationService{
 
-    
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
+    // CASE 1: locationRoute.post("/location/add", checkJwt, locationCtrl.insertLocationCtrl);
+    static async insertLocation(location: LocationEntity) {
+        const token = await AuthHeaderService.authHeader();
         try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
+            const response = await axios.post(API_URL + "location/add", location, { headers: token });
             return response;
         } catch (error) {
-            console.error("Error Getting User By ID: ", error);
+            console.error('Error Creating Location: ', error);
             throw error;
-        }
-        } else {
-        console.log("Error Getting User By ID (Token Problems)");
         }
     }
 
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting User By EMail (Token Problems)");
-        }
-    }
-
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Searching Users (Token Problems)");
-        }
-    }
-
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
+    // CASE 2: locationRoute.get("/locations/all", logMiddleware, locationCtrl.listLocationCtrl);
+    static async listLocation() {
         const token = await AuthHeaderService.authHeader()
         if(token){
         try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
+            const response = await axios.get(API_URL + "locations/all", { headers: token });
             return response;
         } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
+            console.error("Error Getting All Locations: ", error);
             throw error;
         }
         } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
+        console.log("Error Getting All Locations (Token Problems)");
         }
     }
 
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
+    // CASE 3: locationRoute.get("/location/all/:numPage", checkJwt, locationCtrl.listLocationPagCtrl);
+    static async listLocationPag(numPage: string) {
         const token = await AuthHeaderService.authHeader()
         if(token){
         try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
+            const response = await axios.get(API_URL + "location/all/" + numPage, { headers: token });
             return response;
         } catch (error) {
-            console.error("Error Getting All Users: ", error);
+            console.error("Error Getting Locations Paginated: ", error);
             throw error;
         }
         } else {
-        console.log("Error Getting All Users (Token Problems)");
+        console.log("Error Getting Locations Paginated (Token Problems)");
         }
     }
 
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
-        const token = await AuthHeaderService.authHeader()
+    // CASE 4: locationRoute.get("/location/getbyid/:uuid", checkJwt, locationCtrl.getLocationByIdCtrl);
+    static async getLocationById(uuid: string) {
+        const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "location/getbyid/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Location By ID: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
+            console.log("Error Getting Location By ID (Token Problems)");
         }
     }
 
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    // CASE 5: locationRoute.put("/location/update/:uuid", checkJwt, locationCtrl.updateLocationCtrl);
+    static async updateLocation(location: LocationEntity) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
-        try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
-            return response;
-        } catch (error) {
-            console.error("Error Editing User: ", error);
-            throw error;
-        }
+            try {  
+                const response = await axios.put(API_URL + "location/update/" + location.uuid, location, {headers: token});
+                return response;
+            } catch (error) {
+                console.error("Error Editing Location: ", error);
+                throw error;
+            }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
+    // CASE 6: locationRoute.delete("/location/delete/:uuid", checkAdmin, locationCtrl.deleteLocationCtrl);
+
+    // CASE 7: locationRoute.get("/location/all/count/docs", checkJwt, locationCtrl.getNumLocationsCtrl);
+    static async getNumLocations() {
+        const token = await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "location/all/count/docs", { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Number Of Locations: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting Number Of Locations (Token Problems)");
+        }
+    }
 
 }

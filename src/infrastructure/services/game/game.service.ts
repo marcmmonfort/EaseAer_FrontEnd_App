@@ -30,122 +30,112 @@ const API_URL = "http://localhost:5432/";
 
 export class GameService{
 
-    
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
+    // CASE 1: routeGame.post("/game/create", gameCtrl.createGameCtrl);
+    static async createGame(game: GameEntity) {
+        const token = await AuthHeaderService.authHeader();
         try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
+            const response = await axios.post(API_URL + "game/create", game, { headers: token });
             return response;
         } catch (error) {
-            console.error("Error Getting User By ID: ", error);
+            console.error('Error Creating Game: ', error);
             throw error;
-        }
-        } else {
-        console.log("Error Getting User By ID (Token Problems)");
         }
     }
 
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
+    // CASE 2: routeGame.get("/game/getbyid/:uuid", checkJwt, gameCtrl.getGameByIdCtrl);
+    static async getGameById(uuid: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "game/getbyid/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Game By ID: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By EMail (Token Problems)");
+            console.log("Error Getting Game By ID (Token Problems)");
         }
     }
 
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
+    // CASE 3: routeGame.get("/game/getgamesbyuser/:user", checkJwt, gameCtrl.getGamesByUserCtrl);
+    static async getGamesByUser(user: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "game/getgamesbyuser/" + user, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Game By User: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Searching Users (Token Problems)");
+            console.log("Error Getting Game By User (Token Problems)");
         }
     }
 
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
+    // CASE 4: routeGame.get("/game/getgamesbydestination/:destination", checkJwt, gameCtrl.getGamesByDestinationCtrl);
+    static async getGamesByDestination(destination: string) {
+        const token=await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "game/getgamesbydestination/" + destination, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Game By Destination: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting Game By Destination (Token Problems)");
+        }
+    }
+
+    // CASE 5: routeGame.get("/game/getquestionsofgame/:uuid", checkJwt, gameCtrl.getIdQuestionsOfGameCtrl);
+    static async getIdQuestionsOfGame(uuid: string) {
+        const token=await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "game/getquestionsofgame/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Questions Of Game: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting Questions Of Game (Token Problems)");
+        }
+    }
+
+    // CASE 6: routeGame.get("/game/all/count/docs", checkJwt, gameCtrl.getNumGamesCtrl);
+    static async getNumGames() {
         const token = await AuthHeaderService.authHeader()
         if(token){
         try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
+            const response = await axios.get(API_URL + "game/all/count/docs", { headers:  token});
             return response;
         } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
+            console.error("Error Getting Number Of Games: ", error);
             throw error;
         }
         } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
+        console.log("Error Getting Number Of Games (Token Problems)");
         }
     }
 
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting All Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting All Users (Token Problems)");
-        }
-    }
-
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
-        }
-    }
-
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    // CASE 7: routeGame.put("/game/update/:uuid", checkJwt, gameCtrl.updateGameCtrl);
+    static async updateGame(game: GameEntity) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
         try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
+            const response = await axios.put(API_URL + "game/update/" + game.uuid, game, {headers: token});
             return response;
         } catch (error) {
-            console.error("Error Editing User: ", error);
+            console.error("Error Editing Game: ", error);
             throw error;
         }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
+    // CASE 8: routeGame.delete("/game/delete/:uuid", checkJwt, gameCtrl.deleteGameCtrl);
 
 }

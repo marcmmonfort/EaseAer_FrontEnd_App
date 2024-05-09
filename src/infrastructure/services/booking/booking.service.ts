@@ -43,146 +43,99 @@ export class BookingService{
     }
 
     // CASE 2: routeBooking.get("/booking/getbyid/:uuid", checkJwt, bookingCtrl.getBookingByIdCtrl);
+    static async getBookingById(uuid: string) {
+        const token=await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "booking/getbyid/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Booking By ID: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting Booking By ID (Token Problems)");
+        }
+    }
 
     // CASE 3: routeBooking.get("/booking/getbyuser/:user", checkJwt, bookingCtrl.getBookingsByUserCtrl);
+    static async getBookingsByUser(user: string) {
+        const token=await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "booking/getbyuser/" + user, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Booking By User: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting Booking By User (Token Problems)");
+        }
+    }
 
     // CASE 4: routeBooking.get("/booking/getbycompany/:company", checkJwt, bookingCtrl.getBookingsByCompanyCtrl);
+    static async getBookingsByCompany(company: string) {
+        const token=await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "booking/getbycompany/" + company, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Booking By Company: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting Booking By Company (Token Problems)");
+        }
+    }
 
     // CASE 5: routeBooking.get("/booking/getbyservice/:service", checkJwt, bookingCtrl.getBookingsByServiceCtrl);
+    static async getBookingsByService(service: string) {
+        const token=await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "booking/getbyservice/" + service, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Booking By Service: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting Booking By Service (Token Problems)");
+        }
+    }
 
     // CASE 6: routeBooking.get("/booking/all/count/docs", checkJwt, bookingCtrl.getNumBookingsCtrl);
+    static async getNumBookings() {
+        const token = await AuthHeaderService.authHeader()
+        if(token){
+        try {
+            const response = await axios.get(API_URL + "booking/all/count/docs", { headers:  token});
+            return response;
+        } catch (error) {
+            console.error("Error Getting Number Of Bookings: ", error);
+            throw error;
+        }
+        } else {
+        console.log("Error Getting Number Of Bookings (Token Problems)");
+        }
+    }
 
     // CASE 7: routeBooking.put("/booking/update/:uuid", checkJwt, bookingCtrl.updateBookingCtrl);
-
-    // CASE 8: routeBooking.delete("/booking/delete/:uuid", checkJwt, bookingCtrl.deleteBookingCtrl);
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-
-    // (0) CREATE:
-    static async registerUser(user: UserEntity) {
-        const token = await AuthHeaderService.authHeader();
-        try {
-            const response = await axios.post(API_URL + "user/register", user, { headers: token });
-            return response;
-        } catch (error) {
-            console.error('Error Creating User (Register)', error);
-            throw error;
-        }
-    }
-
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By ID: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting User By ID (Token Problems)");
-        }
-    }
-
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting User By EMail (Token Problems)");
-        }
-    }
-
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Searching Users (Token Problems)");
-        }
-    }
-
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
-        }
-    }
-
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting All Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting All Users (Token Problems)");
-        }
-    }
-
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
-        }
-    }
-
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    static async updateBooking(booking: any) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
-        try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
-            return response;
-        } catch (error) {
-            console.error("Error Editing User: ", error);
-            throw error;
-        }
+            try {  
+                const response = await axios.put(API_URL + "booking/update/" + booking.uuid, booking, {headers: token});
+                return response;
+            } catch (error) {
+                console.error("Error Editing Booking: ", error);
+                throw error;
+            }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
+    // CASE 8: routeBooking.delete("/booking/delete/:uuid", checkJwt, bookingCtrl.deleteBookingCtrl);
 
 }

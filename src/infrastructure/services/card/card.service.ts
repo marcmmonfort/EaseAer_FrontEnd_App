@@ -30,122 +30,112 @@ const API_URL = "http://localhost:5432/";
 
 export class CardService{
 
-    
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
+    // CASE 1: routeCard.post("/card/create", cardCtrl.createCardCtrl);
+    static async createCard(card: CardEntity) {
+        const token = await AuthHeaderService.authHeader();
+        try {
+            const response = await axios.post(API_URL + "card/create", card, { headers: token });
+            return response;
+        } catch (error) {
+            console.error('Error Creating Card: ', error);
+            throw error;
+        }
+    }
+        
+    // CASE 2: routeCard.get("/card/getbyid/:uuid", checkJwt, cardCtrl.getCardByIdCtrl);
+    static async getCardById(uuid: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By ID: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "card/getbyid/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Card By ID: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By ID (Token Problems)");
+            console.log("Error Getting Card By ID (Token Problems)");
         }
     }
 
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
+    // CASE 3: routeCard.get("/card/getbyuser/:user", cardCtrl.getCardByUserCtrl)
+    static async getCardByUser(user: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "card/getbyuser/" + user, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Card By User: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By EMail (Token Problems)");
+            console.log("Error Getting Card By User (Token Problems)");
         }
     }
 
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Searching Users (Token Problems)");
-        }
-    }
-
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
+    // CASE 4: routeCard.get("/card/getall", checkJwt, cardCtrl.listCardsCtrl);
+    static async listCards() {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "card/getall", { headers: token });
+                return response;
+            } catch (error) {
+                console.error("Error Getting All Cards: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
+            console.log("Error Getting All Cards (Token Problems)");
         }
     }
 
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
+    // CASE 5: routeCard.get("/card/getallpag/:numPage", checkJwt, cardCtrl.listCardsPagCtrl);
+    static async listCardsPag(numPage: string) {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting All Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "card/getallpag/" + numPage, { headers: token });
+                return response;
+            } catch (error) {
+                console.error("Error Getting Paginated Cards: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting All Users (Token Problems)");
+            console.log("Error Getting Paginated Cards (Token Problems)");
         }
     }
 
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
-        }
-    }
-
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    // CASE 6: routeCard.put("/card/update/:uuid", checkJwt, cardCtrl.updateCardCtrl);
+    static async updateCard(card: CardEntity) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
-        try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
-            return response;
-        } catch (error) {
-            console.error("Error Editing User: ", error);
-            throw error;
-        }
+            try {  
+                const response = await axios.put(API_URL + "card/update/" + card.uuid, card, {headers: token});
+                return response;
+            } catch (error) {
+                console.error("Error Editing Card: ", error);
+                throw error;
+            }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
+    // CASE 7: routeCard.delete("/card/delete/:uuid", checkJwt, cardCtrl.deleteCardCtrl);
+
+    // CASE 8: routeCard.get("/card/all/count/docs", checkJwt, cardCtrl.getNumCardsCtrl);
+    static async getNumCards() {
+        const token = await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "card/all/count/docs", { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Number Of Cards: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting Number Of Cards (Token Problems)");
+        }
+    }
 
 }
