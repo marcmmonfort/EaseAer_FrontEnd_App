@@ -30,122 +30,96 @@ const API_URL = "http://localhost:5432/";
 
 export class OfferService{
 
-    
+    // CASE 1: routeOffer.post("/offer/create", offerCtrl.createOfferCtrl);
+    static async createOffer(offer: OfferEntity) {
+        const token = await AuthHeaderService.authHeader();
+        try {
+            const response = await axios.post(API_URL + "offer/create", offer, { headers: token });
+            return response;
+        } catch (error) {
+            console.error('Error Creating Offer: ', error);
+            throw error;
+        }
+    }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
+    // CASE 2: routeOffer.get("/offer/getbyid/:uuid", checkJwt, offerCtrl.getOfferByIdCtrl);
+    static async getOfferById(uuid: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By ID: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "offer/getbyid/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Offer By ID: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By ID (Token Problems)");
+            console.log("Error Getting Offer By ID (Token Problems)");
         }
     }
 
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
+    // CASE 3: routeOffer.get("/offer/getbyproduct/:product", checkJwt, offerCtrl.getOffersByProductCtrl);
+    static async getOffersByProduct(product: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "offer/getbyproduct/" + product, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Offer By Product: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By EMail (Token Problems)");
+            console.log("Error Getting Offer By Product (Token Problems)");
         }
     }
 
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
+    // CASE 4: routeOffer.get("/offer/getbyshop/:shop", checkJwt, offerCtrl.getOffersByShopCtrl);
+    static async getOffersByShop(shop: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "offer/getbyshop/" + shop, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Offer By Shop: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Searching Users (Token Problems)");
+            console.log("Error Getting Offer By Shop (Token Problems)");
         }
     }
 
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
+    // CASE 5: routeOffer.get("/offer/listall", checkJwt, offerCtrl.listOfferCtrl);
+    static async listOffer() {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "offer/listall", { headers: token });
+                return response;
+            } catch (error) {
+                console.error("Error Getting All Offer: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
+            console.log("Error Getting All Offer (Token Problems)");
         }
     }
 
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting All Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting All Users (Token Problems)");
-        }
-    }
-
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
-        }
-    }
-
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    // CASE 6: routeOffer.put("/offer/update/:uuid", checkJwt, offerCtrl.updateOfferCtrl);
+    static async updateOffer(offer: OfferEntity) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
-        try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
-            return response;
-        } catch (error) {
-            console.error("Error Editing User: ", error);
-            throw error;
-        }
+            try {  
+                const response = await axios.put(API_URL + "offer/update/" + offer.uuid, offer, {headers: token});
+                return response;
+            } catch (error) {
+                console.error("Error Editing Offer: ", error);
+                throw error;
+            }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
+    // CASE 7: routeOffer.delete("/offer/delete/:uuid", checkJwt, offerCtrl.deleteOfferCtrl);
 
 }

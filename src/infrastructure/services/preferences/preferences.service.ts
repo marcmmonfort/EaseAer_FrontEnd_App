@@ -30,122 +30,80 @@ const API_URL = "http://localhost:5432/";
 
 export class PreferencesService{
 
-    
+    // CASE 1: routePreferences.post("/preferences/create", preferencesCtrl.createPreferencesCtrl);
+    static async createPreferences(preferences: PreferencesEntity) {
+        const token = await AuthHeaderService.authHeader();
+        try {
+            const response = await axios.post(API_URL + "preferences/create", preferences, { headers: token });
+            return response;
+        } catch (error) {
+            console.error('Error Creating Preferences: ', error);
+            throw error;
+        }
+    }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
+    // CASE 2: routePreferences.get("/preferences/getbyid/:uuid", checkJwt, preferencesCtrl.getPreferencesByIdCtrl);
+    static async getPreferencesById(uuid: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By ID: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "preferences/getbyid/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Preferences By ID: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By ID (Token Problems)");
+            console.log("Error Getting Preferences By ID (Token Problems)");
         }
     }
 
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
+    // CASE 3: routePreferences.get("/preferences/getdelta/:uuid", checkJwt, preferencesCtrl.getDeltaOfPreferencesCtrl);
+    static async getDeltaOfPreferences(uuid: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "preferences/getdelta/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Delta Of Preferences: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By EMail (Token Problems)");
+            console.log("Error Getting Delta Of Preferences (Token Problems)");
         }
     }
 
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Searching Users (Token Problems)");
-        }
-    }
-
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
+    // CASE 4: routePreferences.get("/preferences/all/count/docs", checkJwt, preferencesCtrl.getNumPreferencesCtrl);
+    static async getNumPreferences() {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "preferences/all/count/docs", { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Number Of Preferences: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
+            console.log("Error Getting Number Of Preferences (Token Problems)");
         }
     }
 
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting All Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting All Users (Token Problems)");
-        }
-    }
-
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
-        }
-    }
-
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    // CASE 5: routePreferences.put("/preferences/update/:uuid", checkJwt, preferencesCtrl.updatePreferencesByIdCtrl);
+    static async updatePreferencesById(preferences: PreferencesEntity) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
-        try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
-            return response;
-        } catch (error) {
-            console.error("Error Editing User: ", error);
-            throw error;
-        }
+            try {  
+                const response = await axios.put(API_URL + "preferences/update/" + preferences.uuid, preferences, {headers: token});
+                return response;
+            } catch (error) {
+                console.error("Error Editing Preferences: ", error);
+                throw error;
+            }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
-
+    // CASE 6: routePreferences.delete("/preferences/delete/:uuid", checkJwt, preferencesCtrl.deletePreferencesCtrl);
+    
 }

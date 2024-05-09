@@ -30,122 +30,80 @@ const API_URL = "http://localhost:5432/";
 
 export class MatchService{
 
-    
+    // CASE 1: routeMatch.post("/match/create", matchCtrl.createMatchCtrl);
+    static async createMatch(match: MatchEntity) {
+        const token = await AuthHeaderService.authHeader();
+        try {
+            const response = await axios.post(API_URL + "match/create", match, { headers: token });
+            return response;
+        } catch (error) {
+            console.error('Error Creating Match: ', error);
+            throw error;
+        }
+    }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
+    // CASE 2: routeMatch.get("/match/getbyid/:uuid", checkJwt, matchCtrl.getMatchByIdCtrl);
+    static async getMatchById(uuid: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By ID: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "match/getbyid/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Match By ID: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By ID (Token Problems)");
+            console.log("Error Getting Match By ID (Token Problems)");
         }
     }
 
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
+    // CASE 3: routeMatch.get("/match/getmymatches/:idUser", checkJwt, matchCtrl.getMyMatchesCtrl),
+    static async getMyMatches(idUser: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "match/getmymatches/" + idUser, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Matches By User: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By EMail (Token Problems)");
+            console.log("Error Getting Matches By User (Token Problems)");
         }
     }
 
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Searching Users (Token Problems)");
-        }
-    }
-
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
+    // CASE 4: routeMatch.get("/match/getallnum", checkJwt, matchCtrl.getTotalNumMatchesCtrl);
+    static async getTotalNumMatches() {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "match/getallnum", { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Number Of Matches: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
+            console.log("Error Getting Number Of Matches (Token Problems)");
         }
     }
 
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting All Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting All Users (Token Problems)");
-        }
-    }
-
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
-        }
-    }
-
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    // CASE 5: routeMatch.put("/match/update/:uuid", checkJwt, matchCtrl.updateMatchCtrl);
+    static async updateMatch(match: MatchEntity) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
-        try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
-            return response;
-        } catch (error) {
-            console.error("Error Editing User: ", error);
-            throw error;
-        }
+            try {  
+                const response = await axios.put(API_URL + "match/update/" + match.uuid, match, {headers: token});
+                return response;
+            } catch (error) {
+                console.error("Error Editing Match: ", error);
+                throw error;
+            }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
+    // CASE 6: routeMatch.delete("/match/delete/:uuid", checkJwt, matchCtrl.deleteMatchCtrl);
 
 }

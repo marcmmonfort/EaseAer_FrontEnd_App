@@ -30,122 +30,80 @@ const API_URL = "http://localhost:5432/";
 
 export class PredictionService{
 
-    
+    // CASE 1: routePrediction.post("/prediction/create", predictionCtrl.createPredictionCtrl);
+    static async createPrediction(prediciton: PredictionEntity) {
+        const token = await AuthHeaderService.authHeader();
+        try {
+            const response = await axios.post(API_URL + "prediction/create", prediciton, { headers: token });
+            return response;
+        } catch (error) {
+            console.error('Error Creating Prediction: ', error);
+            throw error;
+        }
+    }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
+    // CASE 2: routePrediction.get("/prediction/getbyid/:uuid", checkJwt, predictionCtrl.getPredictionByIdCtrl);
+    static async getPredictionById(uuid: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By ID: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "prediction/getbyid/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Prediction By ID: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By ID (Token Problems)");
+            console.log("Error Getting Prediction By ID (Token Problems)");
         }
     }
 
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting User By EMail (Token Problems)");
-        }
-    }
-
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Searching Users (Token Problems)");
-        }
-    }
-
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
+    // CASE 3: routePrediction.get("/prediction/all/count/docs", checkJwt, predictionCtrl.getNumPredictionsCtrl);
+    static async getNumPredictions() {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "prediction/all/count/docs", { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Number Of Predictions: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
+            console.log("Error Getting Number Of Predictions (Token Problems)");
         }
     }
 
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
+    // CASE 4: routePrediction.get("/prediction/gettraveltime/:uuid", checkJwt, predictionCtrl.getTravelTimeOfPredictionCtrl);
+    static async getTravelTimeOfPrediction(uuid: string) {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting All Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "prediction/gettraveltime/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Travel Time Of Prediction: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting All Users (Token Problems)");
+            console.log("Error Getting Travel Time Of Prediction (Token Problems)");
         }
     }
 
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
-        const token = await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
-        }
-    }
-
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    // CASE 5: routePrediction.put("/prediction/update/:uuid", checkJwt, predictionCtrl.updatePredictionByIdCtrl);
+    static async updatePredictionById(prediction: PredictionEntity) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
-        try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
-            return response;
-        } catch (error) {
-            console.error("Error Editing User: ", error);
-            throw error;
-        }
+            try {  
+                const response = await axios.put(API_URL + "prediction/update/" + prediction.uuid, prediction, {headers: token});
+                return response;
+            } catch (error) {
+                console.error("Error Editing Prediction: ", error);
+                throw error;
+            }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
+    // CASE 6: routePrediction.delete("/prediction/delete/:uuid", checkJwt, predictionCtrl.deletePredictionCtrl);
 
 }

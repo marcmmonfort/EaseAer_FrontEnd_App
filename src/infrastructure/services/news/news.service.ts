@@ -30,122 +30,96 @@ const API_URL = "http://localhost:5432/";
 
 export class NewsService{
 
-    
+    // CASE 1: routeNews.post("/news/create", newsCtrl.createNewsCtrl);
+    static async createNews(news: NewsEntity) {
+        const token = await AuthHeaderService.authHeader();
+        try {
+            const response = await axios.post(API_URL + "news/create", news, { headers: token });
+            return response;
+        } catch (error) {
+            console.error('Error Creating News: ', error);
+            throw error;
+        }
+    }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-    /*
-    // (1) GET USER BY ID: routeUser.get("/user/:uuid", checkJwt, userCtrl.getUserByIdCtrl)]
-    static async getUserById(userId: string) {
+    // CASE 2: routeNews.get("/news/getbyid/:uuid", checkJwt, newsCtrl.getNewsByIdCtrl);
+    static async getNewsById(uuid: string) {
         const token=await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/" + userId, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By ID: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "news/getbyid/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting News By ID: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting User By ID (Token Problems)");
+            console.log("Error Getting News By ID (Token Problems)");
         }
     }
 
-    // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
-    static async getUserByEmail(mailUser: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/getByEmail/" + mailUser, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting User By EMail: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Getting User By EMail (Token Problems)");
-        }
-    }
-
-    // (3) GET SEARCHED USERS: [routeUser.get("/user/search/:search", checkJwt, userCtrl.getSearchUsersCtrl)]
-    static async getSearchUsers(searchQuery: string) {
-        const token=await AuthHeaderService.authHeader()
-        if(token){
-        try {
-            const response = await axios.get(API_URL + "user/search/" + searchQuery, { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Searching Users: ", error);
-            throw error;
-        }
-        } else {
-        console.log("Error Searching Users (Token Problems)");
-        }
-    }
-
-    // (4) GET NUM USERS: [routeUser.get("/user/all/count/docs", checkJwt, userCtrl.getNumUsersCtrl)]
-    static async getNumUsers() {
+    // CASE 3: routeNews.get("/news/all/count/docs", checkJwt, newsCtrl.getNumNewsCtrl);
+    static async getNumNews() {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "user/all/count/docs", { headers:  token});
-            return response;
-        } catch (error) {
-            console.error("Error Getting Number Of Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "news/all/count/docs", { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Number Of News: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting Number Of Users (Token Problems)");
+            console.log("Error Getting Number Of News (Token Problems)");
         }
     }
 
-    // (5) LIST USERS (ALL): [routeUser.get("/users/all", checkJwt, userCtrl.listUserCtrl)]
-    static async listUser() {
+    // CASE 4: routeNews.get("/news/listall", checkJwt, newsCtrl.listNewsCtrl);
+    static async listNews() {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all", { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting All Users: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "news/listall", { headers: token });
+                return response;
+            } catch (error) {
+                console.error("Error Getting All News: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting All Users (Token Problems)");
+            console.log("Error Getting All News (Token Problems)");
         }
     }
 
-    // (6) LIST USERS (PAGINATE): [routeUser.get("/user/all/:numPage", checkJwt, userCtrl.listUserPagCtrl)]
-    static async listUserPag(numPage: string) {
+    // CASE 5: routeNews.get("/news/listpag/:numPage", checkJwt, newsCtrl.listNewsPagCtrl);
+    static async listNewsPag(numPage: string) {
         const token = await AuthHeaderService.authHeader()
         if(token){
-        try {
-            const response = await axios.get(API_URL + "users/all/" + numPage, { headers: token });
-            return response;
-        } catch (error) {
-            console.error("Error Getting Users Paginated: ", error);
-            throw error;
-        }
+            try {
+                const response = await axios.get(API_URL + "news/listpag/" + numPage, { headers: token });
+                return response;
+            } catch (error) {
+                console.error("Error Getting News Paginated: ", error);
+                throw error;
+            }
         } else {
-        console.log("Error Getting Users Paginated (Token Problems)");
+            console.log("Error Getting News Paginated (Token Problems)");
         }
     }
 
-    // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-    static async updateUser(user: any) {
+    // CASE 6: routeNews.put("/news/update/:uuid", checkJwt, newsCtrl.updateNewsCtrl);
+    static async updateNews(news: NewsEntity) {
         const token = await AuthHeaderService.authHeader();
         if (token) {
-        try {  
-            const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
-            return response;
-        } catch (error) {
-            console.error("Error Editing User: ", error);
-            throw error;
-        }
+            try {  
+                const response = await axios.put(API_URL + "news/update/" + news.uuid, news, {headers: token});
+                return response;
+            } catch (error) {
+                console.error("Error Editing News: ", error);
+                throw error;
+            }
         }
     }
 
-    // (8) DELETE USER: [routeUser.delete("/user/delete/:uuid", checkJwt, userCtrl.deleteUserCtrl)]
-    */
+    // CASE 7: routeNews.delete("/news/delete/:uuid", checkJwt, newsCtrl.deleteNewsCtrl);
 
 }
