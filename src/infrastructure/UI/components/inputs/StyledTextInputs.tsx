@@ -1,21 +1,42 @@
 import React, { FunctionComponent } from 'react';
-import { StyleSheet, TextInput } from 'react-native';
+import { Platform, StyleSheet, TextInput } from 'react-native';
 import * as Font from 'expo-font';
 import { StyledTextInputProps } from './Types';
 
+async function loadFonts() {
+    await Font.loadAsync({
+      'Corporate': require('../../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+      'Emirates': require('../../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+      'SFNS': require('../../../../../assets/easeaer_fonts/SF_Font.ttf'),
+    });
+  }
+
+const titleFont = Platform.select({
+    ios: 'Emirates',
+    android: 'Emirates',
+  });
+  const subtitleFont = Platform.select({
+    ios: 'Corporate',
+    android: 'Corporate',
+  });
+  const bodyFont = Platform.select({
+    ios: 'SFNS',
+    android: 'SFNS',
+  });
+
 const styles = StyleSheet.create({
     textInput: {
-        //fontFamily: 'SF UI Display',
+        fontFamily: subtitleFont,
+        fontSize: 20,
+        color: 'white',
         fontWeight: 'bold',
         borderWidth: 0,
-        borderColor: 'gray',
         width: '68%',
         height: 55,
         marginTop: 20,
-        borderRadius: 10,
-        backgroundColor: '#66fcf1',
+        borderRadius: 12,
+        backgroundColor: '#b3b0a1',
         paddingStart: 10,
-        //placeholderTextColor: '#4e4e50',
     },
 });
 

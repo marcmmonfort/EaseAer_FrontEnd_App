@@ -27,7 +27,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // BACKEND API URL:
 // const API_URL = "https://api.lplan.es:443/";
 // const API_URL = "http://147.83.7.158:5432/";
-const API_URL = "http://localhost:5432/";
+const API_URL = "https://9cfb-83-44-218-141.ngrok-free.app/";
 
 export class SessionService {
 
@@ -44,17 +44,18 @@ export class SessionService {
   }
 
   // (2) LOGIN USER: [routeUser.post("/user/login", userCtrl.loginUserCtrl)]
-
-  // (3) LOGIN USER FRONTEND: [routeUser.post("/user/loginfrontend", userCtrl.loginFrontEndUserCtrl)]
-  static async loginFrontEndUser(auth: AuthEntity) {
+  static async loginUser(auth: AuthEntity) {
     try {
-      const response = await axios.post(API_URL + "user/loginfrontend", auth);
+      console.log(API_URL + "user/login");
+      const response = await axios.post(API_URL + "user/login", auth);
       return response;
     } catch (error) {
       console.error("Error During LogIn", error);
       throw error;
     }
   }
+
+  // (3) LOGIN USER FRONTEND: [routeUser.post("/user/loginfrontend", userCtrl.loginFrontEndUserCtrl)]
 
   // (4) LOGOUT:
   static logOut() {

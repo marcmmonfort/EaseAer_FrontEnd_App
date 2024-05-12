@@ -34,8 +34,12 @@ export default function LoginScreen() {
   }, []);
 
   const titleFont = Platform.select({
-    ios: 'Rafaella',
-    android: 'Rafaella',
+    ios: 'Emirates',
+    android: 'Emirates',
+  });
+  const subtitleFont = Platform.select({
+    ios: 'Corporate',
+    android: 'Corporate',
   });
   const bodyFont = Platform.select({
     ios: 'SFNS',
@@ -76,9 +80,9 @@ export default function LoginScreen() {
       marginTop:-260,
     },
     image: {
-      width: 30,
-      height: 30,
-      resizeMode: 'cover',
+      height: 120,
+      resizeMode: 'contain',
+      marginBottom: 150,
     },
     iconText: {
       color: 'white',
@@ -99,23 +103,23 @@ export default function LoginScreen() {
       height: 40,
     },
     normalText: {
-      color: 'white',
+      color: '#321e29',
       fontFamily: bodyFont,
-      fontSize: 18,
+      fontSize: 20,
       marginTop: 38,
-      marginBottom: -2,
+      marginBottom: 0,
     },
     bottomText: {
-      color: 'white',
+      color: '#321e29',
       fontFamily: bodyFont,
-      fontSize: 18,
-      marginTop: 44,
+      fontSize: 20,
+      marginTop: 20,
       marginBottom: -4,
     },
     signUpText: {
-      color: '#66fcf1',
-      fontFamily: bodyFont,
-      fontSize: 28,
+      color: '#875a31',
+      fontFamily: subtitleFont,
+      fontSize: 20,
       marginTop: 6,
       marginBottom: 0
     },
@@ -126,19 +130,18 @@ export default function LoginScreen() {
   }
 
   return (
-    <ImageBackground source={require('../../../../assets/visualcontent/background_3.png')} style={styles.backgroundImage}>
+    <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
       <View style={styles.mainContainer}>
         <View style={styles.iconContainer}>
-          <Image source={require('../../../../assets/easeaer_others/logo_lplan.png')} style={styles.image} />
-          <Title style={styles.xText}>x</Title>
-          <Title style={styles.iconText}>Lplan</Title>
+          <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png')} style={styles.image} />
         </View>
         <View style={styles.formContainer}>
-          <Text style={styles.normalText}>Let's Go!</Text>
-          <StyledTextInputs style={styles.input} placeholder="Mail" value={inputEmail} onChangeText={setInputEmail}/>
+          <Text style={styles.normalText}>Let's Travel!</Text>
+          <StyledTextInputs style={styles.input} placeholder="E-Mail" value={inputEmail} onChangeText={setInputEmail}/>
           <StyledTextInputs style={styles.input} placeholder="Password" value={inputPassword} onChangeText={setInputPassword} secureTextEntry={true}/>
-          <Button_Type_1 onPress={() => { const formData: AuthEntity = { mailUser: inputEmail, passwordUser: inputPassword, };
-              SessionService.loginFrontEndUser(formData)
+          <Button_Type_1 onPress={() => { const formData: AuthEntity = { mailUser: inputEmail, passwordUser: inputPassword };
+            console.log(formData);
+              SessionService.loginUser(formData)
                 .then((response) => {
                   console.log(response);
                   if (response.status === 200) {
@@ -147,10 +150,8 @@ export default function LoginScreen() {
                       JSON.stringify(response.data.user.uuid),
                       JSON.stringify(response.data.token)
                     );
-                    console.log("_id" + JSON.stringify(response.data.user.uuid));
-                    console.log("token" + JSON.stringify(response.data.token));
-                    console.log("Login Succesfull!");
-                    navigation.navigate('HomeScreen' as never, { screen: 'FeedScreen' } as never);
+                    // navigation.navigate('HomeScreen' as never, { screen: 'FeedScreen' } as never);
+                    navigation.navigate('Splash' as never);
                   }
                 })
                 .catch((error) => {
@@ -160,7 +161,6 @@ export default function LoginScreen() {
                     case 403:
                       // Poner aquí el alert ...
                       console.log("Incorrect Password");
-
                       break;
                     case 404:
                       // Poner aquí el alert ...
@@ -170,9 +170,9 @@ export default function LoginScreen() {
                   }
                 });
             }} />
-          <Text style={styles.bottomText}>{t("AlplanMember")}</Text>
+          <Text style={styles.bottomText}>Aren't you a member?</Text>
           <TouchableOpacity onPress={() => navigation.navigate("Register" as never)}> 
-            <Text style={styles.signUpText}>{t("Sign_Up")}</Text> 
+            <Text style={styles.signUpText}>Register Here</Text> 
           </TouchableOpacity>
           <StatusBar/>
         </View>      

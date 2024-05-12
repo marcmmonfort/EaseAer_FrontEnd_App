@@ -25,8 +25,12 @@ const Button_Type_1 = ({ onPress, containerStyle, buttonStyle, textStyle }: Butt
   }, []);
 
   const titleFont = Platform.select({
-    ios: 'Rafaella',
-    android: 'Rafaella',
+    ios: 'Emirates',
+    android: 'Emirates',
+  });
+  const subtitleFont = Platform.select({
+    ios: 'Corporate',
+    android: 'Corporate',
   });
   const bodyFont = Platform.select({
     ios: 'SFNS',
@@ -40,19 +44,19 @@ const Button_Type_1 = ({ onPress, containerStyle, buttonStyle, textStyle }: Butt
       marginTop: 50,
     },
     button: {
-      marginTop: -30,
+      marginTop: -28,
       height: 38,
       width: 120,
-      borderRadius: 50,
+      borderRadius: 12,
       padding: 10,
       alignItems: 'center',
       justifyContent: 'center',
     },
     text: {
-      fontFamily: bodyFont,
+      fontFamily: subtitleFont,
       fontWeight: 'bold',
-      fontSize: 18,
-      color: 'black',
+      fontSize: 20,
+      color: 'white',
     },
   });
 
@@ -62,8 +66,8 @@ const Button_Type_1 = ({ onPress, containerStyle, buttonStyle, textStyle }: Butt
 
   return (
     <TouchableOpacity style={[styles.container, containerStyle]} onPress={onPress}>
-      <LinearGradient colors={['#66fcf1', '#66fcf1']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }} style={[styles.button, buttonStyle]}>
-        <Text style={[styles.text, textStyle]}>{t("Log_in")}</Text>
+      <LinearGradient colors={['#875a31', '#875a31']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }} style={[styles.button, buttonStyle]}>
+        <Text style={[styles.text, textStyle]}>Log In</Text>
       </LinearGradient>
     </TouchableOpacity>
   );

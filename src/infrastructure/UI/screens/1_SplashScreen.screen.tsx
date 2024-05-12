@@ -80,14 +80,9 @@ export default function SplashScreen() {
     },
     versionText: {
       color: '#321E29',
-      fontFamily: subtitleFont,
-      fontSize: 22,
-      marginBottom: 0,
-    },
-    footerText: {
-      color: '#875A31',
       fontFamily: bodyFont,
-      fontSize: 14,
+      fontSize: 16,
+      marginBottom: 0,
     },
     backgroundImage: {
       flex: 1,
@@ -106,22 +101,23 @@ export default function SplashScreen() {
                 console.log("Decoded Token: ", decodedToken);
 
                 if (decodedToken.exp < currentTime) {
-                  // navigation.navigate('LoginScreen' as never);
+                  navigation.navigate('LoginScreen' as never);
                 } else {
                   console.log("Valid Token");
+                  navigation.navigate('LoginScreen' as never);
                   // navigation.navigate('HomeScreen' as never, { screen: 'ProfileScreen' } as never);
                 }
                 // navigation.navigate('HomeScreen' as never, { screen: 'ProfileScreen' } as never);
 
               } else {
-                // navigation.navigate('LoginScreen' as never);
+                navigation.navigate('LoginScreen' as never);
               }
             } catch (error) {
               console.log('Error Obteniendo El Token', error);
             }
           };
         checkToken();
-    }, 3600);
+    }, 2000);
   }, []);
 
   if (!fontsLoaded) {
@@ -134,11 +130,10 @@ export default function SplashScreen() {
         <View style={styles.mainContainer}>
             <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png')} style={styles.image} />
             <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_1_Png.png')} style={styles.imageEA} />
-            <Text style={styles.creditsText}>1.0.0</Text>
+            <Text style={styles.creditsText}>Barcelona</Text>
         </View>
         <View style={styles.footerContainer}>
-            <Text style={styles.versionText}>Barcelona - El Prat Airport</Text>
-            <Text style={styles.footerText}>@easeaer</Text>
+            <Text style={styles.versionText}>Version 1.0.0</Text>
         </View>
       </View>
     </ImageBackground> 
