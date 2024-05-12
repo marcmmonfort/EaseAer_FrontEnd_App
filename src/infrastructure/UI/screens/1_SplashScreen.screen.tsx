@@ -28,6 +28,10 @@ export default function SplashScreen() {
   }, []);
 
   const titleFont = Platform.select({
+    ios: 'Emirates',
+    android: 'Emirates',
+  });
+  const subtitleFont = Platform.select({
     ios: 'Corporate',
     android: 'Corporate',
   });
@@ -54,35 +58,34 @@ export default function SplashScreen() {
       marginBottom: 32,
     },
     image: {
-      width: 100,
-      height: 100,
-      resizeMode: 'cover',
+      height: 80,
+      resizeMode: 'contain',
+      marginBottom: -6,
+    },
+    imageEA: {
+      height: 40,
+      resizeMode: 'contain',
+      marginTop: 0,
     },
     text_normal: {
       color: 'white',
       fontSize: 20,
       marginBottom: 10,
     },
-    titleText: {
-      color: 'white',
-      fontFamily: titleFont,
-      fontSize: 38,
-      marginTop: 20,
-    },
     creditsText: {
-      color: 'white',
+      color: '#875a31',
       fontFamily: bodyFont,
       fontSize: 18,
-      marginTop: 14,
+      marginTop: 8,
     },
     versionText: {
-      color: '#66fcf1',
-      fontFamily: bodyFont,
-      fontSize: 18,
-      marginBottom: 2,
+      color: '#321E29',
+      fontFamily: subtitleFont,
+      fontSize: 22,
+      marginBottom: 0,
     },
     footerText: {
-      color: 'white',
+      color: '#875A31',
       fontFamily: bodyFont,
       fontSize: 14,
     },
@@ -108,8 +111,8 @@ export default function SplashScreen() {
                   console.log("Valid Token");
                   // navigation.navigate('HomeScreen' as never, { screen: 'ProfileScreen' } as never);
                 }
-                
                 // navigation.navigate('HomeScreen' as never, { screen: 'ProfileScreen' } as never);
+
               } else {
                 // navigation.navigate('LoginScreen' as never);
               }
@@ -126,16 +129,16 @@ export default function SplashScreen() {
   }
 
   return (
-    <ImageBackground source={require('../../../../assets/visualcontent/background_1.png')} style={styles.backgroundImage}>
+    <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
       <View style={styles.mainContainer}>
         <View style={styles.mainContainer}>
-            <Image source={require('../../../../assets/easeaer_others/logo_lplan.png')} style={styles.image} />
-            <Text style={styles.titleText}>Lplan</Text>
-            <Text style={styles.creditsText}>2023</Text>
+            <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png')} style={styles.image} />
+            <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_1_Png.png')} style={styles.imageEA} />
+            <Text style={styles.creditsText}>1.0.0</Text>
         </View>
         <View style={styles.footerContainer}>
-            <Text style={styles.versionText}>{t("Group")} 3</Text>
-            <Text style={styles.footerText}>Eloi, Genís, Óscar, Victor, Marc</Text>
+            <Text style={styles.versionText}>Barcelona - El Prat Airport</Text>
+            <Text style={styles.footerText}>@easeaer</Text>
         </View>
       </View>
     </ImageBackground> 
