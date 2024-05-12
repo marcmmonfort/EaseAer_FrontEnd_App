@@ -3,15 +3,6 @@ import { StyleSheet, Text, TextProps} from 'react-native';
 
 import * as Font from 'expo-font';
 
-/*async function loadFonts() {
-  await Font.loadAsync({
-    'Raffaella':require('../../../../../assets/fonts/Rafaella.ttf'),
-  });
-}
-
-loadFonts();*/
-
-
 const styles = StyleSheet.create({
     title: {
         //fontFamily: 'Rafaella',

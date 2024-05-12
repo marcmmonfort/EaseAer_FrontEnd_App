@@ -6,12 +6,14 @@ import { useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Button } from "react-native-paper";
 import { useTranslation } from "react-i18next";
+import { StyleSheet } from "react-native";
 import * as Font from 'expo-font';
 
 async function loadFonts() {
   await Font.loadAsync({
-    'Rafaella': require('../../../../assets/fonts/Rafaella.ttf'),
-    'SFNS': require('../../../../assets/fonts/SFNS.otf'),
+    'Corporate': require('../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Emirates': require('../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+    'SFNS': require('../../../../assets/easeaer_fonts/SF_Font.ttf'),
   });
 }
 
@@ -109,7 +111,7 @@ const SettingsPage = () => {
   };
   */
 
-  const styles = {
+  const styles = StyleSheet.create({
     settingsContainer: {
       marginVertical: 10,
       marginHorizontal: 20,
@@ -141,7 +143,7 @@ const SettingsPage = () => {
     switch_design: {
       top: 10,
     }
-  };
+  });
 
   return (
     <ImageBackground source={require('../../../../assets/visualcontent/background_8.png')} style={styles.backgroundImage}>
@@ -162,14 +164,3 @@ const SettingsPage = () => {
 };
 
 export default SettingsPage;
-
-/*
-<View style={styles.settingsContainer}>
-          <Text>Voice Control</Text>
-          <Text>Enable voice control for navigation</Text>
-          <Switch
-            value={voiceControlEnabled}
-            onValueChange={handleToggleVoiceControl}
-          />
-        </View>
-*/

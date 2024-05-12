@@ -6,14 +6,6 @@ import { ButtonGradientProps } from './Types';
 import * as Font from 'expo-font';
 import { useTranslation } from 'react-i18next';
 
-/*async function loadFonts() {
-  await Font.loadAsync({
-    'SF UI Display': require('../../../assets/fonts/SF-UI-Display-Semibold.ttf'),
-  });
-}
-
-loadFonts();*/
-
 const ButtonGradientRegister = ({ onPress, containerStyle, buttonStyle, textStyle }: ButtonGradientProps) => {
   const {t}= useTranslation();
   return (

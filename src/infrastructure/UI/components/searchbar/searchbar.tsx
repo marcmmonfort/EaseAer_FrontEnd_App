@@ -4,8 +4,9 @@ import * as Font from 'expo-font';
 
 async function loadFonts() {
   await Font.loadAsync({
-    'Rafaella': require('../../../../../assets/fonts/Rafaella.ttf'),
-    'SFNS': require('../../../../../assets/fonts/SFNS.otf'),
+    'Corporate': require('../../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Emirates': require('../../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+    'SFNS': require('../../../../../assets/easeaer_fonts/SF_Font.ttf'),
   });
 }
 

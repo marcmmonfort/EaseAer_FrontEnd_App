@@ -9,8 +9,9 @@ import { useTranslation } from "react-i18next";
 
 async function loadFonts() {
   await Font.loadAsync({
-    'Rafaella': require('../../../../../assets/fonts/Rafaella.ttf'),
-    'SFNS': require('../../../../../assets/fonts/SFNS.otf'),
+    'Corporate': require('../../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Emirates': require('../../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+    'SFNS': require('../../../../../assets/easeaer_fonts/SF_Font.ttf'),
   });
 }
 
@@ -69,6 +70,7 @@ export default function ScreenRegisterFinal({
   });
 
   const handleRegister = async () => {
+    /*
     try {
       const user: UserAuthEntity = {
         uuid: "a" ?? "",
@@ -87,11 +89,11 @@ export default function ScreenRegisterFinal({
         descriptionUser: descriptionUser ?? "",
         roleUser:
           roleUser === "admin" ||
-          roleUser === "common" ||
-          roleUser === "verified" ||
-          roleUser === "business"
+          roleUser === "pax" ||
+          roleUser === "company" ||
+          roleUser === "tech"
             ? roleUser
-            : "common",
+            : "pax",
         privacyUser: privacyUser === "private" ? true : false,
         deletedUser: false,
       };
@@ -110,6 +112,7 @@ export default function ScreenRegisterFinal({
     } catch (error) {
       console.error("Error during registration:", error);
     }
+    */
   };
 
   const styles = StyleSheet.create({
@@ -120,7 +123,7 @@ export default function ScreenRegisterFinal({
     mainContainer: {
       backgroundColor: 'transparent',
       marginTop: 20,
-      marginBotton: 20,
+      marginBottom: 20,
     },
     nextBackButton: {
       margin: 6,

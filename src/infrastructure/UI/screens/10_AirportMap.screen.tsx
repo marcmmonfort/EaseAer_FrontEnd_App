@@ -7,14 +7,15 @@ import { LocationEntity } from "../../../domain/location/location.entity";
 import SearchBar from "../components/searchbar/searchbar";
 import * as Font from 'expo-font';
 import * as Location from 'expo-location';
-import { LocationService } from "../../../infrastructure/services/location/location.service";
+import { LocationService } from "../../services/location/location.service";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 async function loadFonts() {
   await Font.loadAsync({
-    'Rafaella': require('../../../../assets/fonts/Rafaella.ttf'),
-    'SFNS': require('../../../../assets/fonts/SFNS.otf'),
+    'Corporate': require('../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Emirates': require('../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+    'SFNS': require('../../../../assets/easeaer_fonts/SF_Font.ttf'),
   });
 }
 
@@ -28,18 +29,19 @@ const MapScreen = () => {
   const navigation = useNavigation();
   const [clickedLocation, setClickedLocation] = useState("");
 
-  const locationIcon = require('../../../../assets/location_apple.png');
-  const fireIcon = require('../../../../assets/location_fire.png');
+  const locationIcon = require('../../../../assets/easeaer_others/location_apple.png');
+  const fireIcon = require('../../../../assets/easeaer_others/location_fire.png');
 
   const [activities, setActivities] = useState<LocationEntity[]>([]);  // Estas son las Locations pero nuestras (las de las actividades).
 
   useEffect(() => {
-    fetchActivities();
+    // fetchActivities();
   }, []);
 
+  /*
   const fetchActivities = async () => {
     try {
-      const response = await LocationService.getLocations();
+      const response = await LocationService.getLocationById();
       if (response) {
         const activities = response.data as LocationEntity[];
         setActivities(activities);
@@ -50,6 +52,7 @@ const MapScreen = () => {
       console.error('Error fetching activities:', error);
     }
   };
+  */
 
   useEffect(() => {
     loadFonts().then(() => {
@@ -242,7 +245,7 @@ const MapScreen = () => {
             longitude: parseFloat(activity.lonLocation),
           }}
           title={activity.nameLocation}
-          description={activity.descriptionLocation}
+          // description={activity.descriptionLocation}
           image={fireIcon}
           onPress={() => handleGoToListActivities(activity.uuid)}
           style={{ width: 40, height: 40 }} 

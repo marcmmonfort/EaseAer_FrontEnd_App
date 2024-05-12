@@ -17,8 +17,9 @@ import { useTranslation } from 'react-i18next';
 
 async function loadFonts() {
   await Font.loadAsync({
-    'Rafaella': require('../../../../assets/fonts/Rafaella.ttf'),
-    'SFNS': require('../../../../assets/fonts/SFNS.otf'),
+    'Corporate': require('../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Emirates': require('../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+    'SFNS': require('../../../../assets/easeaer_fonts/SF_Font.ttf'),
   });
 }
 
@@ -72,7 +73,7 @@ export default function EditUserScreen() {
         const userId = await SessionService.getCurrentUser();
         if (userId) {
           try {
-            await CRUDService.getUser(userId).then((response) => {
+            await CRUDService.getUserById(userId).then((response) => {
               setUserData(response?.data);
             });
           } catch (error) {
@@ -152,7 +153,7 @@ export default function EditUserScreen() {
   const handleSubmit = () => {
     try {
       console.log("AAAAAAA")
-      CRUDService.editUser(userData).then((response) => {
+      CRUDService.updateUser(userData).then((response) => {
         console.log("BBBBBB")
         console.log(response?.data);
         navigation.navigate('HomeScreen' as never);

@@ -12,8 +12,9 @@ import { useTranslation } from "react-i18next";
 
 async function loadFonts() {
   await Font.loadAsync({
-    'Rafaella': require('../../../../../assets/fonts/Rafaella.ttf'),
-    'SFNS': require('../../../../../assets/fonts/SFNS.otf'),
+    'Corporate': require('../../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Emirates': require('../../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+    'SFNS': require('../../../../../assets/easeaer_fonts/SF_Font.ttf'),
   });
 }
 
@@ -85,20 +86,7 @@ export default function ScreenRegisterE() {
       console.log(descriptionUser);
       console.log(roleUser);
       console.log(privacyUser);
-      navigation.navigate("ScreenRegisterFinal" as never, {
-        appUser,
-        nameUser,
-        surnameUser,
-        mailUser,
-        passwordUser,
-        photoUser,
-        birthdateUser,
-        genderUser,
-        ocupationUser,
-        descriptionUser,
-        roleUser:selectedRole,
-        privacyUser:selectedPrivact,
-      }as never);
+      navigation.navigate("ScreenRegisterFinal" as never, { appUser, nameUser, surnameUser, mailUser, passwordUser, photoUser, birthdateUser, genderUser, ocupationUser, descriptionUser, roleUser:selectedRole, privacyUser:selectedPrivact } as never);
     }
   };
 

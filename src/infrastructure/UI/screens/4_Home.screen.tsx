@@ -2,12 +2,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
-import FeedScreen from './feed.screen';
-import DiscoveryScreen from './discovery.screen';
-import CalendarEventsScreen from './calendarevents.screen';
-import ProfileScreen from './profile.screen';
+import ProfileScreen from './5_UserProfile.screen';
 import { ImageBackground, StyleSheet } from 'react-native';
-import MapScreen from './map.screen';
+import MapScreen from './10_AirportMap.screen';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,15 +14,15 @@ export default function HomeScreen() {
     
     <Tab.Navigator screenOptions={{ tabBarStyle: { backgroundColor: '#000000', borderTopWidth: 0 }, tabBarShowLabel: false,  }}>
       
-      <Tab.Screen name="Feed" component={FeedScreen} options={{ tabBarIcon: ({ color, size }) => (
+      <Tab.Screen name="Feed" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons name="image" size={30} color='#66fcf1' />
           ), headerStyle: { backgroundColor: '#000000', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#66fcf1', fontSize: 30 },
         }} />
-      <Tab.Screen name="Discovery" component={DiscoveryScreen} options={{ tabBarIcon: ({ color, size }) => (
+      <Tab.Screen name="Discovery" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons name="magnify" size={25} color='#66fcf1' />
           ), headerStyle: { backgroundColor: '#000000', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#66fcf1', fontSize: 30 },
         }} />
-      <Tab.Screen name="Calendar" component={CalendarEventsScreen} options={{ tabBarIcon: ({ color, size }) => (
+      <Tab.Screen name="Calendar" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
         <Fontisto name="calendar" size={18} color='#66fcf1' />
         ), headerStyle: { backgroundColor: '#000000', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#66fcf1', fontSize: 30 },
       }} />

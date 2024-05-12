@@ -1,14 +1,7 @@
 import * as Font from 'expo-font'
+import React from 'react';
 import { FunctionComponent } from 'react';
 import { StyleSheet, Text, TextProps } from 'react-native';
-
-/*async function loadFonts() {
-    await Font.loadAsync({
-      'SF UI Display': require('../../../../../assets/fonts/SF-UI-Display-Semibold.ttf'),
-    });
-}*/
-
-//loadFonts();
 
 const styles = StyleSheet.create({
     text: {

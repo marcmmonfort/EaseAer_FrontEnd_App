@@ -5,8 +5,6 @@ import { SessionService } from '../../services/user/session.service';
 import { CRUDService } from '../../services/user/CRUD.service';
 import { useTranslation } from 'react-i18next';
 import { UserEntity } from '../../../domain/user/user.entity';
-import { ActivityService } from '../../services/activity/activity.service';
-import { PublicationService } from '../../services/publication/publication.service';
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { BarChart } from 'react-native-chart-kit';
 import { Picker } from '@react-native-picker/picker';
@@ -15,8 +13,9 @@ import * as Font from 'expo-font';
 
 async function loadFonts() {
   await Font.loadAsync({
-    'Rafaella': require('../../../../assets/fonts/Rafaella.ttf'),
-    'SFNS': require('../../../../assets/fonts/SFNS.otf'),
+    'Corporate': require('../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Emirates': require('../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+    'SFNS': require('../../../../assets/easeaer_fonts/SF_Font.ttf'),
   });
 }
 
@@ -84,6 +83,7 @@ const UserStats = () => {
 
         const fetchActivitiesParticipated = async () => {
           try {
+            /*
             const participated = await activitiesParticipated(myUserId);
             setParticipatedActivities(participated);
             const created = await activitiesCreated(myUserId);
@@ -99,7 +99,7 @@ const UserStats = () => {
             const labelDays = daysOfWeek();
             setChartData(data);
             setChartLabels(labelDays);
-
+            */
           } catch (error) {
             console.error('Error al obtener las actividades participadas:', error);
           }
@@ -121,9 +121,13 @@ const UserStats = () => {
     if (myUserId) {
       console.log('Obtenemos los datos del otro usuario:', myUserId);
       try {
-        const response = await CRUDService.getPerson(myUserId);
-        setCurrentUser(response.data);
-        console.log('Obtenemos los datos del otro usuario: exito');
+        const response = await CRUDService.getUserById(myUserId);
+        if (response){
+          setCurrentUser(response.data);
+          console.log('Obtenemos los datos del otro usuario: exito');
+        } else {
+          // navigation.navigate('NotFoundScreen' as never);
+        }        
       } catch (error) {
         navigation.navigate('NotFoundScreen' as never);
         console.error(error);
@@ -132,49 +136,6 @@ const UserStats = () => {
       navigation.navigate('NotFoundScreen' as never);
     }
   };
-
-
-  const activitiesParticipated = async (myUserId: string) => {
-    const response = await ActivityService.getAllActivitiesParticipatedByUser(myUserId);
-    console.log(userId);
-    console.log(response.data.length);
-    return response.data.length;
-  }
-
-  const activitiesCreated = async (myUserId: string) => {
-    const response = await ActivityService.getAllActivitiesCreatedByUser(myUserId);
-    console.log(userId);
-    console.log(response.data.length);
-    return response.data.length;
-  }
-
-  const publicationsMade = async (myUserId: string) => {
-    const response = await PublicationService.getAllPublicationByUser(myUserId);
-    console.log(userId);
-    console.log(response.data.length);
-    return response.data.length;
-  }
-
-  const activitiesWeek = async (myUserId: string, date: string) => {
-    const response = await ActivityService.getMySchedule(myUserId, date);
-    console.log(userId);
-    console.log(response.data.length);
-    return response.data.length;
-  }
-
-  const activitiesMonth = async (myUserId: string, date: string) => {
-    const response = await ActivityService.getActivitiesLastMonthByUser(myUserId, date);
-    console.log(userId);
-    console.log(response.data.length);
-    return response.data.length;
-  }
-
-  const last6Weeks = async (myUserId: string) => {
-    const response = await ActivityService.getActivitiesLast6Weeks(myUserId);
-    console.log(userId);
-    console.log(response.data);
-    return response.data;
-  }
 
   const daysOfWeek = () => {
     const currentDate = new Date();
@@ -208,10 +169,12 @@ const UserStats = () => {
         if(myUserId){
           const fetchActivitiesByMonthAndYear = async () => {
             try {
+              /*
               const response = await ActivityService.getActivitiesByMonthAndYear(myUserId, selectedMonth, selectedYear);
               console.log(response.data);
       
               setChartData2(response.data);
+              */
             } catch (error) {
               console.error('Error al obtener las actividades por mes y año:', error);
             }

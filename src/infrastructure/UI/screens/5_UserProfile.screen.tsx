@@ -12,17 +12,14 @@ import * as Speech from 'expo-speech';
 import Filter from 'bad-words';
 
 // BEREAL
-import { Publication, PublicationEntity } from "../../../domain/publication/publication.entity";
-import { PublicationService } from "../../services/publication/publication.service";
-import ShareComponent from "../components/search/search";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
-import QRCodeGenerator from "../components/qr/qrGenerator";
 
 async function loadFonts() {
   await Font.loadAsync({
-    'Rafaella': require('../../../../assets/fonts/Rafaella.ttf'),
-    'SFNS': require('../../../../assets/fonts/SFNS.otf'),
+    'Corporate': require('../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Emirates': require('../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+    'SFNS': require('../../../../assets/easeaer_fonts/SF_Font.ttf'),
   });
 }
 
@@ -37,7 +34,6 @@ export default function ProfileScreen() {
   const navigation = useNavigation();
 
   // BEREAL
-  const [listOwnPublications, setListOwnPublications] = useState<Publication[]>([]);
   const [numPagePublication, setNumPagePublication] = useState<number>(1);
   const [numOwnPublications, setNumOwnPublications] = useState<number>(0);
   const [recargar, setRecargar] = useState<string>('');
@@ -77,7 +73,7 @@ export default function ProfileScreen() {
         const userId = await SessionService.getCurrentUser();
         if (userId) {
           try {
-            await CRUDService.getUser(userId).then(async (response) => {
+            await CRUDService.getUserById(userId).then(async (response) => {
               if (response?.data && response.data.descriptionUser) {
           
                 const customFilter = new Filter({regex: /\*|\.|$/gi});
@@ -148,6 +144,7 @@ export default function ProfileScreen() {
     }, [])
   );
 
+  /*
   useFocusEffect(
     React.useCallback(() => {
       let isMounted = true;
@@ -173,21 +170,16 @@ export default function ProfileScreen() {
       };
     }, [numPagePublication, recargar])
   );  
+  */
   
   const speakCurrentUser = async (currentUser:UserEntity) => {
     try {
       if (currentUser) {
         Speech.speak(`You're in the profile of ${currentUser.appUser}`, { language: 'en' });
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Pausa de 500 ms
-        if(currentUser.followersUser)
-        Speech.speak(`He has ${currentUser.followersUser.length.toString()} followers`, { language: 'en' });
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Pausa de 500 ms
-        if(currentUser.followedUser)
-        Speech.speak(`He is following ${currentUser.followedUser.length.toString()} users`, { language: 'en' });
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Pausa de 500 ms
+        await new Promise((resolve) => setTimeout(resolve, 500));
         Speech.speak(`His name is ${currentUser.nameUser}`, { language: 'en' });
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Pausa de 500 ms
-        Speech.speak(`His description is ${currentUser.descriptionUser}`, { language: 'en' });
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          Speech.speak(`His description is ${currentUser.descriptionUser}`, { language: 'en' });
       }
     } catch (error) {
       console.error('Error al leer en voz alta:', error);
@@ -438,16 +430,6 @@ const styles = StyleSheet.create({
                 <View style={styles.profileImage}>
                   <Image source={{ uri: currentUser.photoUser }} style={styles.image} />
                 </View>
-                <View style={styles.profileStats}>
-                  <TouchableOpacity style={styles.profileStatCountLeft} onPress={() => { navigation.navigate("UsersList" as never, { userId: currentUser.uuid, mode: "followers" } as never); }}>
-                    <Text style={styles.numFoll}>{currentUser.followersUser?.length}</Text>
-                    <Text style={styles.textFoll}>{t("Followers")}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.profileStatCountRight} onPress={() => { navigation.navigate("UsersList" as never, { userId: currentUser.uuid, mode: "following" } as never); }}>
-                    <Text style={styles.numFoll}>{currentUser.followedUser?.length}</Text>
-                    <Text style={styles.textFoll}>{t("Following")}</Text>
-                  </TouchableOpacity>
-                </View>
                 <View style={styles.profileBio}>
                   <Text style={styles.titleNameDescription}>{t("Name")}</Text>
                   <Text style={styles.textNameDescription}>{currentUser.nameUser}</Text>
@@ -455,28 +437,15 @@ const styles = StyleSheet.create({
                   <Text style={styles.textNameDescription}>{currentUser.descriptionUser}</Text>
                 </View>
               </View>
-              <View style={styles.container}>
-                <ShareComponent url={"https://www.lplan.es:443/shared/profile/" + currentUser?.uuid} />
-              </View>
               <TouchableOpacity style={styles.buttonLogOut} onPress={logOutButtonFunction}>
                 <MaterialCommunityIcons color="#3897f0" name="logout" size={24} />
               </TouchableOpacity>
-              <ScrollView style={styles.scrow_style} horizontal>
-                {listOwnPublications.reverse().map((publication, index) => (
-                  <View key={index} style={styles.post_complete}>
-                    <Text style={styles.time_post}>{new Date(publication.createdAt).toLocaleString()}</Text>
-                    <Image style={styles.post_images} source={{ uri: publication.photoPublication[0] }} />
-                    <Text style={styles.text_post}>{publication.textPublication}</Text>
-                  </View>
-                ))}
-              </ScrollView>
             </View>
           )}
         </View>
         <TouchableOpacity style={styles.buttonQR} onPress={() => setQrVisible()}>
           <Text style={styles.buttonTextQR}>{qrVisible ? "Ocultar QR" : "Mostrar QR"}</Text>
         </TouchableOpacity>
-        {qrVisible && <QRCodeGenerator attribute1={attribute1} attribute2={attribute2} />}
         <Text style={styles.belowMargin}></Text>
       </ScrollView>
     </ImageBackground>

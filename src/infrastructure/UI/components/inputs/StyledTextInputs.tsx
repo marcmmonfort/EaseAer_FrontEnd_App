@@ -3,15 +3,6 @@ import { StyleSheet, TextInput } from 'react-native';
 import * as Font from 'expo-font';
 import { StyledTextInputProps } from './Types';
 
-/*async function loadFonts() {
-  await Font.loadAsync({
-    //'SF UI Display': require('../../../assets/fonts/SF-UI-Display-Semibold.ttf'),
-    'SF UI Display':require('../../../../../assets/fonts/SF-UI-Display-Semibold.ttf'),
-  });
-}
-
-loadFonts();*/
-
 const styles = StyleSheet.create({
     textInput: {
         //fontFamily: 'SF UI Display',

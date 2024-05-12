@@ -4,7 +4,6 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
 import NormalText from '../components/texts/NormalText';
-import Color from '../constants/color/Color';
 import Video from 'react-native-video';
 import jwtDecode from 'jwt-decode';
 import { DecodedToken } from '../../../domain/decodedToken';
@@ -12,8 +11,9 @@ import { useTranslation } from 'react-i18next';
 
 async function loadFonts() {
   await Font.loadAsync({
-    'Rafaella': require('../../../../assets/fonts/Rafaella.ttf'),
-    'SFNS': require('../../../../assets/fonts/SFNS.otf'),
+    'Corporate': require('../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Emirates': require('../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+    'SFNS': require('../../../../assets/easeaer_fonts/SF_Font.ttf'),
   });
 }
 
@@ -28,8 +28,8 @@ export default function SplashScreen() {
   }, []);
 
   const titleFont = Platform.select({
-    ios: 'Rafaella',
-    android: 'Rafaella',
+    ios: 'Corporate',
+    android: 'Corporate',
   });
   const bodyFont = Platform.select({
     ios: 'SFNS',
@@ -100,24 +100,21 @@ export default function SplashScreen() {
               if (token) {
                 const decodedToken : DecodedToken = jwtDecode(token);
                 const currentTime = Date.now() / 1000; // Obtener la hora actual en segundos
-                console.log("DECODED TOKEN: ", decodedToken);
+                console.log("Decoded Token: ", decodedToken);
 
                 if (decodedToken.exp < currentTime) {
-                  
-                  // El token ha expirado, redirigir al usuario a la pantalla de inicio de sesión
-                  navigation.navigate('LoginScreen' as never);
+                  // navigation.navigate('LoginScreen' as never);
                 } else {
-                  // El token es válido, redirigir al usuario a la pantalla principal
-                  console.log("El token es válido");
-                  navigation.navigate('HomeScreen' as never, { screen: 'ProfileScreen' } as never);
+                  console.log("Valid Token");
+                  // navigation.navigate('HomeScreen' as never, { screen: 'ProfileScreen' } as never);
                 }
                 
                 // navigation.navigate('HomeScreen' as never, { screen: 'ProfileScreen' } as never);
               } else {
-                navigation.navigate('LoginScreen' as never);
+                // navigation.navigate('LoginScreen' as never);
               }
             } catch (error) {
-              console.log('Error al obtener el token:', error);
+              console.log('Error Obteniendo El Token', error);
             }
           };
         checkToken();
@@ -132,7 +129,7 @@ export default function SplashScreen() {
     <ImageBackground source={require('../../../../assets/visualcontent/background_1.png')} style={styles.backgroundImage}>
       <View style={styles.mainContainer}>
         <View style={styles.mainContainer}>
-            <Image source={require('../../../../assets/logo_lplan.png')} style={styles.image} />
+            <Image source={require('../../../../assets/easeaer_others/logo_lplan.png')} style={styles.image} />
             <Text style={styles.titleText}>Lplan</Text>
             <Text style={styles.creditsText}>2023</Text>
         </View>
@@ -141,7 +138,6 @@ export default function SplashScreen() {
             <Text style={styles.footerText}>Eloi, Genís, Óscar, Victor, Marc</Text>
         </View>
       </View>
-    </ImageBackground>
-    
+    </ImageBackground> 
   );
 }

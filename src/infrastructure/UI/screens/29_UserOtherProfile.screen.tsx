@@ -10,8 +10,9 @@ import { useTranslation } from "react-i18next";
 
 async function loadFonts() {
   await Font.loadAsync({
-    'Rafaella': require('../../../../assets/fonts/Rafaella.ttf'),
-    'SFNS': require('../../../../assets/fonts/SFNS.otf'),
+    'Corporate': require('../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Emirates': require('../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+    'SFNS': require('../../../../assets/easeaer_fonts/SF_Font.ttf'),
   });
 }
 
@@ -57,7 +58,7 @@ export default function UserScreen() {
         if (userId) {
           try {
             console.log(uuid);
-            const response = await CRUDService.getUser(uuid??"");
+            const response = await CRUDService.getUserById(uuid??"");
             console.log("Punto 1:", response);
             console.log(response?.data);
             setCurrentUser(response?.data);
@@ -103,10 +104,12 @@ export default function UserScreen() {
           }
 
           try {
+            /*
             const response = await CRUDService.isFollowed(userId, uuid?? "");
             console.log("Punto 1:", response);
             console.log(response?.data);
             setIsFollowing(response?.data);
+            */
           } catch (error) {
             console.log("Encontre el id pero no va")
           }
@@ -131,6 +134,7 @@ export default function UserScreen() {
     console.log("Este usuario es seguir tuyo?:" + isFollowing);
     if(isFollowing){
       try {
+        /*
         const response = await CRUDService.removeFollowed(myId, uuid ?? 'NoID');
         console.log("Pedimos la relacion que tenemos con ese user:: exito");
         console.log(response);
@@ -140,6 +144,7 @@ export default function UserScreen() {
         else{
             alert("Algo ha ido mal al borrar el followed")
         }
+        */
           
       } catch (error) {
         console.log("Pedimos la relacion que tenemos con ese user:: mal");
@@ -147,6 +152,7 @@ export default function UserScreen() {
       }
     }else{
       try {
+        /*
         const response = await CRUDService.addFollowed(myId, uuid ?? 'NoID');
         console.log("Pedimos la relacion que tenemos con ese user:: exito");
         console.log(response);
@@ -156,6 +162,7 @@ export default function UserScreen() {
         else{
             alert("Algo ha ido mal al añadir el followed")
         }
+        */
       } catch (error) {
         console.log("Pedimos la relacion que tenemos con ese user:: mal");
         console.error(error);
@@ -323,16 +330,6 @@ export default function UserScreen() {
                 </View>
                 <View style={styles.profileImage}>
                     <Image source={{ uri: currentUser.photoUser }} style={styles.image}/>
-                </View>
-                <View style={styles.profileStats}>
-                  <TouchableOpacity style={styles.profileStatCountLeft} onPress={() => {navigation.navigate("UsersList" as never, { userId: currentUser.uuid, mode: "followers"} as never);}}>
-                    <Text style={styles.numFoll}>{currentUser.followersUser?.length}</Text>
-                    <Text style={styles.textFoll}>{t("Followers")}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.profileStatCountRight} onPress={() => {navigation.navigate("UsersList" as never, { userId: currentUser.uuid, mode: "following"} as never);}}>
-                    <Text style={styles.numFoll}>{currentUser.followedUser?.length}</Text>
-                    <Text style={styles.textFoll}>{t("Following")}</Text>
-                  </TouchableOpacity>
                 </View>
                 <View style={styles.profileBio}>
                   <Text style={styles.titleNameDescription}>{t("Name")}</Text>

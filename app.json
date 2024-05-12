@@ -4,10 +4,10 @@
     "slug": "my-project",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/easeaer_others/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/easeaer_others/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -25,13 +25,13 @@
         "RECORD_AUDIO"
       ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/easeaer_others/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.ea.lplan"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/easeaer_others/favicon.png"
     },
     "extra": {
       "eas": {

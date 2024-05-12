@@ -18,8 +18,9 @@ import { useTranslation } from "react-i18next";
 
 async function loadFonts() {
   await Font.loadAsync({
-    'Rafaella': require('../../../../assets/fonts/Rafaella.ttf'),
-    'SFNS': require('../../../../assets/fonts/SFNS.otf'),
+    'Corporate': require('../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Emirates': require('../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+    'SFNS': require('../../../../assets/easeaer_fonts/SF_Font.ttf'),
   });
 }
 
@@ -128,7 +129,7 @@ export default function LoginScreen() {
     <ImageBackground source={require('../../../../assets/visualcontent/background_3.png')} style={styles.backgroundImage}>
       <View style={styles.mainContainer}>
         <View style={styles.iconContainer}>
-          <Image source={require('../../../../assets/logo_lplan.png')} style={styles.image} />
+          <Image source={require('../../../../assets/easeaer_others/logo_lplan.png')} style={styles.image} />
           <Title style={styles.xText}>x</Title>
           <Title style={styles.iconText}>Lplan</Title>
         </View>
@@ -137,7 +138,7 @@ export default function LoginScreen() {
           <StyledTextInputs style={styles.input} placeholder="Mail" value={inputEmail} onChangeText={setInputEmail}/>
           <StyledTextInputs style={styles.input} placeholder="Password" value={inputPassword} onChangeText={setInputPassword} secureTextEntry={true}/>
           <Button_Type_1 onPress={() => { const formData: AuthEntity = { mailUser: inputEmail, passwordUser: inputPassword, };
-              SessionService.login(formData)
+              SessionService.loginFrontEndUser(formData)
                 .then((response) => {
                   console.log(response);
                   if (response.status === 200) {
@@ -180,134 +181,3 @@ export default function LoginScreen() {
 
   );
 }
-
-/*
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useEffect, useState } from "react";
-import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
-import { Button, View, Text, Linking } from "react-native";
-import { Platform, StyleSheet, StyleSheet } from "react-native";
-import { makeRedirectUri } from "expo-auth-session";
-
-WebBrowser.maybeCompleteAuthSession();
-import * as Font from 'expo-font';
-
-async function loadFonts() {
-  await Font.loadAsync({
-    'Rafaella': require('../../../../assets/fonts/Rafaella.ttf'),
-  });
-}
-
-export default function LoginScreen() {
-  const navigation = useNavigation();
-
-  const [inputEmail, setInputEmail] = useState("");
-  const [inputPassword, setInputPassword] = useState("");
-
-  const styles = StyleSheet.create({
-    text_normal: {
-      color: 'white',
-      fontFamily: customFont,
-      fontSize: 20,
-      marginBottom: 10,
-    },
-  });
-
-  return (
-    <View style={styles.container}>
-      {userInfo === null ? (
-        <Button
-          title="Sign in with Google"
-          disabled={!request}
-          onPress={() => {
-            promptAsync();
-          }}
-        />
-      ) : (
-        <Text style={styles.text}>{userInfo.name}</Text>
-      )}
-      
-    </View>
-    <MainContainer>
-      <Title style={styles.text_normal}>Lplan</Title>
-      <SubTitle>Let's Go!</SubTitle>
-      <StyledTextInputs
-        placeholder="mail"
-        value={inputEmail}
-        onChangeText={setInputEmail}
-      />
-      <StyledTextInputs
-        placeholder="Password"
-        value={inputPassword}
-        onChangeText={setInputPassword}
-        secureTextEntry={true}
-      />
-      <ButtonGradient
-        onPress={() => {
-          const formData: AuthEntity = {
-            mailUser: inputEmail,
-            passwordUser: inputPassword,
-          };
-
-          console.log("formData " + formData.mailUser);
-          console.log("formData " + formData.passwordUser);
-          SessionService.login(formData)
-            .then((response) => {
-              console.log(response);
-              if (response.status === 200) {
-                console.log(response.data);
-                SessionService.setCurrentUser(
-                  JSON.stringify(response.data.user.uuid),
-                  JSON.stringify(response.data.token)
-                );
-                console.log("_id" + JSON.stringify(response.data.user.uuid));
-                console.log("token" + JSON.stringify(response.data.token));
-                console.log("Login Succesfull!");
-
-                navigation.navigate('HomeScreen' as never);
-              }
-            })
-            .catch((error) => {
-              console.error("error: " + error);
-              console.log("error.response: " + error.response);
-              switch (error.response.status) {
-                case 403:
-                  // Poner aquí el alert ...
-                  console.log("Incorrect Password");
-
-                  break;
-                case 404:
-                  // Poner aquí el alert ...
-                  console.log("User does not exist");
-                  navigation.navigate("Register" as never);
-                  break;
-              }
-            });
-        }}
-      />
-      <NormalText>Aren't you still an @lplan member?</NormalText>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Register" as never)}
-      >
-        <Register>Sign Up!</Register>
-      </TouchableOpacity>
-      <StatusBar />
-    </MainContainer>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-});
-
-*/

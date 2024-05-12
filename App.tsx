@@ -2,37 +2,23 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 import { AppRegistry, StyleSheet, Text, View } from "react-native";
-import LoginScreen from "./src/infrastructure/UI/screens/login.screen";
-import RegisterScreen from "./src/infrastructure/UI/screens/Register/register.screen";
-import HomeScreen from "./src/infrastructure/UI/screens/home.screen";
-import ScreenRegisterA from "./src/infrastructure/UI/screens/Register/register.screen";
-import ScreenRegisterFinal from "./src/infrastructure/UI/screens/Register/registerFinal.screen";
-import ScreenRegisterB from "./src/infrastructure/UI/screens/Register/register2.screen";
-import ScreenRegisterC from "./src/infrastructure/UI/screens/Register/register3.screen";
-import ScreenRegisterD from "./src/infrastructure/UI/screens/Register/register4.screen";
-import ScreenRegisterE from "./src/infrastructure/UI/screens/Register/register5.screen";
-import ProfileScreen from "./src/infrastructure/UI/screens/profile.screen";
-import EditUserScreen from "./src/infrastructure/UI/screens/edit.user.screen";
-import SplashScreen from "./src/infrastructure/UI/screens/splash.screen";
-import ScreenPublicationUpB from "./src/infrastructure/UI/screens/Publication/publicationUpB.screen";
-import ChatA from "./src/infrastructure/UI/screens/Chat/chatA.screen";
-import ChatB from "./src/infrastructure/UI/screens/Chat/chatB.screen";
-import GoogleLogin from "./src/infrastructure/UI/screens/login.screen";
-import UserStats from "./src/infrastructure/UI/screens/stats.screen";
+import LoginScreen from "./src/infrastructure/UI/screens/2_LogIn.screen";
+import RegisterScreen from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepA.screen";
+import HomeScreen from "./src/infrastructure/UI/screens/4_Home.screen";
+import ScreenRegisterA from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepA.screen";
+import ScreenRegisterFinal from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepF.screen";
+import ScreenRegisterB from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepB.screen";
+import ScreenRegisterC from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepC.screen";
+import ScreenRegisterD from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepD.screen";
+import ScreenRegisterE from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepE.screen";
+import ProfileScreen from "./src/infrastructure/UI/screens/5_UserProfile.screen";
+import EditUserScreen from "./src/infrastructure/UI/screens/7_UserEdit.screen";
+import SplashScreen from "./src/infrastructure/UI/screens/1_SplashScreen.screen";
+import GoogleLogin from "./src/infrastructure/UI/screens/2_LogIn.screen";
+import UserStats from "./src/infrastructure/UI/screens/17_EntertainmentStatistics.screen";
 import React, { useEffect } from 'react';
 import { Alert } from 'react-native';
-
-import UserScreen from "./src/infrastructure/UI/screens/user.screen";
-import UsersList from "./src/infrastructure/UI/screens/users.list.screen";
-import CalendarEventsScreen from "./src/infrastructure/UI/screens/calendarevents.screen";
-import NotFoundScreen from "./src/infrastructure/UI/screens/notFound.screen";
-import ActivitiesLocationList from "./src/infrastructure/UI/screens/listactivitieslocation.screen";
-import ActivityInfo from "./src/infrastructure/UI/screens/activityinfo.screen";
-import ScreenPublicationUpC from "./src/infrastructure/UI/screens/Publication/publicationUpC.screen";
-import SettingsPage from "./src/infrastructure/UI/screens/settings.screen";
-import CreateActivityScreen from "./src/infrastructure/UI/screens/createactivity.screen";
-import NewLocationScreen from "./src/infrastructure/UI/screens/newlocation";
-import VideocallAg from "./src/infrastructure/UI/screens/Videocall/videocallAg.screen";
+import UserScreen from "./src/infrastructure/UI/screens/29_UserOtherProfile.screen";
 import './languages/i18n';
 
 const Stack = createStackNavigator();
@@ -101,17 +87,6 @@ export default function App() {
           options={{ title: "LPlan", headerShown: false }}
           component={HomeScreen}
         />
-        
-        <Stack.Screen
-          name="ChatA"
-          component={ChatA}
-        />
-        
-        <Stack.Screen
-          name="ChatB"
-          component={ChatB}
-        />
-         
         <Stack.Screen
           name="Register"
           options={{ headerShown: false }}
@@ -122,14 +97,6 @@ export default function App() {
           component={ProfileScreen}
         />
         <Stack.Screen
-          name="ScreenPublicationUpB"
-          component={ScreenPublicationUpB}
-        />
-        <Stack.Screen
-          name="ScreenPublicationUpC"
-          component={ScreenPublicationUpC}
-        />
-        <Stack.Screen
             name="Edit"
             component={EditUserScreen}
         />
@@ -137,44 +104,6 @@ export default function App() {
           name="UserScreen"
           component={UserScreen}
         />
-        <Stack.Screen
-          name="UsersList"
-          component={UsersList}
-        />
-        <Stack.Screen
-        name="CalendarEventsScreen"
-        component={CalendarEventsScreen}
-          />
-        <Stack.Screen
-        name="CreateActivityScreen"
-        component={CreateActivityScreen}
-          />
-        <Stack.Screen
-        name="NotFoundScreen"
-        component={NotFoundScreen}
-        />
-        <Stack.Screen
-        name="ActivitiesLocation"
-        component={ActivitiesLocationList}
-        />
-        <Stack.Screen
-        name="CreateActivity"
-        component={CreateActivityScreen}
-        />
-        <Stack.Screen
-        name="Activity"
-        component={ActivityInfo}
-        />   
-        <Stack.Screen
-        name="Settings"
-        component={SettingsPage}
-        /> 
-
-        <Stack.Screen
-        name="NewLocation"
-        component={NewLocationScreen}
-        />
-        
         <Stack.Screen
         name="UserStats"
         component={UserStats}
