@@ -46,8 +46,12 @@ export default function ScreenRegisterB() {
   }, []);
 
   const titleFont = Platform.select({
-    ios: 'Rafaella',
-    android: 'Rafaella',
+    ios: 'Emirates',
+    android: 'Emirates',
+  });
+  const subtitleFont = Platform.select({
+    ios: 'Corporate',
+    android: 'Corporate',
   });
   const bodyFont = Platform.select({
     ios: 'SFNS',

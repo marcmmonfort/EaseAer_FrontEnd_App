@@ -3,14 +3,15 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 import { AppRegistry, StyleSheet, Text, View } from "react-native";
 import LoginScreen from "./src/infrastructure/UI/screens/2_LogIn.screen";
-import RegisterScreen from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepA.screen";
 import HomeScreen from "./src/infrastructure/UI/screens/4_Home.screen";
-import ScreenRegisterA from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepA.screen";
-import ScreenRegisterFinal from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepF.screen";
+
+import ScreenRegisterInicial from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepA.screen";
 import ScreenRegisterB from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepB.screen";
 import ScreenRegisterC from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepC.screen";
 import ScreenRegisterD from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepD.screen";
 import ScreenRegisterE from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepE.screen";
+import ScreenRegisterFinal from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepF.screen";
+
 import ProfileScreen from "./src/infrastructure/UI/screens/5_UserProfile.screen";
 import EditUserScreen from "./src/infrastructure/UI/screens/7_UserEdit.screen";
 import SplashScreen from "./src/infrastructure/UI/screens/1_SplashScreen.screen";
@@ -34,81 +35,20 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-      
-        <Stack.Screen
-          name="Splash"
-          options={{ headerShown: false }}
-          component={SplashScreen}
-        />    
-        <Stack.Screen
-          name="LoginScreen"
-          options={{ headerShown: false }}
-          component={LoginScreen}
-        />
-
-        <Stack.Screen
-          name="ScreenRegisterA"
-          options={{ headerShown: false }}
-          component={ScreenRegisterA}
-        />
-        <Stack.Screen
-          name="GoogleLogin" // Agrega el nuevo Screen para el inicio de sesión con Google
-          options={{ headerShown: false }}
-          component={GoogleLogin}
-        />
-        <Stack.Screen
-          name="ScreenRegisterB"
-          options={{ headerShown: false }}
-          component={ScreenRegisterB}
-        />
-       
-        <Stack.Screen
-          name="ScreenRegisterC"
-          options={{ headerShown: false }}
-          component={ScreenRegisterC}
-        />
-        <Stack.Screen
-          name="ScreenRegisterD"
-          options={{ headerShown: false }}
-          component={ScreenRegisterD}
-        />
-        <Stack.Screen
-          name="ScreenRegisterE"
-          options={{ headerShown: false }}
-          component={ScreenRegisterE}
-        />
-        <Stack.Screen
-          name="ScreenRegisterFinal"
-          options={{ headerShown: false }}
-          component={ScreenRegisterFinal}
-        />
-        <Stack.Screen
-          name="HomeScreen"
-          options={{ title: "LPlan", headerShown: false }}
-          component={HomeScreen}
-        />
-        <Stack.Screen
-          name="Register"
-          options={{ headerShown: false }}
-          component={RegisterScreen}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={ProfileScreen}
-        />
-        <Stack.Screen
-            name="Edit"
-            component={EditUserScreen}
-        />
-        <Stack.Screen
-          name="UserScreen"
-          component={UserScreen}
-        />
-        <Stack.Screen
-        name="UserStats"
-        component={UserStats}
-        />          
-        
+        <Stack.Screen name="Splash" options={{ headerShown: false }} component={SplashScreen}/>    
+        <Stack.Screen name="LoginScreen" options={{ headerShown: false }} component={LoginScreen}/>
+        <Stack.Screen name="GoogleLogin" options={{ headerShown: false }} component={GoogleLogin}/>
+        <Stack.Screen name="ScreenRegisterInicial" options={{ headerShown: false }} component={ScreenRegisterInicial}/>
+        <Stack.Screen name="ScreenRegisterB" options={{ headerShown: false }} component={ScreenRegisterB}/>
+        <Stack.Screen name="ScreenRegisterC" options={{ headerShown: false }} component={ScreenRegisterC}/>
+        <Stack.Screen name="ScreenRegisterD" options={{ headerShown: false }} component={ScreenRegisterD}/>
+        <Stack.Screen name="ScreenRegisterE" options={{ headerShown: false }} component={ScreenRegisterE}/>
+        <Stack.Screen name="ScreenRegisterFinal" options={{ headerShown: false }} component={ScreenRegisterFinal}/>
+        <Stack.Screen name="HomeScreen" options={{ title: "LPlan", headerShown: false }} component={HomeScreen}/>
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Edit" component={EditUserScreen} />
+        <Stack.Screen name="UserScreen" component={UserScreen}/>
+        <Stack.Screen name="UserStats" component={UserStats}/>          
       </Stack.Navigator>
     </NavigationContainer>
   );

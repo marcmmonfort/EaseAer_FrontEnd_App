@@ -22,11 +22,12 @@ import { ServiceEntity } from "../../../domain/service/service.entity";
 import { ShopEntity } from "../../../domain/shop/shop.entity";
 import { UserEntity } from "../../../domain/user/user.entity";
 import { UserAuthEntity } from "../../../domain/user/user.entity";
+import { environment } from '../../../../env';
 
 // BACKEND API URL:
 // const API_URL = "https://api.lplan.es:443/";
 // const API_URL = "http://147.83.7.158:5432/";
-const API_URL = "http://localhost:5432/";
+const API_URL = environment.API_URL;
 
 export class QuestionService{
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, TextInput, Text, Alert, View, Platform, ImageBackground, TouchableOpacity } from "react-native";
+import { Button, TextInput, Text, Alert, View, Platform, ImageBackground, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import MainContainer from "../../components/containers/Main";
 import SubTitle from "../../components/texts/Subtitle";
@@ -19,7 +19,7 @@ async function loadFonts() {
   });
 }
 
-export default function ScreenRegisterA() {
+export default function ScreenRegisterInicial() {
   const [appUser, setAppUser] = useState("");
   const [nameUser, setNameUser] = useState("");
   const [surnameUser, setSurnameUser] = useState("");
@@ -35,8 +35,12 @@ export default function ScreenRegisterA() {
   }, []);
 
   const titleFont = Platform.select({
-    ios: 'Rafaella',
-    android: 'Rafaella',
+    ios: 'Emirates',
+    android: 'Emirates',
+  });
+  const subtitleFont = Platform.select({
+    ios: 'Corporate',
+    android: 'Corporate',
   });
   const bodyFont = Platform.select({
     ios: 'SFNS',
@@ -45,7 +49,7 @@ export default function ScreenRegisterA() {
 
   const handleGoToScreenRegisterB = () => {
     if (!appUser || !nameUser || !surnameUser) {
-      Alert.alert("Warning", "Complete all the field to continue!");
+      Alert.alert("EaseAer", "Incomplete Fields");
     } else {
       navigation.navigate("ScreenRegisterB" as any, { appUser, nameUser, surnameUser } as any);
     }
@@ -86,12 +90,12 @@ export default function ScreenRegisterA() {
       height: 36,
       justifyContent: 'center',
       alignSelf: "center",
-      marginBottom: 96,
       textAlign: 'center',
       fontFamily: bodyFont,
       fontSize: 16,
       color: '#000',
       marginTop: 0,
+      marginBottom: 0,
       alignItems: 'center',
     },
     nextBackButtonText: {
@@ -102,10 +106,11 @@ export default function ScreenRegisterA() {
     registerTitle: {
       textAlign: 'center',
       fontFamily: titleFont,
-      paddingTop: 4,
       fontSize: 34,
       color: '#ffffff',
       height: 40,
+      marginTop: 0,
+      marginBottom: 0,
     },
     stepTitle: {
       textAlign: 'center',
@@ -113,11 +118,34 @@ export default function ScreenRegisterA() {
       fontSize: 18,
       color: '#ffffff',
     },
+    iconContainer: {
+      flex: 1,
+      alignItems: 'center',
+      flexDirection: 'row',
+      marginTop: 0,
+      marginBottom: 0,
+    },
+    image: {
+      height: 36,
+      resizeMode: 'contain',
+      marginTop: 0,
+      marginBottom: 0,
+    },
+    formContainer: {
+      flex: 1,
+      alignItems: 'center',
+      marginBottom: 0,
+      marginTop: -250,
+    },
   });
 
   return (
-    <ImageBackground source={require('../../../../../assets/visualcontent/background_6.png')} style={styles.backgroundImage}>
+    <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
       <MainContainer style={styles.mainContainer}>
+        <View style={styles.iconContainer}>
+          <Image source={require('../../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={styles.image} />
+        </View>
+        <View style={styles.formContainer}>
         <Text style={styles.registerTitle}>{t("Register")}</Text>
         <Text style={styles.stepTitle}>{t("Step")} 1</Text>
         <StyledTextInputs style={styles.input} placeholder="Username *" value={appUser} onChangeText={(value: React.SetStateAction<string>) => setAppUser(value) } /*keyboardType="numeric"*//>
@@ -132,9 +160,8 @@ export default function ScreenRegisterA() {
             <MaterialCommunityIcons color="#000000" name="arrow-right" size={24} />
           </TouchableOpacity>
         </View>
+        </View>
       </MainContainer>
     </ImageBackground>
-
   );
 }
-

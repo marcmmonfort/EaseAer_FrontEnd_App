@@ -9,7 +9,7 @@ import Button_Type_1 from "../components/buttons/Button_Type_1";
 import { AuthEntity } from "../../../domain/user/user.entity";
 import { SessionService } from "../../services/user/session.service";
 import NormalText from "../components/texts/NormalText";
-import { Platform, StatusBar, TouchableOpacity, StyleSheet, ImageBackground, Image, View, Text} from "react-native";
+import { Platform, StatusBar, TouchableOpacity, StyleSheet, ImageBackground, Image, View, Text, Alert} from "react-native";
 import Register from "../components/texts/Register";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 
 async function loadFonts() {
   await Font.loadAsync({
-    'Corporate': require('../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Corporate': require('../../../../assets/easeaer_fonts/Corporate_Font.ttf'), 
     'Emirates': require('../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
     'SFNS': require('../../../../assets/easeaer_fonts/SF_Font.ttf'),
   });
@@ -151,7 +151,7 @@ export default function LoginScreen() {
                       JSON.stringify(response.data.token)
                     );
                     // navigation.navigate('HomeScreen' as never, { screen: 'FeedScreen' } as never);
-                    navigation.navigate('Splash' as never);
+                    // navigation.navigate('Splash' as never);
                   }
                 })
                 .catch((error) => {
@@ -159,19 +159,19 @@ export default function LoginScreen() {
                   console.log("error.response: " + error.response);
                   switch (error.response.status) {
                     case 403:
-                      // Poner aquí el alert ...
+                      Alert.alert("EaseAer", "Incorrect Password");
                       console.log("Incorrect Password");
                       break;
                     case 404:
-                      // Poner aquí el alert ...
-                      console.log("User does not exist");
-                      navigation.navigate("Register" as never);
+                      Alert.alert("EaseAer", "User Not Registered");
+                      console.log("User Not Registered");
+                      navigation.navigate("ScreenRegisterInicial" as never);
                       break;
                   }
                 });
             }} />
           <Text style={styles.bottomText}>Aren't you a member?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Register" as never)}> 
+          <TouchableOpacity onPress={() => navigation.navigate("ScreenRegisterInicial" as never)}> 
             <Text style={styles.signUpText}>Register Here</Text> 
           </TouchableOpacity>
           <StatusBar/>

@@ -23,11 +23,12 @@ import { ShopEntity } from "../../../domain/shop/shop.entity";
 import { UserEntity } from "../../../domain/user/user.entity";
 import { AuthEntity, UserAuthEntity } from "../../../domain/user/user.entity";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { environment } from '../../../../env';
 
 // BACKEND API URL:
 // const API_URL = "https://api.lplan.es:443/";
 // const API_URL = "http://147.83.7.158:5432/";
-const API_URL = "https://9cfb-83-44-218-141.ngrok-free.app/";
+const API_URL = environment.API_URL;
 
 export class SessionService {
 
