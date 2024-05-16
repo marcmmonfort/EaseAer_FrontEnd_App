@@ -234,7 +234,7 @@ export default function ScreenRegisterInicial() {
           <Image source={require('../../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={styles.image} />
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.stepTitle}>Step 1</Text>
-            <Text style={styles.registerTitle}>Register </Text>
+            <Text style={styles.registerTitle}> Basic Data</Text>
           </View>
           <StyledTextInputs style={styles.input} placeholder="Username *" value={appUser} onChangeText={(value: React.SetStateAction<string>) => setAppUser(value) } /*keyboardType="numeric"*//>
           <StyledTextInputs style={styles.input} placeholder="Name *" value={nameUser} onChangeText={(value: React.SetStateAction<string>) => setNameUser(value) }/>

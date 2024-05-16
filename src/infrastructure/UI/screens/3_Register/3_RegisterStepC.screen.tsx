@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Image, View, Platform, Alert, ActivityIndicator, TouchableOpacity, ImageBackground, Text } from "react-native";
+import { Button, Image, View, Platform, Alert, ActivityIndicator, TouchableOpacity, ImageBackground, Text, ScrollView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
@@ -42,12 +42,6 @@ export default function ScreenRegisterC() {
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
-  useEffect(() => {
-    loadFonts().then(() => {
-      setFontsLoaded(true);
-    });
-  }, []);
-
   const titleFont = Platform.select({
     ios: 'Emirates',
     android: 'Emirates',
@@ -73,7 +67,7 @@ export default function ScreenRegisterC() {
     let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (!permissionResult.granted) {
-      Alert.alert("Permissions Denied", "Please allow camera access to proceed.");
+      Alert.alert("EaseAer", "Permission Denied");
       return;
     }
 
@@ -90,10 +84,13 @@ export default function ScreenRegisterC() {
       const base64Image = await convertImageToBase64(result.assets[0].uri);
       setPhotoUser(base64Image);
 
+      console.log("Set Photo User: " + base64Image);
+
       let data = {
         file: base64Image,
-        upload_preset: "publication",
+        upload_preset: "profilePictures",
       };
+
       fetch(CLOUDINARY_URL, {
         body: JSON.stringify(data),
         headers: {
@@ -103,13 +100,21 @@ export default function ScreenRegisterC() {
       })
         .then(async (r) => {
           let data = await r.json();
-          setPhotoUser(data.url);
-          handleUpload(data.url); // Pass the updated value directly
+          console.log("Data URL: " + data.url);
+          setPhotoUser(data.url); // Not Really Used.
+          console.log("User Photo: " + photoUser);
+          handleUpload(data.url);
         })
         .catch((err) => console.log(err))
         .finally(() => setLoading(false));
     }
   };
+
+  useEffect(() => {
+    loadFonts().then(() => {
+      setFontsLoaded(true);
+    });
+  }, []);
 
   const convertImageToBase64 = async (imageUri:any) => {
     const base64 = await FileSystem.readAsStringAsync(imageUri, {
@@ -127,6 +132,8 @@ export default function ScreenRegisterC() {
       base64: true,
     });
 
+    console.log("Result (Object): " + result);
+
     if (!result.canceled) {
       setAux(result.assets[0].uri);
       setLoading(true);
@@ -135,7 +142,7 @@ export default function ScreenRegisterC() {
 
       let data = {
         file: base64Image,
-        upload_preset: "publication",
+        upload_preset: "profilePictures",
       };
       fetch(CLOUDINARY_URL, {
         body: JSON.stringify(data),
@@ -146,28 +153,21 @@ export default function ScreenRegisterC() {
       })
         .then(async (r) => {
           let data = await r.json();
-
-          setPhotoUser(data.url);
-          console.log("PH:  " + photoUser)
-          console.log('Hey')
-          console.log('How')
-          //setPhotoUser(data.url);
-          handleUpload(data.url); // Pass the updated value directly
+          console.log("Data URL: " + data.url);
+          setPhotoUser(data.url); // Not Really Used.
+          console.log("User Photo: " + photoUser);
+          handleUpload(data.url);
         })
-        .catch((err) => console.log(err))
+        .catch((err) => console.log("Error: " + err))
         .finally(() => setLoading(false));
     }
   };
+
   const handleUpload = (url:any) => {
     if (!url) {
-      Alert.alert("Warning", "Complete all the field to continue!");
+      Alert.alert("EaseAer", "Error: Try Again");
     } else {
-      console.log(appUser);
-      console.log(nameUser);
-      console.log(surnameUser);
-      console.log(mailUser);
-      console.log(passwordUser);
-      console.log(url);
+      console.log("Username: " + appUser + " | Name: " + nameUser + " | Surname(s): " + surnameUser + " | E-Mail: " + mailUser + " | Password: " + passwordUser + " | Photo URL: " + url);
       navigation.navigate(
         "ScreenRegisterD" as never, { appUser, nameUser, surnameUser, mailUser, passwordUser, photoUser:url } as never);
     }
@@ -196,22 +196,6 @@ export default function ScreenRegisterC() {
       marginTop: 0,
       marginBottom:0,
     },
-    buttonA: {
-      width: 80,
-      height: 80,
-      borderRadius: 40,
-      justifyContent: "center",
-      alignItems: "center",
-      marginRight: 20,
-    },
-    buttonB: {
-      width: 80,
-      height: 80,
-      borderRadius: 40,
-      justifyContent: "center",
-      alignItems: "center",
-      marginLeft: 20,
-    },
     gradient: {
       width: "100%",
       height: "100%",
@@ -227,29 +211,28 @@ export default function ScreenRegisterC() {
       backgroundColor: 'transparent',
     },
     nextBackButton: {
-      margin: 0,
+      margin: 6,
       padding: 6,
-      backgroundColor: "#66fcf1",
+      backgroundColor: "#875a31",
       borderRadius: 20,
       width: 36,
       height: 36,
       justifyContent: 'center',
       alignSelf: "center",
-      marginBottom: 0,
       textAlign: 'center',
       fontFamily: bodyFont,
       fontSize: 16,
-      color: '#000',
-      marginTop: 10,
+      marginTop: 0,
+      marginBottom: 0,
       alignItems: 'center',
     },
     newPost: {
       margin: 6,
       padding: 6,
-      backgroundColor: "#66fcf1",
+      backgroundColor: "#b3b0a1",
       borderRadius: 40,
-      width: 62,
-      height: 62,
+      width: 56,
+      height: 56,
       justifyContent: 'center',
       alignSelf: "center",
       marginBottom: 0,
@@ -266,17 +249,19 @@ export default function ScreenRegisterC() {
     },
     registerTitle: {
       textAlign: 'center',
-      fontFamily: titleFont,
-      paddingTop: 4,
-      fontSize: 34,
-      color: '#ffffff',
-      height: 40,
+      fontFamily: bodyFont,
+      fontSize: 20,
+      color: '#321e29',
+      marginTop: 0,
+      marginBottom: 0,
     },
     stepTitle: {
       textAlign: 'center',
       fontFamily: bodyFont,
-      fontSize: 18,
-      color: '#ffffff',
+      fontSize: 20,
+      color: '#b3b0a1',
+      marginTop: 0,
+      marginBottom: 0,
     },
     stepSubtitle: {
       textAlign: 'center',
@@ -286,33 +271,51 @@ export default function ScreenRegisterC() {
       marginTop: 10,
       marginBottom: 14,
     },
+    scrollViewContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      paddingHorizontal: 20,
+    },
+    image: {
+      height: 36,
+      resizeMode: 'contain',
+      marginBottom: 16,
+    },
+    loadingStyle: {
+      marginTop: 8,
+      marginBottom: 8,
+    },
   });
   
 
   return (
-    <ImageBackground source={require('../../../../../assets/visualcontent/background_6.png')} style={styles.backgroundImage}>
-      <MainContainer style={styles.mainContainer}>
-        <Text style={styles.registerTitle}>{t("Register")}</Text>
-        <Text style={styles.stepTitle}>{t("Step")} 3</Text>
-        <Text style={styles.stepSubtitle}>{t("Upload a Picture P")}</Text>
-        {loading ? (
-          <ActivityIndicator size="large" color="blue" />
-          ) : (
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.newPost} onPress={handleCameraPress}>
-              <Ionicons name="camera" size={32} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.newPost} onPress={handleGalleryPress}>
-              <Ionicons name="image" size={32} color="black" />
+    <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <MainContainer style={styles.mainContainer}>
+          <Image source={require('../../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={styles.image} />
+          <View style={{ flexDirection: 'row' }}>
+              <Text style={styles.stepTitle}>Step 2</Text>
+              <Text style={styles.registerTitle}> Profile Picture</Text>
+          </View>
+          {loading ? (
+            <ActivityIndicator style={styles.loadingStyle} size={24} color="d0871e" />
+            ) : (
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.newPost} onPress={handleCameraPress}>
+                <Ionicons name="camera" size={28} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.newPost} onPress={handleGalleryPress}>
+                <Ionicons name="image" size={28} color="white" />
+              </TouchableOpacity>
+            </View>
+          )}
+          <View style={styles.buttonContainerB}>
+            <TouchableOpacity style={styles.nextBackButton} onPress={handleGoBack}>
+              <MaterialCommunityIcons color="white" name="arrow-left" size={24} />
             </TouchableOpacity>
           </View>
-        )}
-        <View style={styles.buttonContainerB}>
-          <TouchableOpacity style={styles.nextBackButton} onPress={handleGoBack}>
-            <MaterialCommunityIcons color="#000000" name="arrow-left" size={24} />
-          </TouchableOpacity>
-        </View>
-      </MainContainer>
+        </MainContainer>   
+      </ScrollView>
     </ImageBackground>
   );
 }
