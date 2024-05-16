@@ -6,7 +6,6 @@ import LoginScreen from "./src/infrastructure/UI/screens/2_LogIn.screen";
 import HomeScreen from "./src/infrastructure/UI/screens/4_Home.screen";
 
 import ScreenRegisterInicial from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepA.screen";
-import ScreenRegisterB from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepB.screen";
 import ScreenRegisterC from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepC.screen";
 import ScreenRegisterD from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepD.screen";
 import ScreenRegisterE from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepE.screen";
@@ -39,7 +38,6 @@ export default function App() {
         <Stack.Screen name="LoginScreen" options={{ headerShown: false }} component={LoginScreen}/>
         <Stack.Screen name="GoogleLogin" options={{ headerShown: false }} component={GoogleLogin}/>
         <Stack.Screen name="ScreenRegisterInicial" options={{ headerShown: false }} component={ScreenRegisterInicial}/>
-        <Stack.Screen name="ScreenRegisterB" options={{ headerShown: false }} component={ScreenRegisterB}/>
         <Stack.Screen name="ScreenRegisterC" options={{ headerShown: false }} component={ScreenRegisterC}/>
         <Stack.Screen name="ScreenRegisterD" options={{ headerShown: false }} component={ScreenRegisterD}/>
         <Stack.Screen name="ScreenRegisterE" options={{ headerShown: false }} component={ScreenRegisterE}/>

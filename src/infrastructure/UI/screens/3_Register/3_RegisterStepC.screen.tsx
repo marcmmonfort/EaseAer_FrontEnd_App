@@ -103,13 +103,7 @@ export default function ScreenRegisterC() {
       })
         .then(async (r) => {
           let data = await r.json();
-
           setPhotoUser(data.url);
-          console.log(photoUser)
-
-          console.log('Hey')
-          console.log('How')
-          //setPhotoUser(data.url);
           handleUpload(data.url); // Pass the updated value directly
         })
         .catch((err) => console.log(err))
