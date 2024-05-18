@@ -74,7 +74,7 @@ export default function ScreenRegisterFinal({
   const handleRegister = async () => {
     try {
       const user: UserAuthEntity = {
-        uuid: "Loading" ?? "",
+        uuid: " " ?? "",
         appUser: appUser ?? "",
         nameUser: nameUser ?? "",
         surnameUser: surnameUser ?? "",
@@ -96,9 +96,11 @@ export default function ScreenRegisterFinal({
             : "pax",
         privacyUser: privacyUser === "private" ? true : false,
         recordGameUser: 0,
-        flightsUser: [""],
+        flightsUser: ["661ec1faec20908a9de42415"], // No me deja pasar el vector vacío. No pasa nada porque el BackEnd al hacer el registro pone el vector a 0.
         deletedUser: false,
       };
+
+      console.log("Usuario: " +  JSON.stringify(user));
 
       SessionService.registerUser(user).then((response)=>{
         console.log(response);
@@ -150,55 +152,57 @@ export default function ScreenRegisterFinal({
     },
     registerTitle: {
       textAlign: 'center',
-      fontFamily: titleFont,
-      paddingTop: 4,
-      fontSize: 34,
-      color: '#ffffff',
-      height: 40,
+      fontFamily: bodyFont,
+      fontSize: 20,
+      color: '#321e29',
+      marginTop: 0,
+      marginBottom: 0,
     },
     stepTitle: {
       textAlign: 'center',
       fontFamily: bodyFont,
-      fontSize: 18,
-      color: '#ffffff',
+      fontSize: 20,
+      color: '#b3b0a1',
+      marginTop: 0,
+      marginBottom: 0,
     },
     subtitleText: {
       fontFamily: bodyFont,
-      fontSize: 14,
-      color: 'yellow',
+      fontSize: 18,
+      color: '#b3b0a1',
     },
     contentText: {
-      fontFamily: bodyFont,
-      fontSize: 18,
-      color: '#66fcf1',
-      marginBottom:6,
+      fontFamily: subtitleFont,
+      fontSize: 20,
+      color: '#321e29',
+      marginTop: 2,
+      marginBottom: 8,
     },
     finalHeader: {
       marginBottom: 20,
     },
     button: {
-      marginTop: 16,
+      marginTop: 14,
       height: 38,
       width: 120,
-      borderRadius: 50,
+      borderRadius: 12,
       padding: 10,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#66fcf1',
+      backgroundColor: '#875a31',
     },
     registerText: {
-      color: 'black',
-      fontFamily: bodyFont,
-      fontSize: 16,
-      marginBottom: 0,
-      justifyContent: 'center',
+      fontFamily: subtitleFont,
+      fontWeight: 'bold',
+      fontSize: 20,
+      color: 'white',
     },
     profileImage: {
-      width: 150,
-      height: 150,
-      borderRadius: 75,
-      marginTop: 0,
-      marginBottom: 20,
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      marginTop: 16,
+      marginBottom: 16,
     },
     scrollViewContent: {
       flexGrow: 1,
