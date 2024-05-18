@@ -44,7 +44,7 @@ export default function ScreenRegisterD() {
 
   const [birthdateUser, setbirthdateUser] = useState("");
   const [genderUser, setgenderUser] = useState("");
-  const [privacyUser, setPrivacyUser] = useState("");
+  const [privacyUser, setPrivacyUser] = useState(false);
   const [descriptionUser, setDescriptionUser] = useState("");
 
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -99,17 +99,17 @@ export default function ScreenRegisterD() {
 
   const navigation = useNavigation();
 
-  const handleGoToScreenRegisterE = () => {
+  const handleGoToScreenRegisterF = () => {
     if (!birthdateUser || !descriptionUser || !genderUser) {
       Alert.alert("EaseAer", "Incomplete Fields");
     } else {
       const selectedGender = genderUser || "male";
       const selectedPrivacy = privacyUser || true;
       if (isDateValid(selectedDate)) {
-        console.log("Username: " + appUser + " | Name: " + nameUser + " | Surname(s): " + surnameUser + " | E-Mail: " + mailUser + " | Password: " + passwordUser + " | Photo URL: " + photoUser + " | BirthDate: " + selectedDate + " | Gender: " + selectedGender + " | Description: " + descriptionUser + " | Role: " + "pax" + " | Privacy: " + selectedPrivacy);
-        navigation.navigate("ScreenRegisterE" as never, { appUser, nameUser, surnameUser, mailUser, passwordUser, photoUser, birthdateUser: selectedDate, genderUser: selectedGender, descriptionUser, roleUser: "pax", privacyUser: selectedPrivacy} as never);
+        console.log("Username: " + appUser + " | Name: " + nameUser + " | Surname(s): " + surnameUser + " | E-Mail: " + mailUser + " | Password: " + passwordUser + " | Photo URL: " + photoUser + " | BirthDate: " + selectedDate.toISOString() + " | Gender: " + selectedGender + " | Description: " + descriptionUser + " | Role: " + "pax" + " | Privacy: " + selectedPrivacy);
+        navigation.navigate("ScreenRegisterFinal" as never, { appUser, nameUser, surnameUser, mailUser, passwordUser, photoUser, birthdateUser: selectedDate.toISOString(), genderUser: selectedGender, descriptionUser, roleUser: "pax", privacyUser: selectedPrivacy} as never);
       } else {
-        Alert.alert("Invalid Date", "App +16");
+        Alert.alert("EaseAer", "Invalid Age: App +16");
       }
     }
   };
@@ -289,7 +289,7 @@ export default function ScreenRegisterD() {
               <Picker.Item label="Female" value="female"/>
               <Picker.Item label="Other" value="other"/>
             </Picker>
-            <Picker selectedValue={privacyUser ? "true" : "false"} style={styles.pickerPrivacy} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setPrivacyUser(itemValue)}>
+            <Picker selectedValue={privacyUser} style={styles.pickerPrivacy} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setPrivacyUser(itemValue)}>
               <Picker.Item label="Public" value="false"/>
               <Picker.Item label="Private" value="true"/>
             </Picker>
@@ -299,7 +299,7 @@ export default function ScreenRegisterD() {
             <TouchableOpacity style={styles.nextBackButton} onPress={handleGoBack}>
               <MaterialCommunityIcons color="white" name="arrow-left" size={24} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.nextBackButton} onPress={handleGoToScreenRegisterE}>
+            <TouchableOpacity style={styles.nextBackButton} onPress={handleGoToScreenRegisterF}>
               <MaterialCommunityIcons color="white" name="arrow-right" size={24} />
             </TouchableOpacity>
           </View>

@@ -8,7 +8,6 @@ import HomeScreen from "./src/infrastructure/UI/screens/4_Home.screen";
 import ScreenRegisterInicial from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepA.screen";
 import ScreenRegisterC from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepC.screen";
 import ScreenRegisterD from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepD.screen";
-import ScreenRegisterE from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepE.screen";
 import ScreenRegisterFinal from "./src/infrastructure/UI/screens/3_Register/3_RegisterStepF.screen";
 
 import ProfileScreen from "./src/infrastructure/UI/screens/5_UserProfile.screen";
@@ -40,7 +39,6 @@ export default function App() {
         <Stack.Screen name="ScreenRegisterInicial" options={{ headerShown: false }} component={ScreenRegisterInicial}/>
         <Stack.Screen name="ScreenRegisterC" options={{ headerShown: false }} component={ScreenRegisterC}/>
         <Stack.Screen name="ScreenRegisterD" options={{ headerShown: false }} component={ScreenRegisterD}/>
-        <Stack.Screen name="ScreenRegisterE" options={{ headerShown: false }} component={ScreenRegisterE}/>
         <Stack.Screen name="ScreenRegisterFinal" options={{ headerShown: false }} component={ScreenRegisterFinal}/>
         <Stack.Screen name="HomeScreen" options={{ title: "LPlan", headerShown: false }} component={HomeScreen}/>
         <Stack.Screen name="Profile" component={ProfileScreen} />

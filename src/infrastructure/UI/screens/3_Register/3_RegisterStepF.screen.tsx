@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Button, TouchableOpacity, Platform, StyleSheet, ImageBackground, Image } from "react-native";
+import { View, Text, Button, TouchableOpacity, Platform, StyleSheet, ImageBackground, Image, Alert, ScrollView } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { SessionService } from "../../../services/user/session.service";
 import { UserAuthEntity } from "../../../../domain/user/user.entity";
@@ -24,7 +24,6 @@ interface RouteParams {
   photoUser?: string;
   birthdateUser?: string;
   genderUser?: string;
-  ocupationUser?: string;
   descriptionUser?: string;
   roleUser?: string;
   privacyUser?: string;
@@ -46,7 +45,6 @@ export default function ScreenRegisterFinal({
     photoUser,
     birthdateUser,
     genderUser,
-    ocupationUser,
     descriptionUser,
     roleUser,
     privacyUser,
@@ -74,10 +72,9 @@ export default function ScreenRegisterFinal({
   });
 
   const handleRegister = async () => {
-    /*
     try {
       const user: UserAuthEntity = {
-        uuid: "a" ?? "",
+        uuid: "Loading" ?? "",
         appUser: appUser ?? "",
         nameUser: nameUser ?? "",
         surnameUser: surnameUser ?? "",
@@ -89,34 +86,35 @@ export default function ScreenRegisterFinal({
           genderUser === "male" || genderUser === "female"
             ? genderUser
             : "male",
-        ocupationUser: ocupationUser ?? "",
         descriptionUser: descriptionUser ?? "",
         roleUser:
-          roleUser === "admin" ||
           roleUser === "pax" ||
           roleUser === "company" ||
+          roleUser === "admin" ||
           roleUser === "tech"
             ? roleUser
             : "pax",
         privacyUser: privacyUser === "private" ? true : false,
+        recordGameUser: 0,
+        flightsUser: [""],
         deletedUser: false,
       };
 
-      SessionService.register(user).then((response)=>{
+      SessionService.registerUser(user).then((response)=>{
         console.log(response);
         if(response.status===200){
           console.log(JSON.stringify(response.data));
+          Alert.alert("EaseAer", "You're In!");
         };
       }).catch((error)=>{
-        console.log("error: "+error);
+        console.log("Error: " + error);
+        Alert.alert("EaseAer", "Error");
       })
-      //console.log("Registration successful:", response.data);
-
       navigation.navigate("LoginScreen");
     } catch (error) {
-      console.error("Error during registration:", error);
+      console.error("Error During Registration: ", error);
+      Alert.alert("EaseAer", "Error");
     }
-    */
   };
 
   const styles = StyleSheet.create({
@@ -202,36 +200,87 @@ export default function ScreenRegisterFinal({
       marginTop: 0,
       marginBottom: 20,
     },
+    scrollViewContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      paddingHorizontal: 20,
+    },
+    image: {
+      height: 36,
+      resizeMode: 'contain',
+      marginBottom: 16,
+    },
   });
 
   const imageUrl = photoUser;
 
+  const formatDate = (dateString: string | undefined) => {
+    if (dateString != undefined){
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = String(date.getFullYear()).slice(2); // Obtener los últimos dos dígitos del año
+      return `${day}/${month}/${year}`;
+    } else {
+      return `Not Available`;
+    }
+  };
+
+  const formatRole = (roleString: string | undefined) => {
+    if (roleString == "pax"){
+      return `Passenger`;
+    } else if (roleString == "company") {
+      return `Company`;
+    } else if (roleString == "admin") {
+      return `Admin Team`;
+    } else if (roleString == "tech") {
+      return `Tech Team`;
+    } else {
+      return `Not Available`;
+    }
+  };
+
+  const formatGender = (roleString: string | undefined) => {
+    if (roleString == "male"){
+      return `Male`;
+    } else if (roleString == "female") {
+      return `Female`;
+    } else if (roleString == "other") {
+      return `Other`;
+    } else {
+      return `Not Available`;
+    }
+  };
+
   return (
-    <ImageBackground source={require('../../../../../assets/visualcontent/background_6.png')} style={styles.backgroundImage}>
-      <MainContainer style={styles.mainContainer}>
-        <View style={styles.finalHeader}>
-          <Text style={styles.registerTitle}>{t("Register")}</Text>
-          <Text style={styles.stepTitle}>{t("Final")} {t("Step")}</Text>
-        </View>
-        <Image source={{ uri: imageUrl }} style={styles.profileImage} />
-        <Text style={styles.subtitleText}>{t("Username")}</Text>
-        <Text style={styles.contentText}>{appUser}</Text>
-        <Text style={styles.subtitleText}>{t("Name")} {t("And")} {t("Surname")}</Text>
-        <Text style={styles.contentText}>{nameUser} {surnameUser}</Text>
-        <Text style={styles.subtitleText}>{t("Email")}</Text>
-        <Text style={styles.contentText}>{mailUser}</Text>
-        <Text style={styles.subtitleText}>{t("Gender")}</Text>
-        <Text style={styles.contentText}>{genderUser}</Text>
-        <Text style={styles.subtitleText}>{t("Occupation")}</Text>
-        <Text style={styles.contentText}>{ocupationUser}</Text>
-        <Text style={styles.subtitleText}>{t("Description")}</Text>
-        <Text style={styles.contentText}>{descriptionUser}</Text>
-        <Text style={styles.subtitleText}>{t("Account Type / Role")}</Text>
-        <Text style={styles.contentText}>{roleUser}</Text>
-        <TouchableOpacity style={styles.button} onPress={handleRegister}> 
-            <Text style={styles.registerText}>{t("Finish")} {t("Register")}</Text> 
+    <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <MainContainer style={styles.mainContainer}>
+        <Image source={require('../../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={styles.image} />
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.stepTitle}>Final Step</Text>
+            <Text style={styles.registerTitle}> Summary</Text>
+          </View>
+          <Image source={{ uri: imageUrl }} style={styles.profileImage} />
+          <Text style={styles.subtitleText}>Username</Text>
+          <Text style={styles.contentText}>@{appUser}</Text>
+          <Text style={styles.subtitleText}>Surname(s), Name</Text>
+          <Text style={styles.contentText}>{surnameUser}, {nameUser}</Text>
+          <Text style={styles.subtitleText}>E-Mail</Text>
+          <Text style={styles.contentText}>{mailUser}</Text>
+          <Text style={styles.subtitleText}>Birthdate</Text>
+          <Text style={styles.contentText}>{formatDate(birthdateUser)}</Text>
+          <Text style={styles.subtitleText}>Gender</Text>
+          <Text style={styles.contentText}>{formatGender(genderUser)}</Text>
+          <Text style={styles.subtitleText}>Description</Text>
+          <Text style={styles.contentText}>{descriptionUser}</Text>
+          <Text style={styles.subtitleText}>Account Type</Text>
+          <Text style={styles.contentText}>{formatRole(roleUser)}</Text>
+          <TouchableOpacity style={styles.button} onPress={handleRegister}> 
+            <Text style={styles.registerText}>Confirm</Text> 
           </TouchableOpacity>
-      </MainContainer>
+        </MainContainer>
+      </ScrollView>
     </ImageBackground>
   );
 }
