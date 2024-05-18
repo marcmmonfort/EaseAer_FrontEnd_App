@@ -200,12 +200,14 @@ export default function ScreenRegisterE() {
             <Picker.Item label="Common" value="common" />
             <Picker.Item label="Business" value="Business" />
           </Picker>
+          
           <Picker selectedValue={privacyUser ? "Private" : "Public"} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => {
               if (itemValue==="Private"){ setPrivacyUser(true); }
               else { setPrivacyUser(false)} }}>
             <Picker.Item label="Private" value="Private" />
             <Picker.Item label="Public" value="Public" />
           </Picker>
+          
           <StyledTextInputs style={styles.textInput} placeholder="Description" value={descriptionUser} onChangeText={setDescriptionUser}/>
         </View>
         <View style={styles.buttonContainer}>

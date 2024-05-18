@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Alert, View, Text, Button, Platform, ImageBackground, TouchableOpacity } from "react-native";
+import { Alert, View, Text, Button, Platform, ImageBackground, TouchableOpacity, ScrollView, Image } from "react-native";
 import MainContainer from "../../components/containers/Main";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { StyleSheet } from "react-native";
@@ -31,8 +31,8 @@ interface RouteParams {
 }
 
 export default function ScreenRegisterD() {
-  
   const route = useRoute();
+
   const {
     appUser,
     nameUser,
@@ -41,9 +41,11 @@ export default function ScreenRegisterD() {
     passwordUser,
     photoUser,
   }: RouteParams = route.params || {};
+
   const [birthdateUser, setbirthdateUser] = useState("");
   const [genderUser, setgenderUser] = useState("");
-  const [ocupationUser, setocupationUser] = useState("");
+  const [privacyUser, setPrivacyUser] = useState("");
+  const [descriptionUser, setDescriptionUser] = useState("");
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -98,22 +100,14 @@ export default function ScreenRegisterD() {
   const navigation = useNavigation();
 
   const handleGoToScreenRegisterE = () => {
-    if (!birthdateUser) {
-      Alert.alert("Warning", "You must select a Birthdate!");
+    if (!birthdateUser || !descriptionUser || !genderUser) {
+      Alert.alert("EaseAer", "Incomplete Fields");
     } else {
-      const selectedGender = genderUser || "male"; // Si no se selecciona ningún valor, se asigna "male" por defecto
+      const selectedGender = genderUser || "male";
+      const selectedPrivacy = privacyUser || true;
       if (isDateValid(selectedDate)) {
-        console.log(appUser);
-        console.log(nameUser);
-        console.log(surnameUser);
-        console.log(mailUser);
-        console.log(passwordUser);
-        console.log(photoUser);
-        console.log(birthdateUser);
-        console.log(selectedGender);
-        console.log(ocupationUser);
-        
-        navigation.navigate("ScreenRegisterE" as never, { appUser, nameUser, surnameUser, mailUser, passwordUser, photoUser, birthdateUser, genderUser: selectedGender, ocupationUser} as never);
+        console.log("Username: " + appUser + " | Name: " + nameUser + " | Surname(s): " + surnameUser + " | E-Mail: " + mailUser + " | Password: " + passwordUser + " | Photo URL: " + photoUser + " | BirthDate: " + selectedDate + " | Gender: " + selectedGender + " | Description: " + descriptionUser + " | Role: " + "pax" + " | Privacy: " + selectedPrivacy);
+        navigation.navigate("ScreenRegisterE" as never, { appUser, nameUser, surnameUser, mailUser, passwordUser, photoUser, birthdateUser: selectedDate, genderUser: selectedGender, descriptionUser, roleUser: "pax", privacyUser: selectedPrivacy} as never);
       } else {
         Alert.alert("Invalid Date", "App +16");
       }
@@ -143,26 +137,33 @@ export default function ScreenRegisterD() {
       alignContent:"center",
     },
     picker: {
+      borderWidth: 0,
+      borderRadius: 12,
       color: "black",
-      fontWeight:'bold',
-      backgroundColor: "#66fcf1",
-      borderWidth: 1,
-      borderRadius: 14,
-      marginTop: 20,
+      backgroundColor: 'transparent',
+      marginTop: 10,
       marginBottom: 0,
-      width: 160,
-      height: 62,
+      width: 180,
+    },
+    pickerPrivacy: {
+      borderWidth: 0,
+      borderRadius: 12,
+      color: "black",
+      backgroundColor: 'transparent',
+      marginTop: 0,
+      marginBottom: 0,
+      width: 180,
     },
     pickerItem:{
       fontSize: 16,
       color: "black",
-      fontFamily: bodyFont,
+      fontFamily: subtitleFont,
       height: 60,
     },
     buttonContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
-      marginTop: 20,
+      marginTop: 16,
     },
     buttonContainerB: {
       flexDirection: "row",
@@ -170,14 +171,14 @@ export default function ScreenRegisterD() {
       marginTop: 20,
     },
     requiredText: {
-      color: 'yellow',
-      marginTop: 20,
+      color: '#d8131b',
+      marginTop: 4,
       fontFamily: bodyFont,
     },
     birthdate_text: {
       color: 'white',
       marginTop: 20,
-      marginBottom: -16,
+      marginBottom: 0,
       fontFamily: bodyFont,
     },
     textInput: {
@@ -205,18 +206,17 @@ export default function ScreenRegisterD() {
     nextBackButton: {
       margin: 6,
       padding: 6,
-      backgroundColor: "#66fcf1",
+      backgroundColor: "#875a31",
       borderRadius: 20,
       width: 36,
       height: 36,
       justifyContent: 'center',
       alignSelf: "center",
-      marginBottom: 96,
       textAlign: 'center',
       fontFamily: bodyFont,
       fontSize: 16,
-      color: '#000',
       marginTop: 0,
+      marginBottom: 0,
       alignItems: 'center',
     },
     input: {
@@ -225,60 +225,86 @@ export default function ScreenRegisterD() {
     },
     registerTitle: {
       textAlign: 'center',
-      fontFamily: titleFont,
-      paddingTop: 4,
-      fontSize: 34,
-      color: '#ffffff',
-      height: 40,
+      fontFamily: bodyFont,
+      fontSize: 20,
+      color: '#321e29',
+      marginTop: 0,
+      marginBottom: 0,
     },
     stepTitle: {
       textAlign: 'center',
       fontFamily: bodyFont,
-      fontSize: 18,
-      color: '#ffffff',
+      fontSize: 20,
+      color: '#b3b0a1',
+      marginTop: 0,
+      marginBottom: 0,
     },
     formContainer: {
       alignItems: 'center',
     },
+    dateTimePickerContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 20,
+      marginBottom: 0,
+    },
     dateTimePicker: {
       backgroundColor: 'transparent',
-      width: 68,
-      alignItems: 'center',
-      display: 'flex',
+    },
+    scrollViewContent: {
+      flexGrow: 1,
       justifyContent: 'center',
-      marginTop:4,
+      paddingHorizontal: 20,
+    },
+    image: {
+      height: 36,
+      resizeMode: 'contain',
+      marginBottom: 16,
     },
   });
 
   return (
-    <ImageBackground source={require('../../../../../assets/visualcontent/background_6.png')} style={styles.backgroundImage}>
-      <MainContainer style={styles.mainContainer}>
-        <Text style={styles.registerTitle}>{t("Register")}</Text>
-        <Text style={styles.stepTitle}>{t("Step")} 4</Text>
-        <View style={styles.formContainer}>
-          <Text style={styles.birthdate_text}>{t("Birthdate")}</Text>
-          <View style={styles.buttonContainerB}>
-            <ButtonGradientBirthdate onPress={handleShowDatePicker} />
+    <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <MainContainer style={styles.mainContainer}>
+          <Image source={require('../../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={styles.image} />
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.stepTitle}>Step 3</Text>
+            <Text style={styles.registerTitle}> Personal Details</Text>
           </View>
-          {showDatePicker && (
-            <DateTimePicker value={selectedDate} mode="date" display="default" style={styles.dateTimePicker} onChange={handleDateChange}/>
-          )}
-          <StyledTextInputs style={styles.textInput} placeholder="Ocupation" value={ocupationUser} onChangeText={(value: React.SetStateAction<string>) => setocupationUser(value) }/>
-          <Picker selectedValue={genderUser} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setgenderUser(itemValue)}>
-            <Picker.Item label="Male" value="male" />
-            <Picker.Item label="Female" value="female" />
-          </Picker>
-        </View>
-        <Text style={styles.requiredText}>* {t("Mandatory fields")}</Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.nextBackButton} onPress={handleGoBack}>
-            <MaterialCommunityIcons color="#000000" name="arrow-left" size={24} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.nextBackButton} onPress={handleGoToScreenRegisterE}>
-            <MaterialCommunityIcons color="#000000" name="arrow-right" size={24} />
-          </TouchableOpacity>
-        </View>
-      </MainContainer>
+          <View style={styles.formContainer}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={styles.buttonContainerB}>
+                <ButtonGradientBirthdate onPress={handleShowDatePicker} />
+              </View>
+              {showDatePicker && (
+                <View style={styles.dateTimePickerContainer}>
+                  <DateTimePicker value={selectedDate} mode="date" display="default" style={styles.dateTimePicker} onChange={handleDateChange}/>
+                </View>
+              )}
+            </View>
+            <StyledTextInputs style={styles.textInput} placeholder="Description *" value={descriptionUser} onChangeText={(value: React.SetStateAction<string>) => setDescriptionUser(value) }/>
+            <Picker selectedValue={genderUser} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setgenderUser(itemValue)}>
+              <Picker.Item label="Male" value="male"/>
+              <Picker.Item label="Female" value="female"/>
+              <Picker.Item label="Other" value="other"/>
+            </Picker>
+            <Picker selectedValue={privacyUser ? "true" : "false"} style={styles.pickerPrivacy} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setPrivacyUser(itemValue)}>
+              <Picker.Item label="Public" value="false"/>
+              <Picker.Item label="Private" value="true"/>
+            </Picker>
+          </View>
+          <Text style={styles.requiredText}>* Compulsory</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.nextBackButton} onPress={handleGoBack}>
+              <MaterialCommunityIcons color="white" name="arrow-left" size={24} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.nextBackButton} onPress={handleGoToScreenRegisterE}>
+              <MaterialCommunityIcons color="white" name="arrow-right" size={24} />
+            </TouchableOpacity>
+          </View>
+        </MainContainer>
+      </ScrollView>
     </ImageBackground>
   );
 }
