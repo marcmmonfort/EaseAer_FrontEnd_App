@@ -42,7 +42,7 @@ export default function App() {
         <Stack.Screen name="ScreenRegisterC" options={{ headerShown: false }} component={ScreenRegisterC}/>
         <Stack.Screen name="ScreenRegisterD" options={{ headerShown: false }} component={ScreenRegisterD}/>
 
-        <Stack.Screen name="HomeScreen" options={{ title: "LPlan", headerShown: false }} component={HomeScreen}/>
+        <Stack.Screen name="HomeScreen" options={{ title: "EaseAer", headerShown: false }} component={HomeScreen}/>
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Edit" component={EditUserScreen} />
         <Stack.Screen name="UserScreen" component={UserScreen}/>

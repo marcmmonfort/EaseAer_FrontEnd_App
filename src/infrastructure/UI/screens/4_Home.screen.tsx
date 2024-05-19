@@ -7,6 +7,7 @@ import { ImageBackground, StyleSheet, Image, TouchableOpacity, View, Text, Platf
 import MapScreen from './10_AirportMap.screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
+import { useNavigation } from "@react-navigation/native";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -58,39 +59,111 @@ export default function HomeScreen() {
     loadNameUser();
   }, []);
 
+  const navigation = useNavigation();
+
+  const logout = async () => {
+    await AsyncStorage.removeItem('token');
+    navigation.navigate('LoginScreen');
+  };
+
+  const goToProfile = async () => {
+    navigation.navigate('Profile');
+  };
+  
   return (
     
     <Tab.Navigator screenOptions={{ tabBarStyle: { backgroundColor: 'white', borderTopWidth: 0 }, tabBarShowLabel: false,  }}>
       
-      <Tab.Screen name="Feed" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
-          <MaterialCommunityIcons name="image" size={30} color='#321e29' />
-          ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
-        }} />
-      <Tab.Screen name="Discovery" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
-          <MaterialCommunityIcons name="magnify" size={25} color='#321e29' />
-          ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
-        }} />
-      <Tab.Screen name="Calendar" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
-        <Fontisto name="calendar" size={18} color='#321e29' />
+      <Tab.Screen name="Back" component={ProfileScreen} options={{ tabBarIcon: ({ color, size }) => (
+        <TouchableOpacity onPress={() => { logout() }}>
+          <MaterialCommunityIcons name="arrow-left" size={30} color='#321e29' />
+        </TouchableOpacity>
         ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
       }} />
-      <Tab.Screen name="Locations" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
-        <Fontisto name="map" size={18} color='#321e29' />
+
+      <Tab.Screen name="Map" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
+        <MaterialCommunityIcons name="map-marker" size={25} color='#321e29' />
         ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
+        headerTitle: () => ( <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={{ width: 132, marginBottom: 10 }} resizeMode="contain"/>
+        ),
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => { }}>
+            <View style={{ width: 36, height: 36, backgroundColor: '#875a31', borderRadius: 10, marginBottom: 10, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: 'white', fontSize: 24, fontFamily: titleFont,  }}>{initialUser}</Text>
+            </View>
+          </TouchableOpacity>
+        ),
+        headerRight: () => (
+          <TouchableOpacity onPress={() => { }}>
+            <View style={{ width: 36, height: 36, backgroundColor: '#321e29', borderRadius: 10, marginBottom: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
+              <MaterialCommunityIcons name="headset" size={20} color='white' />
+            </View>
+          </TouchableOpacity>
+        ),
       }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: ({ color, size }) => (
-          <Fontisto name="home" size={18} color='#321e29' />
-          ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, 
-          headerTitle: () => ( <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={{ width: 132, marginBottom: 10 }} resizeMode="contain"/>
-          ), headerTitleStyle: { color: '#321e29', fontSize: 30 },
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => { }}>
-              <View style={{ width: 36, height: 36, backgroundColor: '#875a31', borderRadius: 10, marginBottom: 10, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ color: 'white', fontSize: 26, fontFamily: titleFont,  }}>{initialUser}</Text>
-              </View>
-            </TouchableOpacity>
-          ),
-        }} />
+
+      <Tab.Screen name="Flights" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
+        <MaterialCommunityIcons name="airplane" size={25} color='#321e29' />
+        ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
+        headerTitle: () => ( <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={{ width: 132, marginBottom: 10 }} resizeMode="contain"/>
+        ),
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => { }}>
+            <View style={{ width: 36, height: 36, backgroundColor: '#875a31', borderRadius: 10, marginBottom: 10, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: 'white', fontSize: 24, fontFamily: titleFont,  }}>{initialUser}</Text>
+            </View>
+          </TouchableOpacity>
+        ),
+        headerRight: () => (
+          <TouchableOpacity onPress={() => { }}>
+            <View style={{ width: 36, height: 36, backgroundColor: '#321e29', borderRadius: 10, marginBottom: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
+              <MaterialCommunityIcons name="headset" size={20} color='white' />
+            </View>
+          </TouchableOpacity>
+        ),
+      }} />
+      
+      <Tab.Screen name="Shopping" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
+        <MaterialCommunityIcons name="shopping" size={25} color='#321e29' />
+        ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
+        headerTitle: () => ( <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={{ width: 132, marginBottom: 10 }} resizeMode="contain"/>
+        ),
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => { }}>
+            <View style={{ width: 36, height: 36, backgroundColor: '#875a31', borderRadius: 10, marginBottom: 10, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: 'white', fontSize: 24, fontFamily: titleFont,  }}>{initialUser}</Text>
+            </View>
+          </TouchableOpacity>
+        ),
+        headerRight: () => (
+          <TouchableOpacity onPress={() => { }}>
+            <View style={{ width: 36, height: 36, backgroundColor: '#321e29', borderRadius: 10, marginBottom: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
+              <MaterialCommunityIcons name="headset" size={20} color='white' />
+            </View>
+          </TouchableOpacity>
+        ),
+      }} />
+
+      <Tab.Screen name="Entertainment" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
+        <MaterialCommunityIcons name="play" size={25} color='#321e29' />
+        ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, 
+        headerTitle: () => ( <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={{ width: 132, marginBottom: 10 }} resizeMode="contain"/>
+        ), headerTitleStyle: { color: '#321e29', fontSize: 30 },
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => { goToProfile() }}>
+            <View style={{ width: 36, height: 36, backgroundColor: '#875a31', borderRadius: 10, marginBottom: 10, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: 'white', fontSize: 24, fontFamily: titleFont,  }}>{initialUser}</Text>
+            </View>
+          </TouchableOpacity>
+        ),
+        headerRight: () => (
+          <TouchableOpacity onPress={() => { }}>
+            <View style={{ width: 36, height: 36, backgroundColor: '#321e29', borderRadius: 10, marginBottom: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
+              <MaterialCommunityIcons name="headset" size={20} color='white' />
+            </View>
+          </TouchableOpacity>
+        ),
+      }} />
 
     </Tab.Navigator>
     

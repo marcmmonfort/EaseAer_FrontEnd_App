@@ -152,7 +152,7 @@ export default function LoginScreen() {
                       JSON.stringify(response.data.token),
                       JSON.stringify(response.data.user.nameUser),
                     );
-                    navigation.navigate('HomeScreen' as never, { screen: 'FeedScreen' } as never);
+                    navigation.navigate('HomeScreen' as never, { screen: 'Flights' } as never);
                     // navigation.navigate('Splash' as never);
                   }
                 })
