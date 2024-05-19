@@ -87,7 +87,7 @@ export default function HomeScreen() {
         headerTitle: () => ( <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={{ width: 132, marginBottom: 10 }} resizeMode="contain"/>
         ),
         headerLeft: () => (
-          <TouchableOpacity onPress={() => { }}>
+          <TouchableOpacity onPress={() => { goToProfile() }}>
             <View style={{ width: 36, height: 36, backgroundColor: '#875a31', borderRadius: 10, marginBottom: 10, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ color: 'white', fontSize: 24, fontFamily: titleFont,  }}>{initialUser}</Text>
             </View>
@@ -108,7 +108,7 @@ export default function HomeScreen() {
         headerTitle: () => ( <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={{ width: 132, marginBottom: 10 }} resizeMode="contain"/>
         ),
         headerLeft: () => (
-          <TouchableOpacity onPress={() => { }}>
+          <TouchableOpacity onPress={() => { goToProfile() }}>
             <View style={{ width: 36, height: 36, backgroundColor: '#875a31', borderRadius: 10, marginBottom: 10, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ color: 'white', fontSize: 24, fontFamily: titleFont,  }}>{initialUser}</Text>
             </View>
@@ -129,7 +129,7 @@ export default function HomeScreen() {
         headerTitle: () => ( <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={{ width: 132, marginBottom: 10 }} resizeMode="contain"/>
         ),
         headerLeft: () => (
-          <TouchableOpacity onPress={() => { }}>
+          <TouchableOpacity onPress={() => { goToProfile() }}>
             <View style={{ width: 36, height: 36, backgroundColor: '#875a31', borderRadius: 10, marginBottom: 10, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ color: 'white', fontSize: 24, fontFamily: titleFont,  }}>{initialUser}</Text>
             </View>
@@ -169,21 +169,3 @@ export default function HomeScreen() {
     
   );
 }
-
-/*
-<Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: ({ color, size }) => (
-            <Fontisto name="home" size={18} color='#321e29' />
-          ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 },
-          headerTitle: () => (
-            <Image
-              source={{ uri: 'URL_DE_TU_IMAGEN' }} // URL de la imagen
-              style={{ width: 40, height: 40, borderRadius: 20 }} // estilo de la imagen
-            />
-          ),
-          headerTitleStyle: {
-            color: '#321e29',
-            fontSize: 30,
-          },
-        }}
-      />
-*/
