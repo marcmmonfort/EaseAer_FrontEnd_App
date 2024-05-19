@@ -1,41 +1,116 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import ProfileScreen from './5_UserProfile.screen';
-import { ImageBackground, StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet, Image, TouchableOpacity, View, Text, Platform } from 'react-native';
 import MapScreen from './10_AirportMap.screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Font from 'expo-font';
+
+async function loadFonts() {
+  await Font.loadAsync({
+    'Corporate': require('../../../../assets/easeaer_fonts/Corporate_Font.ttf'),
+    'Emirates': require('../../../../assets/easeaer_fonts/Emirates_Font.ttf'),
+    'SFNS': require('../../../../assets/easeaer_fonts/SF_Font.ttf'),
+  });
+}
 
 const Tab = createBottomTabNavigator();
 
 export default function HomeScreen() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    loadFonts().then(() => {
+      setFontsLoaded(true);
+    });
+  }, []);
+
+  const titleFont = Platform.select({
+    ios: 'Emirates',
+    android: 'Emirates',
+  });
+  const subtitleFont = Platform.select({
+    ios: 'Corporate',
+    android: 'Corporate',
+  });
+  const bodyFont = Platform.select({
+    ios: 'SFNS',
+    android: 'SFNS',
+  });
+
+  const [initialUser, setInitialUser] = useState('');
+
+  useEffect(() => {
+    const loadNameUser = async () => {
+      try {
+        const nameUser = await AsyncStorage.getItem('nameUser');
+        console.log("Nombre: " + nameUser);
+        if (nameUser) {
+          const firstLetter = nameUser.charAt(1).toUpperCase();
+          setInitialUser(firstLetter);
+        }
+      } catch (error) {
+        console.error('Error Getting Initial Letter', error);
+      }
+    };
+    loadNameUser();
+  }, []);
 
   return (
     
-    <Tab.Navigator screenOptions={{ tabBarStyle: { backgroundColor: '#000000', borderTopWidth: 0 }, tabBarShowLabel: false,  }}>
+    <Tab.Navigator screenOptions={{ tabBarStyle: { backgroundColor: 'white', borderTopWidth: 0 }, tabBarShowLabel: false,  }}>
       
       <Tab.Screen name="Feed" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
-          <MaterialCommunityIcons name="image" size={30} color='#66fcf1' />
-          ), headerStyle: { backgroundColor: '#000000', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#66fcf1', fontSize: 30 },
+          <MaterialCommunityIcons name="image" size={30} color='#321e29' />
+          ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
         }} />
       <Tab.Screen name="Discovery" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
-          <MaterialCommunityIcons name="magnify" size={25} color='#66fcf1' />
-          ), headerStyle: { backgroundColor: '#000000', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#66fcf1', fontSize: 30 },
+          <MaterialCommunityIcons name="magnify" size={25} color='#321e29' />
+          ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
         }} />
       <Tab.Screen name="Calendar" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
-        <Fontisto name="calendar" size={18} color='#66fcf1' />
-        ), headerStyle: { backgroundColor: '#000000', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#66fcf1', fontSize: 30 },
+        <Fontisto name="calendar" size={18} color='#321e29' />
+        ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
       }} />
       <Tab.Screen name="Locations" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
-        <Fontisto name="map" size={18} color='#66fcf1' />
-        ), headerStyle: { backgroundColor: '#000000', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#66fcf1', fontSize: 30 },
+        <Fontisto name="map" size={18} color='#321e29' />
+        ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
       }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: ({ color, size }) => (
-          <Fontisto name="home" size={18} color='#66fcf1' />
-          ), headerStyle: { backgroundColor: '#000000', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#66fcf1', fontSize: 30},
+          <Fontisto name="home" size={18} color='#321e29' />
+          ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, 
+          headerTitle: () => ( <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={{ width: 132, marginBottom: 10 }} resizeMode="contain"/>
+          ), headerTitleStyle: { color: '#321e29', fontSize: 30 },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => { }}>
+              <View style={{ width: 36, height: 36, backgroundColor: '#875a31', borderRadius: 10, marginBottom: 10, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ color: 'white', fontSize: 26, fontFamily: titleFont,  }}>{initialUser}</Text>
+              </View>
+            </TouchableOpacity>
+          ),
         }} />
 
     </Tab.Navigator>
     
   );
 }
+
+/*
+<Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: ({ color, size }) => (
+            <Fontisto name="home" size={18} color='#321e29' />
+          ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 },
+          headerTitle: () => (
+            <Image
+              source={{ uri: 'URL_DE_TU_IMAGEN' }} // URL de la imagen
+              style={{ width: 40, height: 40, borderRadius: 20 }} // estilo de la imagen
+            />
+          ),
+          headerTitleStyle: {
+            color: '#321e29',
+            fontSize: 30,
+          },
+        }}
+      />
+*/

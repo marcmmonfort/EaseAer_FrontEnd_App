@@ -63,6 +63,7 @@ export class SessionService {
     try {
       AsyncStorage.removeItem("userId");
       AsyncStorage.removeItem("token");
+      AsyncStorage.removeItem("nameUser");
     } catch (error) {}
   }
 
@@ -72,11 +73,12 @@ export class SessionService {
   }
 
   // (6) SAVE CURRENT USER (IN ASYNC STORAGE):
-  static setCurrentUser(userId: string, token: string) {
+  static setCurrentUser(userId: string, token: string, nameUser: string) {
     try {
       console.log("Saving User ID In Async Storage: ", userId);
       AsyncStorage.setItem("uuid", userId);
       AsyncStorage.setItem("token", token);
+      AsyncStorage.setItem("nameUser", nameUser);
     } catch (error) {
       console.error("Error Saving User ID To Async Storage: ", error);
     }

@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Button, Image, View, Platform, Alert, ActivityIndicator, TouchableOpacity, ImageBackground, Text, ScrollView } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import * as FileSystem from "expo-file-system";
-import { StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from 'expo-linear-gradient';
-import ButtonGradientBack from "../../components/buttons/Button_Type_2";
-import ButtonGradientBack2 from "../../components/buttons/Button_Type_3";
-import SubTitle from "../../components/texts/Subtitle";
-import * as Font from 'expo-font';
+import React, { useEffect, useState } from "react";
+import { Alert, View, Text, Button, Platform, ImageBackground, TouchableOpacity, ScrollView, Image } from "react-native";
 import MainContainer from "../../components/containers/Main";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { StyleSheet } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import StyledTextInputs from "../../components/inputs/StyledTextInputs";
+import ButtonGradientNext from "../../components/buttons/Button_Type_Next";
+import ButtonGradientBack from "../../components/buttons/Button_Type_2";
+import ButtonGradientBirthdate from "../../components/buttons/Button_Type_Birthdate";
+import * as Font from 'expo-font';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useTranslation } from "react-i18next";
 
@@ -28,19 +27,37 @@ interface RouteParams {
   surnameUser?: string;
   mailUser?: string;
   passwordUser?: string;
+  photoUser?: string;
 }
+
 export default function ScreenRegisterC() {
-  const {t}=useTranslation();
   const route = useRoute();
+
   const {
     appUser,
     nameUser,
     surnameUser,
     mailUser,
     passwordUser,
+    photoUser,
   }: RouteParams = route.params || {};
 
+  const [birthdateUser, setbirthdateUser] = useState("");
+  const [genderUser, setgenderUser] = useState("");
+  const [privacyUser, setPrivacyUser] = useState(false);
+  const [descriptionUser, setDescriptionUser] = useState("");
+
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const {t} = useTranslation();
+
+  useEffect(() => {
+    loadFonts().then(() => {
+      setFontsLoaded(true);
+    });
+  }, []);
 
   const titleFont = Platform.select({
     ios: 'Emirates',
@@ -55,153 +72,129 @@ export default function ScreenRegisterC() {
     android: 'SFNS',
   });
 
-  const [photoUser, setPhotoUser] = useState("");
-  const [auxPhotoUser, setAux] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [cam, setCam] = useState(false);
+  const handleShowDatePicker = () => {
+    setShowDatePicker(true);
+  };
+
+  const handleDateChange = (event: any, selectedDate: any) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setSelectedDate(selectedDate);
+      setbirthdateUser(selectedDate.toISOString());
+    }
+  };
+
+  const formatDate = (date: {
+    getDate: () => any;
+    getMonth: () => number;
+    getFullYear: () => any;
+  }) => {
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day < 10 ? "0" + day : day}/${
+      month < 10 ? "0" + month : month
+    }/${year}`;
+  };
+
   const navigation = useNavigation();
-  let CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dlsyquban/upload";
-  
-  const handleCameraPress = async () => {
-    setCam(true);
-    let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
-    if (!permissionResult.granted) {
-      Alert.alert("EaseAer", "Permission Denied");
-      return;
-    }
-
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-      base64: true,
-    });
-
-    if (!result.canceled) {
-      setAux(result.assets[0].uri);
-      setLoading(true);
-      const base64Image = await convertImageToBase64(result.assets[0].uri);
-      setPhotoUser(base64Image);
-
-      console.log("Set Photo User: " + base64Image);
-
-      let data = {
-        file: base64Image,
-        upload_preset: "profilePictures",
-      };
-
-      fetch(CLOUDINARY_URL, {
-        body: JSON.stringify(data),
-        headers: {
-          "content-type": "application/json",
-        },
-        method: "POST",
-      })
-        .then(async (r) => {
-          let data = await r.json();
-          console.log("Data URL: " + data.url);
-          setPhotoUser(data.url); // Not Really Used.
-          console.log("User Photo: " + photoUser);
-          handleUpload(data.url);
-        })
-        .catch((err) => console.log(err))
-        .finally(() => setLoading(false));
-    }
-  };
-
-  useEffect(() => {
-    loadFonts().then(() => {
-      setFontsLoaded(true);
-    });
-  }, []);
-
-  const convertImageToBase64 = async (imageUri:any) => {
-    const base64 = await FileSystem.readAsStringAsync(imageUri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-    return `data:image/jpg;base64,${base64}`;
-  };
-
-  const handleGalleryPress = async () => {
-    setCam(false);
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-      base64: true,
-    });
-
-    console.log("Result (Object): " + result);
-
-    if (!result.canceled) {
-      setAux(result.assets[0].uri);
-      setLoading(true);
-      const base64Image = await convertImageToBase64(result.assets[0].uri);
-      setPhotoUser(base64Image);
-
-      let data = {
-        file: base64Image,
-        upload_preset: "profilePictures",
-      };
-      fetch(CLOUDINARY_URL, {
-        body: JSON.stringify(data),
-        headers: {
-          "content-type": "application/json",
-        },
-        method: "POST",
-      })
-        .then(async (r) => {
-          let data = await r.json();
-          console.log("Data URL: " + data.url);
-          setPhotoUser(data.url); // Not Really Used.
-          console.log("User Photo: " + photoUser);
-          handleUpload(data.url);
-        })
-        .catch((err) => console.log("Error: " + err))
-        .finally(() => setLoading(false));
-    }
-  };
-
-  const handleUpload = (url:any) => {
-    if (!url) {
-      Alert.alert("EaseAer", "Error: Try Again");
+  const handleGoToScreenRegisterD = () => {
+    if (!birthdateUser || !descriptionUser || !genderUser) {
+      Alert.alert("EaseAer", "Incomplete Fields");
     } else {
-      console.log("Username: " + appUser + " | Name: " + nameUser + " | Surname(s): " + surnameUser + " | E-Mail: " + mailUser + " | Password: " + passwordUser + " | Photo URL: " + url);
-      navigation.navigate(
-        "ScreenRegisterD" as never, { appUser, nameUser, surnameUser, mailUser, passwordUser, photoUser:url } as never);
+      const selectedGender = genderUser || "male";
+      const selectedPrivacy = privacyUser || true;
+      if (isDateValid(selectedDate)) {
+        console.log("Username: " + appUser + " | Name: " + nameUser + " | Surname(s): " + surnameUser + " | E-Mail: " + mailUser + " | Password: " + passwordUser + " | Photo URL: " + photoUser + " | BirthDate: " + selectedDate.toISOString() + " | Gender: " + selectedGender + " | Description: " + descriptionUser + " | Role: " + "pax" + " | Privacy: " + selectedPrivacy);
+        navigation.navigate("ScreenRegisterD" as never, { appUser, nameUser, surnameUser, mailUser, passwordUser, photoUser, birthdateUser: selectedDate.toISOString(), genderUser: selectedGender, descriptionUser, roleUser: "pax", privacyUser: selectedPrivacy} as never);
+      } else {
+        Alert.alert("EaseAer", "Invalid Age: App +16");
+      }
     }
   };
+
   const handleGoBack = () => {
     navigation.goBack();
   };
 
+  const isDateValid = (date: Date) => {
+    const currentDate = new Date();
+    const sixteenYearsAgo = new Date(
+      currentDate.getFullYear() - 16,
+      currentDate.getMonth(),
+      currentDate.getDate()
+    );
+    return date <= sixteenYearsAgo;
+  };
+
   const styles = StyleSheet.create({
-    text:{
-      marginBottom:0,
+    text: {
+      color: "black",
+      marginBottom: 0,
+      fontSize: 20,
+      marginTop: 0,
+      alignContent:"center",
     },
-    container: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
+    picker: {
+      borderWidth: 0,
+      borderRadius: 12,
+      color: "black",
+      backgroundColor: 'transparent',
+      marginTop: 10,
+      marginBottom: 0,
+      width: 180,
+    },
+    pickerPrivacy: {
+      borderWidth: 0,
+      borderRadius: 12,
+      color: "black",
+      backgroundColor: 'transparent',
+      marginTop: 0,
+      marginBottom: 0,
+      width: 180,
+    },
+    pickerItem:{
+      fontSize: 16,
+      color: "black",
+      fontFamily: subtitleFont,
+      height: 60,
     },
     buttonContainer: {
       flexDirection: "row",
-      marginBottom: 10,
-      marginTop: 10,
+      justifyContent: "space-between",
+      marginTop: 16,
     },
     buttonContainerB: {
       flexDirection: "row",
       justifyContent: "center",
-      marginTop: 0,
-      marginBottom:0,
+      marginTop: 20,
     },
-    gradient: {
-      width: "100%",
-      height: "100%",
-      borderRadius: 40,
-      justifyContent: "center",
-      alignItems: "center",
+    requiredText: {
+      color: '#d8131b',
+      marginTop: 4,
+      fontFamily: bodyFont,
+    },
+    birthdate_text: {
+      color: 'white',
+      marginTop: 20,
+      marginBottom: 0,
+      fontFamily: bodyFont,
+    },
+    textInput: {
+      width: 300,
+      height: 40,
+      justifyContent:"center",
+      alignItems: 'center',
+    },
+    date:{
+      justifyContent:"center"
+    },
+    requiredTextB: {
+      color: "red",
+      marginTop: 10,
+      marginBottom: 0,
+      fontStyle: "italic",
     },
     backgroundImage: {
       flex: 1,
@@ -226,23 +219,6 @@ export default function ScreenRegisterC() {
       marginBottom: 0,
       alignItems: 'center',
     },
-    newPost: {
-      margin: 6,
-      padding: 6,
-      backgroundColor: "#b3b0a1",
-      borderRadius: 40,
-      width: 56,
-      height: 56,
-      justifyContent: 'center',
-      alignSelf: "center",
-      marginBottom: 0,
-      textAlign: 'center',
-      fontFamily: bodyFont,
-      fontSize: 16,
-      color: '#000',
-      marginTop: 0,
-      alignItems: 'center',
-    },
     input: {
       width: 300,
       height: 40,
@@ -263,13 +239,17 @@ export default function ScreenRegisterC() {
       marginTop: 0,
       marginBottom: 0,
     },
-    stepSubtitle: {
-      textAlign: 'center',
-      fontFamily: bodyFont,
-      fontSize: 16,
-      color: 'yellow',
-      marginTop: 10,
-      marginBottom: 14,
+    formContainer: {
+      alignItems: 'center',
+    },
+    dateTimePickerContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 20,
+      marginBottom: 0,
+    },
+    dateTimePicker: {
+      backgroundColor: 'transparent',
     },
     scrollViewContent: {
       flexGrow: 1,
@@ -281,12 +261,7 @@ export default function ScreenRegisterC() {
       resizeMode: 'contain',
       marginBottom: 16,
     },
-    loadingStyle: {
-      marginTop: 8,
-      marginBottom: 8,
-    },
   });
-  
 
   return (
     <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
@@ -294,27 +269,41 @@ export default function ScreenRegisterC() {
         <MainContainer style={styles.mainContainer}>
           <Image source={require('../../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={styles.image} />
           <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.stepTitle}>Step 2</Text>
-              <Text style={styles.registerTitle}> Profile Picture</Text>
+            <Text style={styles.stepTitle}>Step 3</Text>
+            <Text style={styles.registerTitle}> Personal Details</Text>
           </View>
-          {loading ? (
-            <ActivityIndicator style={styles.loadingStyle} size={24} color="d0871e" />
-            ) : (
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.newPost} onPress={handleCameraPress}>
-                <Ionicons name="camera" size={28} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.newPost} onPress={handleGalleryPress}>
-                <Ionicons name="image" size={28} color="white" />
-              </TouchableOpacity>
+          <View style={styles.formContainer}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={styles.buttonContainerB}>
+                <ButtonGradientBirthdate onPress={handleShowDatePicker} />
+              </View>
+              {showDatePicker && (
+                <View style={styles.dateTimePickerContainer}>
+                  <DateTimePicker value={selectedDate} mode="date" display="default" style={styles.dateTimePicker} onChange={handleDateChange}/>
+                </View>
+              )}
             </View>
-          )}
-          <View style={styles.buttonContainerB}>
+            <StyledTextInputs style={styles.textInput} placeholder="Description *" value={descriptionUser} onChangeText={(value: React.SetStateAction<string>) => setDescriptionUser(value) }/>
+            <Picker selectedValue={genderUser} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setgenderUser(itemValue)}>
+              <Picker.Item label="Male" value="male"/>
+              <Picker.Item label="Female" value="female"/>
+              <Picker.Item label="Other" value="other"/>
+            </Picker>
+            <Picker selectedValue={privacyUser} style={styles.pickerPrivacy} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setPrivacyUser(itemValue)}>
+              <Picker.Item label="Public" value="false"/>
+              <Picker.Item label="Private" value="true"/>
+            </Picker>
+          </View>
+          <Text style={styles.requiredText}>* Compulsory</Text>
+          <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.nextBackButton} onPress={handleGoBack}>
               <MaterialCommunityIcons color="white" name="arrow-left" size={24} />
             </TouchableOpacity>
+            <TouchableOpacity style={styles.nextBackButton} onPress={handleGoToScreenRegisterD}>
+              <MaterialCommunityIcons color="white" name="arrow-right" size={24} />
+            </TouchableOpacity>
           </View>
-        </MainContainer>   
+        </MainContainer>
       </ScrollView>
     </ImageBackground>
   );

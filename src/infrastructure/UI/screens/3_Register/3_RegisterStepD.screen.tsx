@@ -1,16 +1,10 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Alert, View, Text, Button, Platform, ImageBackground, TouchableOpacity, ScrollView, Image } from "react-native";
-import MainContainer from "../../components/containers/Main";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { StyleSheet } from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import StyledTextInputs from "../../components/inputs/StyledTextInputs";
-import ButtonGradientNext from "../../components/buttons/Button_Type_Next";
-import ButtonGradientBack from "../../components/buttons/Button_Type_2";
-import ButtonGradientBirthdate from "../../components/buttons/Button_Type_Birthdate";
+import { View, Text, Button, TouchableOpacity, Platform, StyleSheet, ImageBackground, Image, Alert, ScrollView } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import { SessionService } from "../../../services/user/session.service";
+import { UserAuthEntity } from "../../../../domain/user/user.entity";
 import * as Font from 'expo-font';
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import MainContainer from "../../components/containers/Main";
 import { useTranslation } from "react-i18next";
 
 async function loadFonts() {
@@ -28,11 +22,20 @@ interface RouteParams {
   mailUser?: string;
   passwordUser?: string;
   photoUser?: string;
+  birthdateUser?: string;
+  genderUser?: string;
+  descriptionUser?: string;
+  roleUser?: string;
+  privacyUser?: string;
 }
 
-export default function ScreenRegisterD() {
+export default function ScreenRegisterD({
+  navigation,
+}: {
+  navigation: any;
+}) {
+  const {t} = useTranslation();
   const route = useRoute();
-
   const {
     appUser,
     nameUser,
@@ -40,18 +43,14 @@ export default function ScreenRegisterD() {
     mailUser,
     passwordUser,
     photoUser,
+    birthdateUser,
+    genderUser,
+    descriptionUser,
+    roleUser,
+    privacyUser,
   }: RouteParams = route.params || {};
 
-  const [birthdateUser, setbirthdateUser] = useState("");
-  const [genderUser, setgenderUser] = useState("");
-  const [privacyUser, setPrivacyUser] = useState(false);
-  const [descriptionUser, setDescriptionUser] = useState("");
-
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const {t} = useTranslation();
 
   useEffect(() => {
     loadFonts().then(() => {
@@ -72,151 +71,79 @@ export default function ScreenRegisterD() {
     android: 'SFNS',
   });
 
-  const handleShowDatePicker = () => {
-    setShowDatePicker(true);
-  };
+  const handleRegister = async () => {
+    try {
+      const user: UserAuthEntity = {
+        uuid: " " ?? "",
+        appUser: appUser ?? "",
+        nameUser: nameUser ?? "",
+        surnameUser: surnameUser ?? "",
+        mailUser: mailUser ?? "",
+        passwordUser: passwordUser ?? "",
+        photoUser: photoUser ?? "",
+        birthdateUser: new Date(birthdateUser ?? ""),
+        genderUser:
+          genderUser === "male" || genderUser === "female"
+            ? genderUser
+            : "male",
+        descriptionUser: descriptionUser ?? "",
+        roleUser:
+          roleUser === "pax" ||
+          roleUser === "company" ||
+          roleUser === "admin" ||
+          roleUser === "tech"
+            ? roleUser
+            : "pax",
+        privacyUser: privacyUser === "private" ? true : false,
+        recordGameUser: 0,
+        flightsUser: ["661ec1faec20908a9de42415"], // No me deja pasar el vector vacío. No pasa nada porque el BackEnd al hacer el registro pone el vector a 0.
+        deletedUser: false,
+      };
 
-  const handleDateChange = (event: any, selectedDate: any) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      setSelectedDate(selectedDate);
-      setbirthdateUser(selectedDate.toISOString());
+      console.log("Usuario: " +  JSON.stringify(user));
+
+      SessionService.registerUser(user).then((response)=>{
+        console.log(response);
+        if(response.status===200){
+          console.log(JSON.stringify(response.data));
+          Alert.alert("EaseAer", "You're In!");
+        };
+      }).catch((error)=>{
+        console.log("Error: " + error);
+        Alert.alert("EaseAer", "Error");
+      })
+      navigation.navigate("LoginScreen");
+    } catch (error) {
+      console.error("Error During Registration: ", error);
+      Alert.alert("EaseAer", "Error");
     }
-  };
-
-  const formatDate = (date: {
-    getDate: () => any;
-    getMonth: () => number;
-    getFullYear: () => any;
-  }) => {
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day < 10 ? "0" + day : day}/${
-      month < 10 ? "0" + month : month
-    }/${year}`;
-  };
-
-  const navigation = useNavigation();
-
-  const handleGoToScreenRegisterF = () => {
-    if (!birthdateUser || !descriptionUser || !genderUser) {
-      Alert.alert("EaseAer", "Incomplete Fields");
-    } else {
-      const selectedGender = genderUser || "male";
-      const selectedPrivacy = privacyUser || true;
-      if (isDateValid(selectedDate)) {
-        console.log("Username: " + appUser + " | Name: " + nameUser + " | Surname(s): " + surnameUser + " | E-Mail: " + mailUser + " | Password: " + passwordUser + " | Photo URL: " + photoUser + " | BirthDate: " + selectedDate.toISOString() + " | Gender: " + selectedGender + " | Description: " + descriptionUser + " | Role: " + "pax" + " | Privacy: " + selectedPrivacy);
-        navigation.navigate("ScreenRegisterFinal" as never, { appUser, nameUser, surnameUser, mailUser, passwordUser, photoUser, birthdateUser: selectedDate.toISOString(), genderUser: selectedGender, descriptionUser, roleUser: "pax", privacyUser: selectedPrivacy} as never);
-      } else {
-        Alert.alert("EaseAer", "Invalid Age: App +16");
-      }
-    }
-  };
-
-  const handleGoBack = () => {
-    navigation.goBack();
-  };
-
-  const isDateValid = (date: Date) => {
-    const currentDate = new Date();
-    const sixteenYearsAgo = new Date(
-      currentDate.getFullYear() - 16,
-      currentDate.getMonth(),
-      currentDate.getDate()
-    );
-    return date <= sixteenYearsAgo;
   };
 
   const styles = StyleSheet.create({
-    text: {
-      color: "black",
-      marginBottom: 0,
-      fontSize: 20,
-      marginTop: 0,
-      alignContent:"center",
-    },
-    picker: {
-      borderWidth: 0,
-      borderRadius: 12,
-      color: "black",
-      backgroundColor: 'transparent',
-      marginTop: 10,
-      marginBottom: 0,
-      width: 180,
-    },
-    pickerPrivacy: {
-      borderWidth: 0,
-      borderRadius: 12,
-      color: "black",
-      backgroundColor: 'transparent',
-      marginTop: 0,
-      marginBottom: 0,
-      width: 180,
-    },
-    pickerItem:{
-      fontSize: 16,
-      color: "black",
-      fontFamily: subtitleFont,
-      height: 60,
-    },
-    buttonContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      marginTop: 16,
-    },
-    buttonContainerB: {
-      flexDirection: "row",
-      justifyContent: "center",
-      marginTop: 20,
-    },
-    requiredText: {
-      color: '#d8131b',
-      marginTop: 4,
-      fontFamily: bodyFont,
-    },
-    birthdate_text: {
-      color: 'white',
-      marginTop: 20,
-      marginBottom: 0,
-      fontFamily: bodyFont,
-    },
-    textInput: {
-      width: 300,
-      height: 40,
-      justifyContent:"center",
-      alignItems: 'center',
-    },
-    date:{
-      justifyContent:"center"
-    },
-    requiredTextB: {
-      color: "red",
-      marginTop: 10,
-      marginBottom: 0,
-      fontStyle: "italic",
-    },
     backgroundImage: {
       flex: 1,
       resizeMode: 'cover',
     },
     mainContainer: {
       backgroundColor: 'transparent',
+      marginTop: 20,
+      marginBottom: 20,
     },
     nextBackButton: {
       margin: 6,
       padding: 6,
-      backgroundColor: "#875a31",
+      backgroundColor: "#66fcf1",
       borderRadius: 20,
       width: 36,
       height: 36,
       justifyContent: 'center',
       alignSelf: "center",
+      marginBottom: 96,
       textAlign: 'center',
       fontFamily: bodyFont,
       fontSize: 16,
+      color: '#000',
       marginTop: 0,
-      marginBottom: 0,
       alignItems: 'center',
     },
     input: {
@@ -239,17 +166,43 @@ export default function ScreenRegisterD() {
       marginTop: 0,
       marginBottom: 0,
     },
-    formContainer: {
-      alignItems: 'center',
+    subtitleText: {
+      fontFamily: bodyFont,
+      fontSize: 18,
+      color: '#b3b0a1',
     },
-    dateTimePickerContainer: {
+    contentText: {
+      fontFamily: subtitleFont,
+      fontSize: 20,
+      color: '#321e29',
+      marginTop: 2,
+      marginBottom: 8,
+    },
+    finalHeader: {
+      marginBottom: 20,
+    },
+    button: {
+      marginTop: 14,
+      height: 38,
+      width: 120,
+      borderRadius: 12,
+      padding: 10,
+      alignItems: 'center',
       justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: 20,
-      marginBottom: 0,
+      backgroundColor: '#875a31',
     },
-    dateTimePicker: {
-      backgroundColor: 'transparent',
+    registerText: {
+      fontFamily: subtitleFont,
+      fontWeight: 'bold',
+      fontSize: 20,
+      color: 'white',
+    },
+    profileImage: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      marginTop: 16,
+      marginBottom: 16,
     },
     scrollViewContent: {
       flexGrow: 1,
@@ -263,49 +216,75 @@ export default function ScreenRegisterD() {
     },
   });
 
+  const imageUrl = photoUser;
+
+  const formatDate = (dateString: string | undefined) => {
+    if (dateString != undefined){
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = String(date.getFullYear()).slice(2); // Obtener los últimos dos dígitos del año
+      return `${day}/${month}/${year}`;
+    } else {
+      return `Not Available`;
+    }
+  };
+
+  const formatRole = (roleString: string | undefined) => {
+    if (roleString == "pax"){
+      return `Passenger`;
+    } else if (roleString == "company") {
+      return `Company`;
+    } else if (roleString == "admin") {
+      return `Admin Team`;
+    } else if (roleString == "tech") {
+      return `Tech Team`;
+    } else {
+      return `Not Available`;
+    }
+  };
+
+  const formatGender = (roleString: string | undefined) => {
+    if (roleString == "male"){
+      return `Male`;
+    } else if (roleString == "female") {
+      return `Female`;
+    } else if (roleString == "other") {
+      return `Other`;
+    } else {
+      return `Not Available`;
+    }
+  };
+
   return (
     <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <MainContainer style={styles.mainContainer}>
-          <Image source={require('../../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={styles.image} />
+        <Image source={require('../../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={styles.image} />
           <View style={{ flexDirection: 'row' }}>
-            <Text style={styles.stepTitle}>Step 3</Text>
-            <Text style={styles.registerTitle}> Personal Details</Text>
+            <Text style={styles.stepTitle}>Final Step</Text>
+            <Text style={styles.registerTitle}> Summary</Text>
           </View>
-          <View style={styles.formContainer}>
-            <View style={{ flexDirection: 'row' }}>
-              <View style={styles.buttonContainerB}>
-                <ButtonGradientBirthdate onPress={handleShowDatePicker} />
-              </View>
-              {showDatePicker && (
-                <View style={styles.dateTimePickerContainer}>
-                  <DateTimePicker value={selectedDate} mode="date" display="default" style={styles.dateTimePicker} onChange={handleDateChange}/>
-                </View>
-              )}
-            </View>
-            <StyledTextInputs style={styles.textInput} placeholder="Description *" value={descriptionUser} onChangeText={(value: React.SetStateAction<string>) => setDescriptionUser(value) }/>
-            <Picker selectedValue={genderUser} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setgenderUser(itemValue)}>
-              <Picker.Item label="Male" value="male"/>
-              <Picker.Item label="Female" value="female"/>
-              <Picker.Item label="Other" value="other"/>
-            </Picker>
-            <Picker selectedValue={privacyUser} style={styles.pickerPrivacy} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setPrivacyUser(itemValue)}>
-              <Picker.Item label="Public" value="false"/>
-              <Picker.Item label="Private" value="true"/>
-            </Picker>
-          </View>
-          <Text style={styles.requiredText}>* Compulsory</Text>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.nextBackButton} onPress={handleGoBack}>
-              <MaterialCommunityIcons color="white" name="arrow-left" size={24} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.nextBackButton} onPress={handleGoToScreenRegisterF}>
-              <MaterialCommunityIcons color="white" name="arrow-right" size={24} />
-            </TouchableOpacity>
-          </View>
+          <Image source={{ uri: imageUrl }} style={styles.profileImage} />
+          <Text style={styles.subtitleText}>Username</Text>
+          <Text style={styles.contentText}>@{appUser}</Text>
+          <Text style={styles.subtitleText}>Surname(s), Name</Text>
+          <Text style={styles.contentText}>{surnameUser}, {nameUser}</Text>
+          <Text style={styles.subtitleText}>E-Mail</Text>
+          <Text style={styles.contentText}>{mailUser}</Text>
+          <Text style={styles.subtitleText}>Birthdate</Text>
+          <Text style={styles.contentText}>{formatDate(birthdateUser)}</Text>
+          <Text style={styles.subtitleText}>Gender</Text>
+          <Text style={styles.contentText}>{formatGender(genderUser)}</Text>
+          <Text style={styles.subtitleText}>Description</Text>
+          <Text style={styles.contentText}>{descriptionUser}</Text>
+          <Text style={styles.subtitleText}>Account Type</Text>
+          <Text style={styles.contentText}>{formatRole(roleUser)}</Text>
+          <TouchableOpacity style={styles.button} onPress={handleRegister}> 
+            <Text style={styles.registerText}>Confirm</Text> 
+          </TouchableOpacity>
         </MainContainer>
       </ScrollView>
     </ImageBackground>
   );
 }
-

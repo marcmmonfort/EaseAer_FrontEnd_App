@@ -144,13 +144,15 @@ export default function LoginScreen() {
               SessionService.loginUser(formData)
                 .then((response) => {
                   console.log(response);
+                  console.log("PHOTO URL SAVED: " + response.data.user.photoUser);
                   if (response.status === 200) {
-                    console.log(response.data);
+                    console.log("USUARIO COMPLETO:" + JSON.stringify(response.data.user));
                     SessionService.setCurrentUser(
                       JSON.stringify(response.data.user.uuid),
-                      JSON.stringify(response.data.token)
+                      JSON.stringify(response.data.token),
+                      JSON.stringify(response.data.user.nameUser),
                     );
-                    // navigation.navigate('HomeScreen' as never, { screen: 'FeedScreen' } as never);
+                    navigation.navigate('HomeScreen' as never, { screen: 'FeedScreen' } as never);
                     // navigation.navigate('Splash' as never);
                   }
                 })
@@ -165,13 +167,13 @@ export default function LoginScreen() {
                     case 404:
                       Alert.alert("EaseAer", "User Not Registered");
                       console.log("User Not Registered");
-                      navigation.navigate("ScreenRegisterInicial" as never);
+                      navigation.navigate("ScreenRegisterA" as never);
                       break;
                   }
                 });
             }} />
           <Text style={styles.bottomText}>Aren't you a member?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("ScreenRegisterInicial" as never)}> 
+          <TouchableOpacity onPress={() => navigation.navigate("ScreenRegisterA" as never)}> 
             <Text style={styles.signUpText}>Register Here</Text> 
           </TouchableOpacity>
           <StatusBar/>

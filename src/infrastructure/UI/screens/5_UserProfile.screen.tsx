@@ -398,9 +398,8 @@ const styles = StyleSheet.create({
   const attribute1 = "user";
   const attribute2 = currentUser ? currentUser.uuid : 'valor predeterminado';
 
-  
   return (
-    <ImageBackground source={require('../../../../assets/visualcontent/background_8.png')} style={styles.backgroundImage}>
+    <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
       <ScrollView>
         <View style={styles.profileContour}>
           {currentUser && (

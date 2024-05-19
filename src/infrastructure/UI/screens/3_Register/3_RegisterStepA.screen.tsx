@@ -19,7 +19,7 @@ async function loadFonts() {
   });
 }
 
-export default function ScreenRegisterInicial() {
+export default function ScreenRegisterA() {
   const [appUser, setAppUser] = useState("");
   const [nameUser, setNameUser] = useState("");
   const [surnameUser, setSurnameUser] = useState("");
@@ -63,7 +63,7 @@ export default function ScreenRegisterInicial() {
       Alert.alert("EaseAer", "Weak Password: Improve It");
     } else {
       console.log("Username: " + appUser + " | Name: " + nameUser + " | Surname(s): " + surnameUser + " | E-Mail: " + mailUser + " | Password: " + passwordUser);
-      navigation.navigate("ScreenRegisterC" as never, { appUser, nameUser, surnameUser, mailUser, passwordUser } as never);
+      navigation.navigate("ScreenRegisterB" as never, { appUser, nameUser, surnameUser, mailUser, passwordUser } as never);
     }
   };
 
