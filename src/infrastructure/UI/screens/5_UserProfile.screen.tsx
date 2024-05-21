@@ -14,6 +14,8 @@ import Filter from 'bad-words';
 // BEREAL
 import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
+import { CardEntity } from "../../../domain/card/card.entity";
+import { CardService } from "../../services/card/card.service";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -25,6 +27,7 @@ async function loadFonts() {
 
 export default function ProfileScreen() {
   const [currentUser, setCurrentUser] = useState<UserEntity | null>(null);
+  const [currentCard, setCurrentCard] = useState<CardEntity | null>(null);
   const [photoUser, setPhotoUser] = useState("");
   const [auxPhotoUser, setAux] = useState("");
   const [loading, setLoading] = useState(false);
@@ -88,41 +91,49 @@ export default function ProfileScreen() {
               
                 response.data.descriptionUser = filteredDescription;
                 setCurrentUser(response.data);
+                
+                const cardIdResponse = await CardService.getCardByUser(userId);
+                try {
+                  await CardService.getCardByUser(userId).then(async (response2) => {
+                    if (response2?.data && response2.data.numberCard) {
+                      setCurrentCard(response2.data);
+                      console.log("CURRENT CARD: " + response2.data);
+                    } else {
+                      console.log("NO RESPONSE");
+                    }
+                  })
+                } catch (error) {
+                  console.error("Error Getting Card Of User: ", error);
+                }
+                /*
+                if (cardIdResponse) {
+                  try {
+                    await CardService.getCardById(cardIdResponse.data).then(async (response2) => {
+                      if (response2?.data && response2.data.numberCard) {
+                        setCurrentCard(response2.data);
+                      }
+                    })
+                  } catch (error) {
+                    console.error("Error Getting Card Of User: ", error);
+                  }
+                }
+                */
+
                 if (response.data.roleUser === 'business') {
                   setIcon(
-                    <MaterialCommunityIcons
-                      style={styles.iconVerified}
-                      name="store"
-                      size={18}
-                      color="#3897f0"
-                    />
+                    <MaterialCommunityIcons style={styles.iconVerified} name="store" size={18} color="#3897f0" />
                   );
                 } else if (response.data.roleUser === 'admin') {
                   setIcon(
-                    <MaterialCommunityIcons
-                      style={styles.iconVerified}
-                      name="cog"
-                      size={18}
-                      color="#3897f0"
-                    />
+                    <MaterialCommunityIcons style={styles.iconVerified} name="cog" size={18} color="#3897f0" />
                   );
                 } else if (response.data.roleUser === 'verified') {
                   setIcon(
-                    <MaterialCommunityIcons
-                      style={styles.iconVerified}
-                      name="check-circle"
-                      size={18}
-                      color="#3897f0"
-                    />
+                    <MaterialCommunityIcons style={styles.iconVerified} name="check-circle" size={18} color="#3897f0" />
                   );
                 } else {
                   setIcon(
-                    <MaterialCommunityIcons
-                      style={styles.iconVerified}
-                      name="account"
-                      size={18}
-                      color="#3897f0"
-                    />
+                    <MaterialCommunityIcons style={styles.iconVerified} name="account" size={18} color="#3897f0" />
                   );
                 }
               }
@@ -265,8 +276,8 @@ const styles = StyleSheet.create({
   buttonLogOut: {
     justifyContent: 'center',
     alignSelf: "center",
-    marginTop: 14,
-    marginBottom: 8,
+    marginTop: 10,
+    marginBottom: 20,
   },
   buttonText: {
     textAlign: 'center',
@@ -326,7 +337,6 @@ const styles = StyleSheet.create({
   },
   usernameAndVerified: {
     flexDirection: "row",
-    alignItems: 'center',
     marginBottom: 5,
   },
   iconVerified: {
@@ -375,7 +385,43 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
     color: 'white',
-  }
+  },
+  cardContainer: {
+    width: 273,
+    height: 161,
+    borderRadius: 12,
+    position: 'relative',
+  },
+  cardImage: {
+    width: 273,
+    height: 161,
+    borderRadius: 12,
+    position: 'relative',
+  },
+  cardNameText: {
+    fontFamily: subtitleFont,
+    fontSize: 20,
+    color: 'white',
+    position: 'absolute',
+    bottom: 44,
+    left: 12,
+  },
+  cardNumberText: {
+    fontFamily: bodyFont,
+    fontSize: 14,
+    color: 'white',
+    position: 'absolute',
+    bottom: 29,
+    left: 12,
+  },
+  cardPointsText: {
+    fontFamily: subtitleFont,
+    fontSize: 18,
+    color: 'white',
+    position: 'absolute',
+    bottom: 12,
+    left: 12,
+  },
 });
 
   const attribute1 = "user";
@@ -459,6 +505,17 @@ const styles = StyleSheet.create({
               <TouchableOpacity style={styles.buttonLogOut} onPress={logOutButtonFunction}>
                 <MaterialCommunityIcons color="#875A31" name="logout" size={24} />
               </TouchableOpacity>
+              {currentCard?.levelCard === "captain" && (
+                <View style={styles.cardContainer}>
+                  <Image
+                    source={require('../../../../assets/easeaer_cards/EaseAer_Card_Rookie.png')}
+                    style={styles.cardImage}
+                  />
+                  <Text style={styles.cardNameText}>{currentUser.nameUser} {currentUser.surnameUser}</Text>
+                  <Text style={styles.cardNumberText}>{currentCard?.numberCard}</Text>
+                  <Text style={styles.cardPointsText}>{currentCard?.pointsCard.toString()} Points</Text>
+                </View>
+              )}
             </View>
           )}
         </View>
