@@ -391,6 +391,7 @@ const styles = StyleSheet.create({
     height: 161,
     borderRadius: 12,
     position: 'relative',
+    marginBottom: 10,
   },
   cardImage: {
     width: 273,
@@ -418,6 +419,30 @@ const styles = StyleSheet.create({
     fontFamily: subtitleFont,
     fontSize: 18,
     color: 'white',
+    position: 'absolute',
+    bottom: 12,
+    left: 12,
+  },
+  cardNameTextRookie: {
+    fontFamily: subtitleFont,
+    fontSize: 20,
+    color: '#321e29',
+    position: 'absolute',
+    bottom: 44,
+    left: 12,
+  },
+  cardNumberTextRookie: {
+    fontFamily: bodyFont,
+    fontSize: 14,
+    color: '#321e29',
+    position: 'absolute',
+    bottom: 29,
+    left: 12,
+  },
+  cardPointsTextRookie: {
+    fontFamily: subtitleFont,
+    fontSize: 18,
+    color: '#321e29',
     position: 'absolute',
     bottom: 12,
     left: 12,
@@ -505,10 +530,43 @@ const styles = StyleSheet.create({
               <TouchableOpacity style={styles.buttonLogOut} onPress={logOutButtonFunction}>
                 <MaterialCommunityIcons color="#875A31" name="logout" size={24} />
               </TouchableOpacity>
-              {currentCard?.levelCard === "captain" && (
+              {currentCard?.levelCard === "rookie" && (
                 <View style={styles.cardContainer}>
                   <Image
                     source={require('../../../../assets/easeaer_cards/EaseAer_Card_Rookie.png')}
+                    style={styles.cardImage}
+                  />
+                  <Text style={styles.cardNameTextRookie}>{currentUser.nameUser} {currentUser.surnameUser}</Text>
+                  <Text style={styles.cardNumberTextRookie}>{currentCard?.numberCard}</Text>
+                  <Text style={styles.cardPointsTextRookie}>{currentCard?.pointsCard.toString()} Points</Text>
+                </View>
+              )}
+              {currentCard?.levelCard === "explorer" && (
+                <View style={styles.cardContainer}>
+                  <Image
+                    source={require('../../../../assets/easeaer_cards/EaseAer_Card_Explorer.png')}
+                    style={styles.cardImage}
+                  />
+                  <Text style={styles.cardNameText}>{currentUser.nameUser} {currentUser.surnameUser}</Text>
+                  <Text style={styles.cardNumberText}>{currentCard?.numberCard}</Text>
+                  <Text style={styles.cardPointsText}>{currentCard?.pointsCard.toString()} Points</Text>
+                </View>
+              )}
+              {currentCard?.levelCard === "captain" && (
+                <View style={styles.cardContainer}>
+                  <Image
+                    source={require('../../../../assets/easeaer_cards/EaseAer_Card_Captain.png')}
+                    style={styles.cardImage}
+                  />
+                  <Text style={styles.cardNameText}>{currentUser.nameUser} {currentUser.surnameUser}</Text>
+                  <Text style={styles.cardNumberText}>{currentCard?.numberCard}</Text>
+                  <Text style={styles.cardPointsText}>{currentCard?.pointsCard.toString()} Points</Text>
+                </View>
+              )}
+              {currentCard?.levelCard === "elite" && (
+                <View style={styles.cardContainer}>
+                  <Image
+                    source={require('../../../../assets/easeaer_cards/EaseAer_Card_Elite.png')}
                     style={styles.cardImage}
                   />
                   <Text style={styles.cardNameText}>{currentUser.nameUser} {currentUser.surnameUser}</Text>
