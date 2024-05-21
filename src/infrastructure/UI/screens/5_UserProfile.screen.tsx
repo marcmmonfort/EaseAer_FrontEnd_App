@@ -49,8 +49,12 @@ export default function ProfileScreen() {
   }, []);
 
   const titleFont = Platform.select({
-    ios: 'Rafaella',
-    android: 'Rafaella',
+    ios: 'Emirates',
+    android: 'Emirates',
+  });
+  const subtitleFont = Platform.select({
+    ios: 'Corporate',
+    android: 'Corporate',
   });
   const bodyFont = Platform.select({
     ios: 'SFNS',
@@ -63,7 +67,7 @@ export default function ProfileScreen() {
       AsyncStorage.setItem('token', nothing);
       navigation.navigate('LoginScreen' as never);
     } catch (error) {
-      console.error("Error deleting the token: ", error);
+      console.error("Error Deleting The Token: ", error);
     }
   };
 
@@ -217,41 +221,43 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   profileUserName: {
-    fontSize: 28,
+    fontSize: 26,
     textAlign: 'center',
-    fontFamily: bodyFont,
-    color: "#66fcf1",
+    fontFamily: titleFont,
+    color: "#d0871e",
     marginRight: 4,
   },
-  profileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginTop: 20,
-    marginBottom: 20,
-  },
   image: {
-    width: "100%",
-    height: "100%",
+    width: 80,
+    height: 80,
     borderRadius: 75,
+    marginRight: 4,
   },
   profileUserButtons: {
-    marginBottom: 0,
-    marginTop:20,
     flexDirection: "row",
+    justifyContent: "center",
+    alignContent: "center",
+    marginTop: 6,
+    marginBottom: 18,
   },
   buttonForChanges: {
     marginRight: 4,
     marginLeft: 4,
     padding: 6,
-    backgroundColor: "#66fcf1",
-    borderRadius: 20,
-    width: 36,
-    height: 36,
+    backgroundColor: "#875a31",
+    borderRadius: 12,
+    width: 92,
+    height: 38,
     justifyContent: 'center',
-    alignSelf: "center",
-    alignContent: "center",
     alignItems: 'center',
+  },
+  mainDescription: {
+    alignItems: 'center',
+    marginLeft: 4,
+    marginTop: 3,
+  },
+  editSettingsButtons: {
+    flexDirection: "row",
   },
   insideButtonForChanges: {
     flexDirection: "row",
@@ -259,7 +265,7 @@ const styles = StyleSheet.create({
   buttonLogOut: {
     justifyContent: 'center',
     alignSelf: "center",
-    marginTop: 8,
+    marginTop: 14,
     marginBottom: 8,
   },
   buttonText: {
@@ -299,24 +305,20 @@ const styles = StyleSheet.create({
     color: '#66fcf1',
   },
   titleNameDescription: {
-    fontSize: 14,
     fontFamily: bodyFont,
-    color: "white",
+    fontSize: 18,
+    color: '#b3b0a1',
   },
   textNameDescription: {
-    fontSize: 22,
-    fontFamily: bodyFont,
-    color: "#66fcf1",
-    marginBottom: 10,
+    fontFamily: subtitleFont,
+    fontSize: 20,
+    color: '#321e29',
+    marginTop: 2,
+    marginBottom: 8,
   },
   profileBio: {
-    alignItems: "center",
+    alignItems: 'center',
     justifyContent: "center",
-  },
-  profileRealName: {
-    fontSize: 16,
-    fontFamily: bodyFont,
-    marginBottom: 10,
   },
   backgroundImage: {
     flex: 1,
@@ -325,6 +327,7 @@ const styles = StyleSheet.create({
   usernameAndVerified: {
     flexDirection: "row",
     alignItems: 'center',
+    marginBottom: 5,
   },
   iconVerified: {
     marginTop: 2,
@@ -352,12 +355,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     borderRadius: 16,
   },
-  text_post: {
-    fontSize: 16,
-    fontFamily: bodyFont,
-    color: "white",
-    marginTop: 4,
-  },
   time_post: {
     fontSize: 12,
     fontFamily: bodyFont,
@@ -366,37 +363,61 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   scrow_style: {
-    marginTop: 10,
+    marginTop: 0,
     marginBottom: 0,
     marginLeft: 0,
     flex: 1,
     paddingLeft: 0,
     paddingRight: 0,
   },
-  share_style: {
-    marginTop: -60,
-  },
-  buttonQR: {
-    backgroundColor: "#66fcf1",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    marginTop: 10,
-    marginBottom: 20,
-    alignSelf: "center",
-  },
-  buttonTextQR: {
-    color: "#000",
-    fontSize: 16,
-    fontFamily: bodyFont,
-  },
-  belowMargin: {
-    marginBottom: 12,
+  userButtonEdit: {
+    fontFamily: subtitleFont,
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'white',
   }
 });
 
   const attribute1 = "user";
   const attribute2 = currentUser ? currentUser.uuid : 'valor predeterminado';
+
+  const formatDate = (dateString: string | undefined) => {
+    if (dateString != undefined){
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = String(date.getFullYear()).slice(0);
+      return `${day}.${month}.${year}`;
+    } else {
+      return `Not Available`;
+    }
+  };
+
+  const formatRole = (roleString: string | undefined) => {
+    if (roleString == "pax"){
+      return `Passenger`;
+    } else if (roleString == "company") {
+      return `Company`;
+    } else if (roleString == "admin") {
+      return `Admin Team`;
+    } else if (roleString == "tech") {
+      return `Tech Team`;
+    } else {
+      return `Not Available`;
+    }
+  };
+
+  const formatGender = (roleString: string | undefined) => {
+    if (roleString == "male"){
+      return `Male`;
+    } else if (roleString == "female") {
+      return `Female`;
+    } else if (roleString == "other") {
+      return `Other`;
+    } else {
+      return `Not Available`;
+    }
+  };
 
   return (
     <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
@@ -405,47 +426,42 @@ const styles = StyleSheet.create({
           {currentUser && (
             <View style={styles.profileContainer}>
               <View style={styles.profile}>
-                <View style={styles.usernameAndVerified}>
-                  <Text style={styles.profileUserName}>{currentUser.appUser}</Text>
-                  <MaterialCommunityIcons style={styles.iconVerified} color="#3897f0" name="check-circle" size={18} />
-                </View>
                 <View style={styles.profileUserButtons}>
-                  <TouchableOpacity onPress={() => { navigation.navigate("Edit" as never); }} style={styles.buttonForChanges}>
-                    <View style={styles.insideButtonForChanges}>
-                      <MaterialCommunityIcons color="black" name="pencil" size={18} />
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => { navigation.navigate("Settings" as never); }} style={styles.buttonForChanges}>
-                    <View style={styles.insideButtonForChanges}>
-                      <MaterialCommunityIcons color="black" name="cog" size={18} />
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => { navigation.navigate("UserStats" as never); }} style={styles.buttonForChanges}>
-                    <View style={styles.insideButtonForChanges}>
-                      <MaterialCommunityIcons color="black" name="chart-line" size={18} />
-                    </View>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.profileImage}>
                   <Image source={{ uri: currentUser.photoUser }} style={styles.image} />
+                  <View style={styles.mainDescription}>
+                    <View style={styles.usernameAndVerified}>
+                      <Text style={styles.profileUserName}>@{currentUser.appUser}</Text>
+                      <MaterialCommunityIcons style={styles.iconVerified} color="#b3b0a1" name="check-circle" size={18} />
+                    </View>
+                    <View style={styles.editSettingsButtons}>
+                      <TouchableOpacity onPress={() => { navigation.navigate("Edit" as never); }} style={styles.buttonForChanges}>
+                        <Text style={styles.userButtonEdit}>Edit</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => { navigation.navigate("Settings" as never); }} style={styles.buttonForChanges}>
+                        <Text style={styles.userButtonEdit}>Settings</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 </View>
                 <View style={styles.profileBio}>
-                  <Text style={styles.titleNameDescription}>{t("Name")}</Text>
-                  <Text style={styles.textNameDescription}>{currentUser.nameUser}</Text>
-                  <Text style={styles.titleNameDescription}>{t("Description")}</Text>
+                  <Text style={styles.titleNameDescription}>Surname(s), Name</Text>
+                  <Text style={styles.textNameDescription}>{currentUser.surnameUser}, {currentUser.nameUser}</Text>
+                  <Text style={styles.titleNameDescription}>E-Mail</Text>
+                  <Text style={styles.textNameDescription}>{currentUser.mailUser}</Text>
+                  <Text style={styles.titleNameDescription}>Birthdate</Text>
+                  <Text style={styles.textNameDescription}>{formatDate(currentUser.birthdateUser.toString())}</Text>
+                  <Text style={styles.titleNameDescription}>Gender, Account Type</Text>
+                  <Text style={styles.textNameDescription}>{formatGender(currentUser.genderUser)}, {formatRole(currentUser.roleUser)}</Text>
+                  <Text style={styles.titleNameDescription}>Description</Text>
                   <Text style={styles.textNameDescription}>{currentUser.descriptionUser}</Text>
                 </View>
               </View>
               <TouchableOpacity style={styles.buttonLogOut} onPress={logOutButtonFunction}>
-                <MaterialCommunityIcons color="#3897f0" name="logout" size={24} />
+                <MaterialCommunityIcons color="#875A31" name="logout" size={24} />
               </TouchableOpacity>
             </View>
           )}
         </View>
-        <TouchableOpacity style={styles.buttonQR} onPress={() => setQrVisible()}>
-          <Text style={styles.buttonTextQR}>{qrVisible ? "Ocultar QR" : "Mostrar QR"}</Text>
-        </TouchableOpacity>
-        <Text style={styles.belowMargin}></Text>
       </ScrollView>
     </ImageBackground>
   );  
