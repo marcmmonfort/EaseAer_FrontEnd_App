@@ -22,6 +22,7 @@ import './languages/i18n';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useNavigation } from "@react-navigation/native";
+import HelpScreen from "./src/infrastructure/UI/screens/30_managerHelp.screen";
 
 const Stack = createStackNavigator();
 
@@ -57,13 +58,25 @@ export default function App() {
                 </TouchableOpacity>
               );
             },
-            headerRight: () => (
-              <TouchableOpacity onPress={() => { }}>
-                <View style={{ width: 36, height: 36, backgroundColor: '#321e29', borderRadius: 10, marginBottom: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
-                  <MaterialCommunityIcons name="headset" size={20} color='white' />
-                </View>
-              </TouchableOpacity>
+          }}
+        />
+
+        <Stack.Screen name="Help" component={HelpScreen}
+          options={{
+            headerTitle: () => ( <Image source={require('./assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={{ width: 132, marginBottom: 10 }} resizeMode="contain"/>
             ),
+            headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 },
+            headerTitleStyle: { color: '#321e29', fontSize: 30 },
+            headerLeft: () => {
+              const navigation = useNavigation();
+              return (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <View style={{ width: 36, height: 36, backgroundColor: '#875a31', borderRadius: 10, marginBottom: 10, marginLeft: 10, justifyContent: 'center', alignItems: 'center' }}>
+                    <MaterialCommunityIcons name="arrow-left" size={20} color='white' />
+                  </View>
+                </TouchableOpacity>
+              );
+            },
           }}
         />
 

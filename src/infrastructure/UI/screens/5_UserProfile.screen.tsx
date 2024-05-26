@@ -447,6 +447,55 @@ const styles = StyleSheet.create({
     bottom: 12,
     left: 12,
   },
+  sectionTitle: {
+    backgroundColor: '#321e29',
+    fontFamily: subtitleFont,
+    fontSize: 20,
+    height: 40,
+    alignItems: 'center',
+    position: 'absolute',
+    width: '100%',
+    marginBottom: 0,
+},
+pageTitle: {
+    color: 'white',
+    fontFamily: bodyFont,
+    fontSize: 20,
+    marginTop: 10,
+    marginBottom: 0
+},
+airportContainer: {
+    flexDirection: 'row', 
+    justifyContent: 'flex-end',
+},
+airportTitle: {
+    backgroundColor: '#633b51',
+    fontFamily: subtitleFont,
+    fontSize: 20,
+    height: 28,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 15,
+    width: 92,
+    marginTop: 6,
+},
+nameTitle: {
+    color: 'white',
+    fontFamily: bodyFont,
+    fontSize: 20,
+    marginTop: 5,
+    marginLeft: 12,
+
+},
+headerContainer: {
+    position: 'relative',
+    height: 40,
+    marginBottom: 0,
+},
+styleContainer: {
+    marginTop: 0,
+}
 });
 
   const attribute1 = "user";
@@ -492,6 +541,16 @@ const styles = StyleSheet.create({
 
   return (
     <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
+      <View style={styles.headerContainer}>
+        <View style={styles.sectionTitle}>
+            <Text style={styles.pageTitle}>Profile</Text>
+        </View>
+        <View style={styles.airportContainer}>
+            <View style={styles.airportTitle}>
+            <Text style={styles.nameTitle}>Barcelona</Text>
+            </View>
+        </View>
+      </View>
       <ScrollView>
         <View style={styles.profileContour}>
           {currentUser && (

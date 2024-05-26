@@ -8,6 +8,7 @@ import MapScreen from './10_AirportMap.screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
 import { useNavigation } from "@react-navigation/native";
+import HelpScreen from './30_managerHelp.screen';
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -69,6 +70,10 @@ export default function HomeScreen() {
   const goToProfile = async () => {
     navigation.navigate('Profile');
   };
+
+  const goToHelp = async () => {
+    navigation.navigate('Help');
+  };
   
   return (
     
@@ -94,7 +99,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         ),
         headerRight: () => (
-          <TouchableOpacity onPress={() => { }}>
+          <TouchableOpacity onPress={() => { goToHelp() }}>
             <View style={{ width: 36, height: 36, backgroundColor: '#321e29', borderRadius: 10, marginBottom: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
               <MaterialCommunityIcons name="headset" size={20} color='white' />
             </View>
@@ -115,7 +120,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         ),
         headerRight: () => (
-          <TouchableOpacity onPress={() => { }}>
+          <TouchableOpacity onPress={() => { goToHelp() }}>
             <View style={{ width: 36, height: 36, backgroundColor: '#321e29', borderRadius: 10, marginBottom: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
               <MaterialCommunityIcons name="headset" size={20} color='white' />
             </View>
@@ -136,7 +141,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         ),
         headerRight: () => (
-          <TouchableOpacity onPress={() => { }}>
+          <TouchableOpacity onPress={() => { goToHelp() }}>
             <View style={{ width: 36, height: 36, backgroundColor: '#321e29', borderRadius: 10, marginBottom: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
               <MaterialCommunityIcons name="headset" size={20} color='white' />
             </View>
@@ -157,7 +162,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         ),
         headerRight: () => (
-          <TouchableOpacity onPress={() => { }}>
+          <TouchableOpacity onPress={() => { goToHelp() }}>
             <View style={{ width: 36, height: 36, backgroundColor: '#321e29', borderRadius: 10, marginBottom: 10, marginRight: 10, justifyContent: 'center', alignItems: 'center' }}>
               <MaterialCommunityIcons name="headset" size={20} color='white' />
             </View>
