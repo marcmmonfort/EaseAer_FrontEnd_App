@@ -266,6 +266,7 @@ export default function HelpIncident() {
         fontSize: 14,
         marginTop: 8,
         marginBottom: 0,
+        textAlign: 'justify',
       },
       submitReportButton: {
         marginRight: 4,
@@ -322,7 +323,7 @@ export default function HelpIncident() {
                     Your safety is our safety.
                 </Text>
                 <Text style={styles.detailsText}>
-                    Briefly describe the scenario you're witnessing, including details of your location and the severity of the incident.
+                    Describe the scenario you're witnessing, including details of your location and the severity of the incident.
                 </Text>
                 <Text style={styles.detailsText}>
                     Thank you for your cooperation!

@@ -22,7 +22,7 @@ import './languages/i18n';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useNavigation } from "@react-navigation/native";
-import HelpScreen from "./src/infrastructure/UI/screens/30_managerHelp.screen";
+import HelpScreen from "./src/infrastructure/UI/screens/30_ManagerHelp.screen";
 
 const Stack = createStackNavigator();
 

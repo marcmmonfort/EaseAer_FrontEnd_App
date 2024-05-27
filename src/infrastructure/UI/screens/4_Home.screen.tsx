@@ -8,7 +8,7 @@ import MapScreen from './10_AirportMap.screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
 import { useNavigation } from "@react-navigation/native";
-import HelpScreen from './30_managerHelp.screen';
+import ShopScreen from './31_ManagerShop.screen';
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -128,7 +128,7 @@ export default function HomeScreen() {
         ),
       }} />
       
-      <Tab.Screen name="Shopping" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
+      <Tab.Screen name="Shopping" component={ShopScreen} options={{ tabBarIcon: ({ color, size }) => (
         <MaterialCommunityIcons name="shopping" size={25} color='#321e29' />
         ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
         headerTitle: () => ( <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={{ width: 132, marginBottom: 10 }} resizeMode="contain"/>
