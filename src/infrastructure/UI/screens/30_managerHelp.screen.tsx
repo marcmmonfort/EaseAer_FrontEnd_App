@@ -18,7 +18,7 @@ import { CardEntity } from "../../../domain/card/card.entity";
 import { CardService } from "../../services/card/card.service";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ProfileScreen from "./5_UserProfile.screen";
-import HelpNews from "./21_HelpNews.screen";
+import HelpIncident from "./21_HelpIncident.screen";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -333,12 +333,12 @@ const styles = StyleSheet.create({
   return (
     <Tab.Navigator screenOptions={{ tabBarStyle: { backgroundColor: '#b3b0a1', borderTopWidth: 0, height: 66 }, tabBarShowLabel: false }}>
 
-        <Tab.Screen name="News" component={HelpNews} options={{ tabBarIcon: ({ color, size }) => (
+        <Tab.Screen name="News" component={ProfileScreen} options={{ tabBarIcon: ({ color, size }) => (
             <Text style={styles.navText}>News</Text>
             ), headerShown: false,
         }} />
 
-        <Tab.Screen name="Incident" component={ProfileScreen} options={{ tabBarIcon: ({ color, size }) => (
+        <Tab.Screen name="Incident" component={HelpIncident} options={{ tabBarIcon: ({ color, size }) => (
             <Text style={styles.navText}>Incident</Text>
             ), headerShown: false,
         }} />

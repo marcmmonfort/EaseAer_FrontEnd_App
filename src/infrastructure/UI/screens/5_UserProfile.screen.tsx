@@ -158,34 +158,6 @@ export default function ProfileScreen() {
       getUser();
     }, [])
   );
-
-  /*
-  useFocusEffect(
-    React.useCallback(() => {
-      let isMounted = true;
-      const fetchData = async () => {
-        try {
-          const userId = await SessionService.getCurrentUser();
-          if (userId && isMounted) {
-            const response = await PublicationService.obtainOwnPosts(userId);
-            const publications = response.data;
-
-            if (isMounted) {
-              setListOwnPublications(publications);
-              setNumOwnPublications(publications.length);
-            }
-          }
-        } catch (error) {
-          console.error("Error obtaining our own publications: ", error);
-        }
-      };
-      fetchData();
-      return () => {
-        isMounted = false;
-      };
-    }, [numPagePublication, recargar])
-  );  
-  */
   
   const speakCurrentUser = async (currentUser:UserEntity) => {
     try {
