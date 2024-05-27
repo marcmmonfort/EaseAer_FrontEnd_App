@@ -68,13 +68,17 @@ export default function HelpNews() {
                     if (response?.data && response.data[0].titleNews) {
                         setListNews(response.data);
                         console.log("TÍTULO EJEMPLO: " + response.data[0].titleNews);
-                        response.data.forEach(async (newsItem: NewsEntity) => {
-                            const details = await getNameAndRoleUserById(newsItem.idUserAuthorNews);
+                        await Promise.all(response.data.map(async (newsItem: NewsEntity) => {
+                            const details = await new Promise<string>(async (resolve) => {
+                                const details = await getNameAndRoleUserById(newsItem.idUserAuthorNews);
+                                console.log("Should Show: " + details);
+                                resolve(details || 'Error');
+                            });
                             setUserDetails(prevDetails => ({
-                              ...prevDetails,
-                              [newsItem.idUserAuthorNews]: details || 'HOLA'
+                                ...prevDetails,
+                                [newsItem.idUserAuthorNews]: details
                             }));
-                        });
+                        }));
                     }
                     else {
                         Alert.alert("EaseAer", "No News Available");
@@ -90,27 +94,28 @@ export default function HelpNews() {
     }, [])
   );
 
-  const getNameAndRoleUserById = async (userId: string) => {
-    try {
-        await CRUDService.getUserById(userId).then(async (response) => {
+    const getNameAndRoleUserById = async (userId: string) => {
+        try {
+            const response = await CRUDService.getUserById(userId);
             if (response?.data && response.data.nameUser && response.data.roleUser) {
                 const nameUser = response.data.nameUser;
                 let roleUser = "Unknown";
-                // roleUser: "pax" | "company" | "admin" | "tech";
-                if (response.data.roleUser==="pax"){ roleUser = "Passenger" };
-                if (response.data.roleUser==="company"){ roleUser = "Company" };
-                if (response.data.roleUser==="admin"){ roleUser = "Administrator" };
-                if (response.data.roleUser==="tech"){ roleUser = "Tech Worker" };
-                return nameUser + "," + roleUser;
-            }
-            else {
+                if (response.data.roleUser === "pax") { roleUser = "Passenger" };
+                if (response.data.roleUser === "company") { roleUser = "Company" };
+                if (response.data.roleUser === "admin") { roleUser = "Administrator" };
+                if (response.data.roleUser === "tech") { roleUser = "Tech Worker" };
+                const infoUser = nameUser + ", " + roleUser;
+                console.log("(NEWS) Guay. Devuelve: " + infoUser);
+                return infoUser;
+            } else {
+                console.log("(NEWS) Peta menos.");
                 return 'Error';
             }
-        });
-    } catch (error) {
-        return 'Error';
-    }
-  };
+        } catch (error) {
+            console.log("(NEWS) Peta.");
+            return 'Error';
+        }
+    };
 
   // AsyncStorage.getItem("uuid");
 
@@ -311,14 +316,14 @@ export default function HelpNews() {
     titleNewsText: {
         color: 'white',
         fontFamily: subtitleFont,
-        fontSize: 20,
+        fontSize: 22,
         marginTop: 6,
         marginBottom: 6,
     },
     subtitleNewsText: {
         color: '#321e29',
         fontFamily: subtitleFont,
-        fontSize: 18,
+        fontSize: 19,
         marginTop: 0,
         marginBottom: 6,
     },
@@ -339,9 +344,10 @@ export default function HelpNews() {
     detailsText: {
         color: '#875a31',
         fontFamily: bodyFont,
-        fontSize: 14,
+        fontSize: 16,
         marginTop: 4,
         marginBottom: 12,
+        textAlign: 'justify',
     },
     image: {
         height: 42,
@@ -373,6 +379,35 @@ export default function HelpNews() {
     return null;
   }
 
+    /*
+    const formatDate = (date: Date): string => {
+        const dateNews = new Date(date);
+        return dateNews.toString();
+    };
+    */
+
+    const formatDate = (date: Date): string => {
+        const dateNews = new Date(date);
+        
+        const currentDate = new Date();
+        const diffInMilliseconds = currentDate.getTime() - dateNews.getTime();
+        const diffInSeconds = Math.floor(diffInMilliseconds / 1000);
+        const diffInMinutes = Math.floor(diffInSeconds / 60);
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        const diffInDays = Math.floor(diffInHours / 24);
+
+        if (diffInDays > 0) {
+            return `${diffInDays} ${diffInDays === 1 ? 'Day' : 'Days'} Ago`;
+        } else if (diffInHours > 0) {
+            return `${diffInHours} ${diffInHours === 1 ? 'Hour' : 'Hours'} Ago`;
+        } else if (diffInMinutes > 0) {
+            return `${diffInMinutes} ${diffInMinutes === 1 ? 'Minute' : 'Minutes'} Ago`;
+        } else {
+            return `Just Now`;
+        }
+
+    };
+
   const renderNewsItem = (newsItem: NewsEntity) => (
     <View style={styles.newsContainer} key={newsItem.uuid}>
       <View style={styles.newsHeader}>
@@ -383,7 +418,7 @@ export default function HelpNews() {
           <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png')} style={styles.image} />
           <View style={styles.profileDetailsContainer}>
             <Text style={styles.usernameText}>{userDetails[newsItem.idUserAuthorNews]}</Text>
-            <Text style={styles.dateText}>{newsItem.idUserAuthorNews}</Text>
+            <Text style={styles.dateText}>{formatDate(newsItem.dateNews)}</Text>
           </View>
         </View>
         <Text style={styles.subtitleNewsText}>{newsItem.subtitleNews}</Text>
@@ -405,7 +440,12 @@ export default function HelpNews() {
             </View>
         </View>
         <ScrollView>
-            {listNews ? listNews.map(renderNewsItem) : <Text style={styles.noNewsText}>Not Available</Text>}
+            {listNews 
+            ? listNews
+                .sort((a, b) => new Date(b.dateNews).getTime() - new Date(a.dateNews).getTime())
+                .map(renderNewsItem)
+            : <Text style={styles.noNewsText}>Not Available</Text>
+            }
         </ScrollView>
     </ImageBackground>
   );
