@@ -60,6 +60,7 @@ export default function HelpIncident() {
   const [collectiveIncident, setCollectiveIncident] = useState("");
   const [statusIncident, setStatusIncident] = useState("");
 
+
   // AsyncStorage.getItem("uuid");
 
   const handleReportIncident = async () => {
@@ -96,6 +97,7 @@ export default function HelpIncident() {
               if (response.status===200){
                 console.log(JSON.stringify(response.data));
                 Alert.alert("EaseAer", "Incident Notified!");
+                setDescriptionIncident("");
               };
             }).catch((error)=>{
               console.log("Error: " + error);
@@ -153,13 +155,13 @@ export default function HelpIncident() {
       width: 300,
       height: 40,
     },
-    normalText: {
+    subtitleNewsText: {
       color: '#321e29',
-      fontFamily: bodyFont,
-      fontSize: 20,
-      marginTop: 26,
+      fontFamily: subtitleFont,
+      fontSize: 19,
+      marginTop: 12,
       marginBottom: 0,
-    },
+  },
     bottomText: {
       color: '#321e29',
       fontFamily: bodyFont,
@@ -229,8 +231,8 @@ export default function HelpIncident() {
         borderRadius: 12,
         color: "black",
         backgroundColor: 'transparent',
-        marginTop: 10,
-        marginBottom: 0,
+        marginTop: 0,
+        marginBottom: 10,
         width: 320,
     },
     pickerItem:{
@@ -246,8 +248,8 @@ export default function HelpIncident() {
         fontWeight: 'bold',
         borderWidth: 0,
         width: 300,
-        height: 140,
-        marginTop: 20,
+        height: 240,
+        marginTop: 12,
         borderRadius: 12,
         backgroundColor: '#b3b0a1',
         paddingStart: 10,
@@ -286,6 +288,91 @@ export default function HelpIncident() {
         fontSize: 20,
         color: 'white',
       },
+      newsHeader: {
+        marginBottom: 0,
+        marginTop: 0,
+        marginLeft: 0,
+        marginRight: 0,
+        borderRadius: 12,
+        borderWidth: 0,
+        backgroundColor: '#d8131b',
+        shadowColor: '#000',
+        shadowOpacity: 0,
+        shadowRadius: 10,
+        alignItems: 'center',
+        zIndex: 2,
+    },
+    titleNewsText: {
+      color: 'white',
+      fontFamily: subtitleFont,
+      fontSize: 22,
+      marginTop: 6,
+      marginBottom: 6,
+  },
+  newsContent: {
+    marginBottom: 0,
+    marginTop: -12,
+    paddingTop: 12,
+    marginLeft: 0,
+    marginRight: 0,
+    paddingLeft: 12,
+    paddingRight: 12,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    borderWidth: 0,
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOpacity: 0,
+    shadowRadius: 10,
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  profileContainer: {
+    width: '100%',
+    backgroundColor: 'transparent',
+    marginTop: 5,
+    marginBottom: 2,
+    marginLeft: -6,
+    marginRight: 0,
+    flexDirection: 'row',
+  },
+  profileDetailsContainer: {
+      marginLeft: 2,
+      marginTop: 5,
+  },
+  usernameText: {
+    color: '#b3b0a1',
+    fontFamily: bodyFont,
+    fontSize: 16,
+    marginTop: 0,
+    marginBottom: 0,
+  },
+  dateText: {
+      color: '#e9e8e6',
+      fontFamily: bodyFont,
+      fontSize: 14,
+      marginTop: 0,
+      marginBottom: 0,
+  },
+  newsContainer: {
+    marginBottom: -2,
+    marginTop: 26,
+    marginLeft: 26,
+    marginRight: 26,
+    borderRadius: 12,
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    shadowColor: '#000',
+    shadowOpacity: 0,
+    shadowRadius: 10,
+  },
+  charactersCountText: {
+    color: '#d0871e',
+    fontFamily: bodyFont,
+    fontSize: 14,
+    marginTop: 10,
+    marginBottom: 0,
+  }
   });
 
   if (!fontsLoaded) {
@@ -305,30 +392,28 @@ export default function HelpIncident() {
             </View>
         </View>
         <ScrollView style={styles.styleContainer}>
-            <View style={styles.formContainer}>
-                <Text style={styles.normalText}>Report An Incident</Text>
-                <TextInput style={styles.multilineTextInputStyle} placeholder="Description" value={descriptionIncident} onChangeText={ setDescriptionIncident } multiline maxLength={200}/>
-                <Picker selectedValue={collectiveIncident} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setCollectiveIncident(itemValue)}>
-                    <Picker.Item label="Security Forces" value="security"/>
-                    <Picker.Item label="Medical Team" value="medical"/>
-                    <Picker.Item label="Fire Department" value="fire"/>
-                    <Picker.Item label="Cleaning Service" value="cleaning"/>
-                    <Picker.Item label="Airport Assistance" value="assistance"/>
-                    <Picker.Item label="Tech Team" value="tech"/>
-                    <Picker.Item label="Other" value="other"/>
-                </Picker>
+          <View style={styles.newsContainer}>
+            <View style={styles.newsHeader}>
+              <Text style={styles.titleNewsText}>Incident</Text>
             </View>
-            <View style={styles.detailsContainer}>
-                <Text style={styles.detailsText}>
-                    Your safety is our safety.
-                </Text>
-                <Text style={styles.detailsText}>
-                    Describe the scenario you're witnessing, including details of your location and the severity of the incident.
-                </Text>
-                <Text style={styles.detailsText}>
-                    Thank you for your cooperation!
-                </Text>
+            <View style={styles.newsContent}>
+              <View style={styles.formContainer}>
+                  <Text style={styles.subtitleNewsText}>Report An Incident</Text>
+                  <TextInput style={styles.multilineTextInputStyle} placeholder="Description" value={descriptionIncident} onChangeText={ setDescriptionIncident } multiline maxLength={250}/>
+                  <Text style={styles.charactersCountText}>{descriptionIncident.length} Characters / 250 Max.</Text>
+                  <Picker selectedValue={collectiveIncident} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setCollectiveIncident(itemValue)}>
+                      <Picker.Item label="Security Forces" value="security"/>
+                      <Picker.Item label="Medical Team" value="medical"/>
+                      <Picker.Item label="Fire Department" value="fire"/>
+                      <Picker.Item label="Cleaning Service" value="cleaning"/>
+                      <Picker.Item label="Airport Assistance" value="assistance"/>
+                      <Picker.Item label="Tech Team" value="tech"/>
+                      <Picker.Item label="Other" value="other"/>
+                  </Picker>
+              </View>
+              
             </View>
+          </View>
             <View style={styles.formContainer}>
                 <TouchableOpacity onPress={() => { handleReportIncident() }} style={styles.submitReportButton}>
                     <Text style={styles.submitReportText}>Report</Text>

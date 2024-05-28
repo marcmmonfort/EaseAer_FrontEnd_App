@@ -24,6 +24,7 @@ import { NewsEntity } from "../../../domain/news/news.entity";
 import { CRUDService } from "../../services/user/CRUD.service";
 import { ProductEntity } from "../../../domain/product/product.entity";
 import { ProductService } from "../../services/product/product.service";
+import QRCode from 'react-native-qrcode-svg';
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -284,9 +285,9 @@ export default function ShopProducts() {
         shadowColor: '#000',
         shadowOpacity: 0,
         shadowRadius: 10,
-        alignContent: 'center',
         flexDirection: 'row',
-        alignItems: 'stretch',
+        marginLeft: 26,
+        marginRight: 26,
     },
     productHeader: {
         marginBottom: 0,
@@ -335,7 +336,14 @@ export default function ShopProducts() {
         marginBottom: 6,
     },
     usernameText: {
-        color: 'black',
+        color: '#e9e8e6',
+        fontFamily: bodyFont,
+        fontSize: 12,
+        marginTop: 4,
+        marginBottom: 12,
+    },
+    arrowText: {
+        color: 'white',
         fontFamily: bodyFont,
         fontSize: 16,
         marginTop: 0,
@@ -349,10 +357,10 @@ export default function ShopProducts() {
         marginBottom: 0,
     },
     detailsText: {
-        color: '#875a31',
+        color: '#b3b0a1',
         fontFamily: bodyFont,
         fontSize: 16,
-        marginTop: 4,
+        marginTop: 8,
         marginBottom: 12,
         textAlign: 'justify',
     },
@@ -372,6 +380,7 @@ export default function ShopProducts() {
     profileDetailsContainer: {
         marginLeft: 2,
         marginTop: 5,
+        alignItems: 'center',
     },
     noNewsText: {
         color: '#875a31',
@@ -382,12 +391,13 @@ export default function ShopProducts() {
     },
     productPack: {
         marginLeft: 0,
-        width: '72%',
+        width: '85%',
         zIndex: 2,
     }, 
     statusBox: {
         width: 6,
         marginRight: 8,
+        marginLeft: 0,
         backgroundColor: '#d8131b',
         borderRadius: 12,
         alignItems: 'center',
@@ -395,8 +405,9 @@ export default function ShopProducts() {
         zIndex: 1,
     },
     offersLink: {
-        width: 42,
+        width: '8.5%',
         marginLeft: 8,
+        marginRight: 0,
         borderRadius: 12,
         backgroundColor: '#875a31',
         alignItems: 'center',
@@ -419,16 +430,13 @@ export default function ShopProducts() {
                 <Text style={styles.titleNewsText}>{productItem.nameProduct}</Text>
             </View>
             <View style={styles.productContent}>
-                <View style={styles.profileContainer}>
-                    <View style={styles.profileDetailsContainer}>
-                        <Text style={styles.usernameText}>{productItem.codeProduct}</Text>
-                    </View>
-                </View>
                 <Text style={styles.detailsText}>{productItem.descriptionProduct}</Text>
+                <QRCode value={productItem.codeProduct} size={56} color="#321e29" />
+                <Text style={styles.usernameText}>{productItem.codeProduct}</Text>
             </View>
         </View>
         <View style={styles.offersLink}>
-            <Text style={styles.usernameText}>Link</Text>
+            <Text style={styles.arrowText}>→</Text>
         </View>
     </View>
   );
