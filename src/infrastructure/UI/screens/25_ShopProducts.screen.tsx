@@ -463,7 +463,7 @@ export default function ShopProducts() {
                 .filter(product => product.nameProduct.toLowerCase().includes(searchText.toLowerCase()))
                 .length === 0
                 ? <Text style={styles.noNewsText}>
-                    Products Not Available
+                    No Products Available
                 </Text>
                 : listProducts
                     .filter(product => product.nameProduct.toLowerCase().includes(searchText.toLowerCase()))
