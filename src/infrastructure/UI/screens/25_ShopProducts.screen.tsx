@@ -25,6 +25,7 @@ import { CRUDService } from "../../services/user/CRUD.service";
 import { ProductEntity } from "../../../domain/product/product.entity";
 import { ProductService } from "../../services/product/product.service";
 import QRCode from 'react-native-qrcode-svg';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -60,6 +61,7 @@ export default function ShopProducts() {
 
   const [listProducts, setListProducts] = useState<ProductEntity[] | null>(null);
   const [userDetails, setUserDetails] = useState<{ [key: string]: string }>({});
+  const [searchText, setSearchText] = useState("");
 
   useFocusEffect(
     React.useCallback(() => {
@@ -70,20 +72,6 @@ export default function ShopProducts() {
                 await ProductService.listProducts().then(async (response) => {
                     if (response?.data && response.data[0].nameProduct) {
                         setListProducts(response.data);
-
-                        /*
-                        await Promise.all(response.data.map(async (newsItem: NewsEntity) => {
-                            const details = await new Promise<string>(async (resolve) => {
-                                const details = await getNameAndRoleUserById(newsItem.idUserAuthorNews);
-                                console.log("Should Show: " + details);
-                                resolve(details || 'Error');
-                            });
-                            setUserDetails(prevDetails => ({
-                                ...prevDetails,
-                                [newsItem.idUserAuthorNews]: details
-                            }));
-                        }));
-                        */
                     }
                     else {
                         Alert.alert("EaseAer", "No Products Available");
@@ -99,32 +87,11 @@ export default function ShopProducts() {
     }, [])
   );
 
-    /*
-    const getNameAndRoleUserById = async (userId: string) => {
-        try {
-            const response = await CRUDService.getUserById(userId);
-            if (response?.data && response.data.nameUser && response.data.roleUser) {
-                const nameUser = response.data.nameUser;
-                let roleUser = "Unknown";
-                if (response.data.roleUser === "pax") { roleUser = "Passenger" };
-                if (response.data.roleUser === "company") { roleUser = "Company" };
-                if (response.data.roleUser === "admin") { roleUser = "Administrator" };
-                if (response.data.roleUser === "tech") { roleUser = "Tech Worker" };
-                const infoUser = nameUser + ", " + roleUser;
-                console.log("(NEWS) Guay. Devuelve: " + infoUser);
-                return infoUser;
-            } else {
-                console.log("(NEWS) Peta menos.");
-                return 'Error';
-            }
-        } catch (error) {
-            console.log("(NEWS) Peta.");
-            return 'Error';
-        }
-    };
-    */
-
   // AsyncStorage.getItem("uuid");
+
+    const getProductsByName = async (productName: string) => {
+        
+    }
 
   const styles = StyleSheet.create({
     titleText: {
@@ -182,7 +149,6 @@ export default function ShopProducts() {
       marginTop: 6,
       marginBottom: 0
     },
-
     sectionTitle: {
         backgroundColor: '#321e29',
         fontFamily: subtitleFont,
@@ -415,7 +381,35 @@ export default function ShopProducts() {
     },
     scrollStyle: {
         alignContent: 'center',
-    }
+    },
+    searcherContainer: {
+        height: 40,
+        marginBottom: 0,
+    },
+    searcherPack: {
+        backgroundColor: '#b3b0a1',
+        color: 'white',
+        fontFamily: subtitleFont,
+        fontSize: 20,
+        height: 40,
+        alignItems: 'center',
+        position: 'absolute',
+        width: '100%',
+        marginBottom: 0,
+        paddingLeft: 10,
+    },
+    searcherText: {
+        color: 'white',
+        fontFamily: subtitleFont,
+        fontSize: 20,
+        marginTop: 10,
+        marginBottom: 0
+    },
+    searcherIcon: {
+        position: 'absolute',
+        right: 10,
+        top: 10,
+    },
   });
 
   if (!fontsLoaded) {
@@ -449,16 +443,27 @@ export default function ShopProducts() {
             </View>
             <View style={styles.airportContainer}>
                 <View style={styles.airportTitle}>
-                <Text style={styles.nameTitle}>Barcelona</Text>
+                    <Text style={styles.nameTitle}>Barcelona</Text>
                 </View>
             </View>
         </View>
+        <View style={styles.searcherContainer}>
+            <TextInput style={styles.searcherPack} placeholder="Search By Name" value={searchText} onChangeText={(text) => { setSearchText(text); getProductsByName(text); }} maxLength={100}/>
+            <MaterialCommunityIcons name="magnify" size={20} color='#e9e8e6' style={styles.searcherIcon} />
+        </View>
         <ScrollView style={styles.scrollStyle}>
-            {listProducts 
-                ? listProducts
+            {listProducts
+            ? (listProducts
+                .filter(product => product.nameProduct.toLowerCase().includes(searchText.toLowerCase()))
+                .length === 0
+                ? <Text style={styles.noNewsText}>
+                    Products Not Available
+                </Text>
+                : listProducts
+                    .filter(product => product.nameProduct.toLowerCase().includes(searchText.toLowerCase()))
                     .sort((a, b) => a.nameProduct.localeCompare(b.nameProduct))
-                    .map(renderProductItem)
-                : <Text style={styles.noNewsText}>Not Available</Text>
+                    .map(renderProductItem))
+            : <Text style={styles.noNewsText}>Not Available</Text>
             }
         </ScrollView>
     </ImageBackground>

@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
 });
 
   return (
-    <Tab.Navigator screenOptions={{ tabBarStyle: { backgroundColor: '#b3b0a1', borderTopWidth: 0, height: 66, marginBottom: -18 }, tabBarShowLabel: false }}>
+    <Tab.Navigator screenOptions={{ tabBarStyle: { backgroundColor: '#b3b0a1', borderTopWidth: 0, height: 60, marginBottom: -19.5 }, tabBarShowLabel: false }}>
 
         <Tab.Screen name="Products" component={ShopProducts} options={{ tabBarIcon: ({ color, size }) => (
             <Text style={styles.navText}>Products</Text>
