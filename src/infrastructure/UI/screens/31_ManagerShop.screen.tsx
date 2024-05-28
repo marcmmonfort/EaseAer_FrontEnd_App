@@ -21,6 +21,7 @@ import ProfileScreen from "./5_UserProfile.screen";
 import HelpIncident from "./21_HelpIncident.screen";
 import HelpNews from "./22_HelpNews.screen";
 import ShopProducts from "./25_ShopProducts.screen";
+import ShopOffers from "./27_ShopOffers.screen";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -328,7 +329,7 @@ const styles = StyleSheet.create({
             ), headerShown: false,
         }} />
 
-        <Tab.Screen name="Offers" component={HelpIncident} options={{ tabBarIcon: ({ color, size }) => (
+        <Tab.Screen name="Offers" component={ShopOffers} options={{ tabBarIcon: ({ color, size }) => (
             <Text style={styles.navText}>Offers</Text>
             ), headerShown: false,
         }} />

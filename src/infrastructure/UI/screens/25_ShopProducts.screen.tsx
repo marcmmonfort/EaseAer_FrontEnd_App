@@ -410,6 +410,12 @@ export default function ShopProducts() {
         right: 10,
         top: 10,
     },
+    deletedProduct: {
+        backgroundColor: '#d8131b',
+    },
+    activeProduct: {
+        backgroundColor: '#51a145',
+    },
   });
 
   if (!fontsLoaded) {
@@ -418,7 +424,7 @@ export default function ShopProducts() {
 
   const renderProductItem = (productItem: ProductEntity) => (
     <View style={styles.productContainer} key={productItem.uuid}>
-        <View style={styles.statusBox}></View>
+        <View style={[ styles.statusBox, productItem.deletedProduct ? styles.deletedProduct : styles.activeProduct ]} ></View>
         <View style={styles.productPack}>
             <View style={styles.productHeader}>
                 <Text style={styles.titleNewsText}>{productItem.nameProduct}</Text>

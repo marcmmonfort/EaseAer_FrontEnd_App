@@ -81,7 +81,7 @@ export default function SplashScreen() {
     versionText: {
       color: '#321E29',
       fontFamily: bodyFont,
-      fontSize: 16,
+      fontSize: 18,
       marginBottom: 0,
     },
     backgroundImage: {
