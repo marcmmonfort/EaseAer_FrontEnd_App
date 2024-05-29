@@ -23,6 +23,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import { useNavigation } from "@react-navigation/native";
 import HelpScreen from "./src/infrastructure/UI/screens/30_ManagerHelp.screen";
+import ShopOffers from "./src/infrastructure/UI/screens/27_ShopOffers.screen";
+import ShopScreen from "./src/infrastructure/UI/screens/31_ManagerShop.screen";
 
 const Stack = createStackNavigator();
 
@@ -39,6 +41,9 @@ export default function App() {
         <Stack.Screen name="ScreenRegisterB" options={{ headerShown: false }} component={ScreenRegisterB}/>
         <Stack.Screen name="ScreenRegisterC" options={{ headerShown: false }} component={ScreenRegisterC}/>
         <Stack.Screen name="ScreenRegisterD" options={{ headerShown: false }} component={ScreenRegisterD}/>
+
+        <Stack.Screen name="ManagerShop" options={{ headerShown: false }} component={ShopScreen}/>
+        <Stack.Screen name="ScreenOffers" options={{ headerShown: false }} component={ShopOffers}/>
 
         <Stack.Screen name="HomeScreen" options={{ title: "EaseAer", headerShown: false }} component={HomeScreen}/>
         

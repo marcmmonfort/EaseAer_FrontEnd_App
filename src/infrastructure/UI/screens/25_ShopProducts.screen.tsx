@@ -422,7 +422,18 @@ export default function ShopProducts() {
     return null;
   }
 
+  function showOffers(productId: string): void {
+    navigation.navigate('Shopping', {
+      screen: 'Offers',
+      params: {
+        productIdTransfer: productId
+      }
+    });
+    // navigation.navigate('Shopping' as never, { screen: 'ManagerShop' } as never, { screen: 'ScreenOffers' } as never, { productIdTransfer:productId } as never);
+  }
+
   const renderProductItem = (productItem: ProductEntity) => (
+    
     <View style={styles.productContainer} key={productItem.uuid}>
         <View style={[ styles.statusBox, productItem.deletedProduct ? styles.deletedProduct : styles.activeProduct ]} ></View>
         <View style={styles.productPack}>
@@ -435,9 +446,9 @@ export default function ShopProducts() {
                 <Text style={styles.usernameText}>{productItem.codeProduct}</Text>
             </View>
         </View>
-        <View style={styles.offersLink}>
+        <TouchableOpacity style={styles.offersLink} onPress={() => showOffers(productItem.uuid)}>
             <Text style={styles.arrowText}>→</Text>
-        </View>
+        </TouchableOpacity>
     </View>
   );
 

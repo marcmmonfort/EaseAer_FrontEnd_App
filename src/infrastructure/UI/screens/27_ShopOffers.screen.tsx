@@ -1,4 +1,4 @@
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import Svg, { Defs, Path, Pattern, Use } from "react-native-svg";
 import MainContainer from "../components/containers/Main";
@@ -40,8 +40,30 @@ async function loadFonts() {
   });
 }
 
+interface RouteParams {
+    productIdTransfer?: string;
+}
+
 export default function ShopOffers() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  const route = useRoute();
+  const {
+    productIdTransfer,
+  }: RouteParams = route.params || {};
+
+  useEffect(() => {
+    if (productIdTransfer) {
+      setProductId(productIdTransfer);
+    }
+  }, [productIdTransfer]);
+
+  const [listOffers, setListOffers] = useState<OfferEntity[] | null>(null);
+  const [userDetails, setUserDetails] = useState<{ [key: string]: string }>({});
+  const [searchText, setSearchText] = useState("");
+  const [productId, setProductId] = useState("");
+  const [values, setValues] = useState([0, 1000]);
+
   const {t}=useTranslation();
   useEffect(() => {
     loadFonts().then(() => {
@@ -63,11 +85,6 @@ export default function ShopOffers() {
   });
 
   const navigation = useNavigation();
-
-  const [listOffers, setListOffers] = useState<OfferEntity[] | null>(null);
-  const [userDetails, setUserDetails] = useState<{ [key: string]: string }>({});
-  const [searchText, setSearchText] = useState("");
-  const [values, setValues] = useState([0, 1000]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -93,16 +110,29 @@ export default function ShopOffers() {
     }, [])
   );
 
+    const formatDate = (isoString: string) => {
+        if (!isoString) return null;
+        const date = new Date(isoString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
     const getDetailsOffer = async (offerId: string) => {
         let offerDetails = ["web", "nameProduct", offerId, "price", "dateEnd", "terminalShop", "floorShop"];
         try {
             const currentOffer = await OfferService.getOfferById(offerId);
             if (currentOffer) {
                 offerDetails[3] = currentOffer.data.priceOffer?.toString()+"€" ?? "price";
-                offerDetails[4] = currentOffer.data.dateEndOffer?.toString() ?? "dateEnd";
+                offerDetails[4] = "Until " + formatDate(currentOffer.data.dateEndOffer) ?? "dateEnd";
                 const shopResponse = await ShopService.getShopById(currentOffer.data.idShopOffer);
                 if (shopResponse?.data?.webShop) {
                     offerDetails[0] = shopResponse.data.webShop;
+                    const companyResponse = await CRUDService.getUserById(shopResponse.data.idCompanyShop);
+                    if (companyResponse?.data?.nameUser) {
+                        offerDetails[0] = companyResponse.data.nameUser;
+                    }
                     const locationResponse = await LocationService.getLocationById(shopResponse.data.idLocationShop);
                     if (locationResponse?.data?.nameLocation) {
                         offerDetails[5] = locationResponse.data.terminalLocation;
@@ -282,8 +312,8 @@ export default function ShopOffers() {
         color: 'white',
       },
       productContainer: {
-        marginBottom: 18,
-        marginTop: 0,
+        marginBottom: 0,
+        marginTop: -12,
         borderRadius: 12,
         borderWidth: 0,
         backgroundColor: 'transparent',
@@ -291,25 +321,27 @@ export default function ShopOffers() {
         shadowOpacity: 0,
         shadowRadius: 10,
         flexDirection: 'row',
+        zIndex: 1,
     },
     productHeader: {
         marginBottom: 0,
-        marginTop: 0,
+        marginTop: -24,
         marginLeft: 0,
         marginRight: 0,
         borderRadius: 12,
         borderWidth: 0,
-        backgroundColor: '#d0871e',
+        backgroundColor: '#d8131b',
         shadowColor: '#000',
         shadowOpacity: 0,
         shadowRadius: 10,
         alignItems: 'center',
-        zIndex: 5,
+        zIndex: 2,
     },
     productContent: {
         marginBottom: 0,
-        marginTop: -12,
-        paddingTop: 12,
+        marginTop: 0,
+        paddingTop: 20,
+        paddingBottom: 34,
         marginLeft: 0,
         marginRight: 0,
         paddingLeft: 12,
@@ -322,12 +354,12 @@ export default function ShopOffers() {
         shadowOpacity: 0,
         shadowRadius: 10,
         alignItems: 'center',
-        zIndex: 4,
+        zIndex: 2,
     },
     titleNewsText: {
         color: 'white',
-        fontFamily: subtitleFont,
-        fontSize: 22,
+        fontFamily: titleFont,
+        fontSize: 20,
         marginTop: 6,
         marginBottom: 6,
     },
@@ -359,12 +391,20 @@ export default function ShopOffers() {
         marginTop: 0,
         marginBottom: 0,
     },
+    productNameText: {
+        color: '#875a31',
+        fontFamily: subtitleFont,
+        fontSize: 20,
+        marginTop: 0,
+        marginBottom: 0,
+        textAlign: 'justify',
+    },
     detailsText: {
         color: '#b3b0a1',
         fontFamily: bodyFont,
         fontSize: 16,
-        marginTop: 8,
-        marginBottom: 12,
+        marginTop: 2,
+        marginBottom: 0,
         textAlign: 'justify',
     },
     image: {
@@ -493,6 +533,7 @@ export default function ShopOffers() {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#321e29',
+        zIndex: 2,
       },
       showOfferText: {
         fontFamily: subtitleFont,
@@ -500,6 +541,13 @@ export default function ShopOffers() {
         fontSize: 20,
         color: 'white',
         marginBottom: 4,
+      },
+      loadAllText: {
+        fontFamily: subtitleFont,
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: 'white',
+        marginTop: 3.5,
       },
       showOfferButton: {
         marginLeft: 120,
@@ -522,6 +570,16 @@ export default function ShopOffers() {
         fontFamily: bodyFont,
         fontSize: 12,
         marginTop: 6,
+    },
+    showAllButton: {
+        padding: 6,
+        backgroundColor: "#875a31",
+        borderRadius: 12,
+        height: 38,
+        alignItems: 'center',
+        marginTop: 26,
+        marginLeft: 112,
+        marginRight: 112,
     },
   });
 
@@ -552,24 +610,26 @@ export default function ShopOffers() {
                     <Text style={styles.offerCodeText}>{details[2]}</Text>
                 </TouchableOpacity>
                 {visible && (
-                <View style={styles.productContainer} key={offerItem.uuid}>
-                    <View style={styles.productPack}>
-                        <View style={styles.productHeader}>
-                            <Text style={styles.titleNewsText}>{details[1]}</Text>
-                        </View>
-                        <View style={styles.productContent}>
-                            <Text style={styles.detailsText}>{details[0]}</Text>
-                            <Text style={styles.detailsText}>{details[3]}</Text>
-                            <Text style={styles.detailsText}>{details[4]}</Text>
-                            <Text style={styles.detailsText}>{details[5]}</Text>
-                            <Text style={styles.detailsText}>{details[6]}</Text>
+                    <View style={styles.productContainer} key={offerItem.uuid}>
+                        <View style={styles.productPack}>
+                            <View style={styles.productContent}>
+                                <Text style={styles.productNameText}>{details[1]}</Text>
+                                <Text style={styles.detailsText}>{details[0]}, {details[5]}, {details[6]}</Text>
+                                <Text style={styles.detailsText}>{details[4]}</Text>
+                            </View>
+                            <View style={styles.productHeader}>
+                                <Text style={styles.titleNewsText}>{details[3]}</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
                 )}
             </View>
         );
     };
+
+    function showAll(): void {
+        setProductId("");
+    }
 
     return (
         <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
@@ -595,18 +655,26 @@ export default function ShopOffers() {
             </View>
 
             <ScrollView style={styles.scrollStyle}>
+                {productId!="" && (
+                    <TouchableOpacity style={styles.showAllButton} onPress={showAll}>
+                        <Text style={styles.loadAllText}>Show All</Text>
+                    </TouchableOpacity>
+                )}
                 {listOffers
                 ? (listOffers
                     .filter(offer => 
-                        offer.priceOffer.valueOf() >= values[0] &&
-                        offer.priceOffer.valueOf() <= values[1]
+                        offer.priceOffer.valueOf() >= values[0].valueOf() &&
+                        offer.priceOffer.valueOf() <= values[1].valueOf() &&
+                        (productId === "" || offer.idProductOffer == productId)
                     )
-                    .length === 0
-                    ? <Text style={styles.noNewsText}>
-                        No Offers Available
-                    </Text>
+                    .length === 0 ? <Text style={styles.noNewsText}> No Offers Available </Text>
                     : listOffers
-                        .sort((a, b) => a.idProductOffer.localeCompare(b.idProductOffer))
+                        .filter(offer => 
+                            offer.priceOffer.valueOf() >= values[0].valueOf() &&
+                            offer.priceOffer.valueOf() <= values[1].valueOf() &&
+                            (productId === "" || offer.idProductOffer == productId)
+                        )
+                        .sort((a, b) => Number(a.priceOffer) - Number(b.priceOffer))
                         .map((offerItem) => <OfferComponent key={offerItem.uuid} offerItem={offerItem} />))
                     : <Text style={styles.noNewsText}>Not Available</Text>
                 }
