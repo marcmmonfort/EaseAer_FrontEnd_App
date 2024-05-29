@@ -282,8 +282,8 @@ export default function ShopOffers() {
         color: 'white',
       },
       productContainer: {
-        marginBottom: -2,
-        marginTop: 26,
+        marginBottom: 18,
+        marginTop: 0,
         borderRadius: 12,
         borderWidth: 0,
         backgroundColor: 'transparent',
@@ -291,8 +291,6 @@ export default function ShopOffers() {
         shadowOpacity: 0,
         shadowRadius: 10,
         flexDirection: 'row',
-        marginLeft: 26,
-        marginRight: 26,
     },
     productHeader: {
         marginBottom: 0,
@@ -396,7 +394,7 @@ export default function ShopOffers() {
     },
     productPack: {
         marginLeft: 0,
-        width: '85%',
+        width: '100%',
         zIndex: 2,
     }, 
     statusBox: {
@@ -471,6 +469,60 @@ export default function ShopOffers() {
         position: 'absolute',
         right: 10,
     },
+    filterContainer: {
+        height: 38,
+        marginTop: 18,
+        marginBottom: 18,
+        marginRight: 120,
+        marginLeft: 120,
+        borderRadius: 12,
+        backgroundColor: '#321e29',
+        justifyContent: 'center',
+    },
+    filterTextButton: {
+        color: 'white',
+        fontFamily: subtitleFont,
+        fontSize: 20,
+        textAlign: 'center',
+    },
+    button: {
+        height: 120,
+        width: '100%',
+        borderRadius: 12,
+        padding: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#321e29',
+      },
+      showOfferText: {
+        fontFamily: subtitleFont,
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: 'white',
+        marginBottom: 4,
+      },
+      showOfferButton: {
+        marginLeft: 120,
+        marginRight: 120,
+        borderRadius: 12,
+        backgroundColor: '#875a31',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    generalProductContainer: {
+        alignContent: 'center',
+        textAlign: 'center',
+        alignItems: 'center',
+        marginTop: 26,
+        marginLeft: 26,
+        marginRight: 26,
+    },
+    offerCodeText: {
+        color: '#e9e8e6',
+        fontFamily: bodyFont,
+        fontSize: 12,
+        marginTop: 6,
+    },
   });
 
   if (!fontsLoaded) {
@@ -484,35 +536,37 @@ export default function ShopOffers() {
     const OfferComponent: React.FC<OfferComponentProps> = ({ offerItem }) => {
         const [details, setDetails] = useState(["...", "...", offerItem.uuid, "...", "...", "...", "..."]);
         // const [details, setDetails] = useState(["web", "nameProduct", offerItem.uuid, "price", "dateEnd", "terminal", "floor"]);
+        const [visible, setVisible] = useState(false);
 
         const fetchDetails = async () => {
             const offerDetails = await getDetailsOffer(offerItem.uuid);
             setDetails(offerDetails);
+            setVisible(true);
         };
 
         return (
-            <View style={styles.productContainer} key={offerItem.uuid}>
-                <View style={styles.statusBox}></View>
-                <View style={styles.productPack}>
-                    <View style={styles.productHeader}>
-                        <Text style={styles.titleNewsText}>{details[1]}</Text>
+            <View style={styles.generalProductContainer}> 
+                <TouchableOpacity style={styles.button} onPress={fetchDetails}> 
+                    <Text style={styles.showOfferText}>UnLock Offer</Text>
+                    <QRCode value={offerItem.uuid} size={56} color="#b3b0a1" backgroundColor="transparent" />
+                    <Text style={styles.offerCodeText}>{details[2]}</Text>
+                </TouchableOpacity>
+                {visible && (
+                <View style={styles.productContainer} key={offerItem.uuid}>
+                    <View style={styles.productPack}>
+                        <View style={styles.productHeader}>
+                            <Text style={styles.titleNewsText}>{details[1]}</Text>
+                        </View>
+                        <View style={styles.productContent}>
+                            <Text style={styles.detailsText}>{details[0]}</Text>
+                            <Text style={styles.detailsText}>{details[3]}</Text>
+                            <Text style={styles.detailsText}>{details[4]}</Text>
+                            <Text style={styles.detailsText}>{details[5]}</Text>
+                            <Text style={styles.detailsText}>{details[6]}</Text>
+                        </View>
                     </View>
-                    <View style={styles.productContent}>
-                        <Text style={styles.detailsText}>{details[0]}</Text>
-                        <Text style={styles.detailsText}>{details[3]}</Text>
-                        <Text style={styles.detailsText}>{details[4]}</Text>
-                        <Text style={styles.detailsText}>{details[5]}</Text>
-                        <Text style={styles.detailsText}>{details[6]}</Text>
-                        <QRCode value={offerItem.uuid} size={56} color="#321e29" />
-                        <Text style={styles.usernameText}>{details[2]}</Text>
-                    </View>
                 </View>
-                <View style={styles.offersLink}>
-                    <Text style={styles.arrowText}>→</Text>
-                </View>
-                <View style={styles.offersLink}>
-                    <Button title="Fetch Details" onPress={fetchDetails} />
-                </View>
+                )}
             </View>
         );
     };
