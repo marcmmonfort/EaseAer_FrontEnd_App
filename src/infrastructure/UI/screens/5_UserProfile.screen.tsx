@@ -556,6 +556,8 @@ styleContainer: {
                   <Text style={styles.textNameDescription}>{formatGender(currentUser.genderUser)}, {formatRole(currentUser.roleUser)}</Text>
                   <Text style={styles.titleNameDescription}>Description</Text>
                   <Text style={styles.textNameDescription}>{currentUser.descriptionUser}</Text>
+                  <Text style={styles.titleNameDescription}>Game Record</Text>
+                  <Text style={styles.textNameDescription}>{currentUser.recordGameUser}</Text>
                 </View>
               </View>
               <TouchableOpacity style={styles.buttonLogOut} onPress={logOutButtonFunction}>

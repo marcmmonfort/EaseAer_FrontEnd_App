@@ -14,7 +14,7 @@ import ProfileScreen from "./src/infrastructure/UI/screens/5_UserProfile.screen"
 import EditUserScreen from "./src/infrastructure/UI/screens/7_UserEdit.screen";
 import SplashScreen from "./src/infrastructure/UI/screens/1_SplashScreen.screen";
 import GoogleLogin from "./src/infrastructure/UI/screens/2_LogIn.screen";
-import UserStats from "./src/infrastructure/UI/screens/17_EntertainmentStatistics.screen";
+import OldStats from "./src/infrastructure/UI/screens/17_OldStatistics.screen";
 import React, { useEffect } from 'react';
 import { Alert } from 'react-native';
 import UserScreen from "./src/infrastructure/UI/screens/29_UserOtherProfile.screen";
@@ -87,7 +87,7 @@ export default function App() {
 
         <Stack.Screen name="Edit" component={EditUserScreen} />
         <Stack.Screen name="UserScreen" component={UserScreen}/>
-        <Stack.Screen name="UserStats" component={UserStats}/>          
+        <Stack.Screen name="OldStats" component={OldStats}/>          
       </Stack.Navigator>
     </NavigationContainer>
   );

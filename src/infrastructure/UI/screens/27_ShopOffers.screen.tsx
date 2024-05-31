@@ -430,7 +430,7 @@ export default function ShopOffers() {
         fontFamily: bodyFont,
         textAlign: 'center',
         fontSize: 18,
-        marginTop: 14,
+        marginTop: 18,
     },
     productPack: {
         marginLeft: 0,
@@ -635,7 +635,7 @@ export default function ShopOffers() {
         <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
             <View style={styles.headerContainer}>
                 <View style={styles.sectionTitle}>
-                    <Text style={styles.pageTitle}>Products</Text>
+                    <Text style={styles.pageTitle}>Offers</Text>
                 </View>
                 <View style={styles.airportContainer}>
                     <View style={styles.airportTitle}>

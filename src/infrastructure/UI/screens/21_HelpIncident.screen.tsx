@@ -229,7 +229,7 @@ export default function HelpIncident() {
     picker: {
         borderWidth: 0,
         borderRadius: 12,
-        color: "black",
+        color: "#321e29",
         backgroundColor: 'transparent',
         marginTop: 0,
         marginBottom: 10,
@@ -237,7 +237,7 @@ export default function HelpIncident() {
     },
     pickerItem:{
         fontSize: 16,
-        color: "black",
+        color: "#321e29",
         fontFamily: subtitleFont,
         height: 60,
     },
