@@ -52,6 +52,7 @@ export default function EntertainmentGameHome() {
   const [locationGame, setLocationGame] = useState("LESU");
   const [questionsLocation, setQuestionsLocation] = useState<QuestionEntity[] | null>(null);
   const [indexes, setIndexes] = useState<number[] | null>(null);
+  const [quizPage, setQuizPage] = useState<number>(0);
   const [modalVisible, setModalVisible] = useState(false);
 
   const {t}=useTranslation();
@@ -617,6 +618,12 @@ export default function EntertainmentGameHome() {
         );
     };
 
+    function submitGame(): void {
+        setModalVisible(false);
+        setQuizPage(0);
+        setIndexes(null);
+    }
+
     return (
         <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
             <View style={styles.headerContainer}>
@@ -665,22 +672,23 @@ export default function EntertainmentGameHome() {
 
             <Modal animationType="none" transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(false) }}>
                 <View style={styles.modalOverlay}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Hello, this is a modal!</Text>
-                        <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(!modalVisible)}>
-                            <Text style={styles.buttonText}>Close</Text>
+                <View style={styles.modalView}>
+                    {indexes && indexes.length === 10 && questionsLocation?.length !== undefined && questionsLocation?.length >= 10 ? (
+                        <QuestionComponent key={questionsLocation[indexes[quizPage]].uuid} questionItem={questionsLocation[indexes[quizPage]]} />
+                    ) : (
+                        <Text style={styles.noNewsText}>Error Loading Questions</Text>
+                    )}
+                    {quizPage < 9 && (
+                        <TouchableOpacity style={styles.closeButton} onPress={() => setQuizPage(quizPage+1)}>
+                            <Text style={styles.buttonText}>Next</Text>
                         </TouchableOpacity>
-                        {indexes && indexes.length === 10 && questionsLocation?.length!=undefined && questionsLocation?.length >= 10 ? (
-                            <>
-                                {indexes.map((index) => {
-                                    const questionItem = questionsLocation[index];
-                                    return <QuestionComponent key={questionItem.uuid} questionItem={questionItem} />;
-                                })}
-                            </>
-                        ) : (
-                            <Text style={styles.noNewsText}>Error Loading Questions</Text>
-                        )}
-                    </View>
+                    )}
+                    {quizPage === 9 && (
+                        <TouchableOpacity style={styles.closeButton} onPress={() => submitGame()}>
+                            <Text style={styles.buttonText}>Send Answers</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
                 </View>
             </Modal>
 
