@@ -9,7 +9,7 @@ import Button_Type_1 from "../components/buttons/Button_Type_1";
 import { AuthEntity } from "../../../domain/user/user.entity";
 import { SessionService } from "../../services/user/session.service";
 import NormalText from "../components/texts/NormalText";
-import { Platform, StatusBar, TouchableOpacity, StyleSheet, ImageBackground, Image, View, Text, Alert, ScrollView, Button } from "react-native";
+import { Platform, StatusBar, TouchableOpacity, StyleSheet, ImageBackground, Image, View, Text, Alert, ScrollView, Button, Modal } from "react-native";
 import Register from "../components/texts/Register";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
@@ -33,6 +33,8 @@ import { ShopService } from "../../services/shop/shop.service";
 import { LocationService } from "../../services/location/location.service";
 import { GameEntity } from "../../../domain/game/game.entity";
 import { GameService } from "../../services/game/game.service";
+import { QuestionEntity } from "../../../domain/question/question.entity";
+import { QuestionService } from "../../services/question/question.service";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -48,6 +50,9 @@ export default function EntertainmentGameHome() {
   const [listGames, setListGames] = useState<GameEntity[] | null>(null);
   const [gameId, setGameId] = useState("");
   const [locationGame, setLocationGame] = useState("LESU");
+  const [questionsLocation, setQuestionsLocation] = useState<QuestionEntity[] | null>(null);
+  const [indexes, setIndexes] = useState<number[] | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const {t}=useTranslation();
   useEffect(() => {
@@ -94,6 +99,46 @@ export default function EntertainmentGameHome() {
       getMyGames();
     }, [])
   );
+
+    async function createGame(): Promise<void> {
+        try {
+            if (locationGame) {
+                let questionsResponse = await QuestionService.getQuestionsByDestination(locationGame);
+                if (questionsResponse?.data) {
+                    const questions = questionsResponse.data;
+                    setQuestionsLocation(questions);
+                    if (questions.length === 0) {
+                        console.log("No Questions Available For This Destination");
+                        Alert.alert("EaseAer", "Sorry, Questions Are Unavailable. Try Another Destination!");
+                    } else if (questions.length < 10) {
+                        console.log("Not Enough Questions Available To Start A Game");
+                        Alert.alert("EaseAer", "Sorry, Questions Are Unavailable. Try Another Destination!");
+                    } else {
+                        console.log("¡Cumple Los Criterios!");
+                        const randomIndexes = generateRandomNumbers(0, questions.length-1, 10);
+                        setIndexes(randomIndexes);
+                        console.log("Índices: " + randomIndexes);
+                        if (questionsLocation){
+                            console.log("Todas Las Preguntas: " + questionsLocation);
+                            console.log("Pregunta 1: (Index " + randomIndexes[0] + ") - Answer:" + questionsLocation[randomIndexes[0]].ansAQuestion);
+                            console.log("Pregunta 2: (Index " + randomIndexes[1] + ") - Answer:" + questionsLocation[randomIndexes[1]].ansAQuestion);
+                            console.log("Pregunta 3: (Index " + randomIndexes[2] + ") - Answer:" + questionsLocation[randomIndexes[2]].ansAQuestion);
+                            console.log("Pregunta 4: (Index " + randomIndexes[3] + ") - Answer:" + questionsLocation[randomIndexes[3]].ansAQuestion);
+                            console.log("Pregunta 5: (Index " + randomIndexes[4] + ") - Answer:" + questionsLocation[randomIndexes[4]].ansAQuestion);
+                            console.log("Pregunta 6: (Index " + randomIndexes[5] + ") - Answer:" + questionsLocation[randomIndexes[5]].ansAQuestion);
+                            console.log("Pregunta 7: (Index " + randomIndexes[6] + ") - Answer:" + questionsLocation[randomIndexes[6]].ansAQuestion);
+                            console.log("Pregunta 8: (Index " + randomIndexes[7] + ") - Answer:" + questionsLocation[randomIndexes[7]].ansAQuestion);
+                            console.log("Pregunta 9: (Index " + randomIndexes[8] + ") - Answer:" + questionsLocation[randomIndexes[8]].ansAQuestion);
+                            console.log("Pregunta 10: (Index " + randomIndexes[9] + ") - Answer:" + questionsLocation[randomIndexes[9]].ansAQuestion);
+                        }
+                        setModalVisible(true);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Error Creating Game: ", error);
+        }
+    }
 
   const styles = StyleSheet.create({
     titleText: {
@@ -423,15 +468,45 @@ export default function EntertainmentGameHome() {
         marginTop: 0,
         marginBottom: -4,
     },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalView: {
+        width: '80%',
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 20,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+        modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    closeButton: {
+        backgroundColor: '#2196F3',
+        padding: 10,
+        borderRadius: 5,
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
   });
 
   if (!fontsLoaded) {
     return null;
   }
-
-    interface GameComponentProps {
-        gameItem: any;
-    }
 
     const formatDestination = (icaoDestination: string) => {
         if (!icaoDestination) return null;
@@ -469,7 +544,11 @@ export default function EntertainmentGameHome() {
         else return "Unknown";
     };
 
-    const OfferComponent: React.FC<GameComponentProps> = ({ gameItem }) => {
+    interface GameComponentProps {
+        gameItem: any;
+    }
+
+    const GameComponent: React.FC<GameComponentProps> = ({ gameItem }) => {
         return (
             <View style={styles.generalProductContainer}> 
                 <View style={styles.productContainer} key={gameItem.uuid}>
@@ -486,9 +565,57 @@ export default function EntertainmentGameHome() {
         );
     };
 
-    function createGame(): void {
-        console.log("Game Created");
+    const getRandomNumber = (min: number, max: number | undefined) => {
+        if (max!=undefined){
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        } else {
+            return 0;
+        }
+    };
+      
+    const generateRandomNumbers = (min: number, max: number | undefined, count: number) => {
+        const randomNumbers: any[] = [];
+        let i = 0;
+        while (i < count) {
+            let newNumber = getRandomNumber(min, max);
+            let isAlreadyUsed = false;
+            for (let j = 0; j < randomNumbers.length; j++){
+                if (randomNumbers[j] === newNumber){
+                    isAlreadyUsed = true;
+                }
+            }
+            if (isAlreadyUsed===false){
+                randomNumbers.push(newNumber);
+                i+=1;
+            }
+        }
+        return randomNumbers;
+    };      
+
+    interface QuestionComponentProps {
+        questionItem: any;
     }
+
+    const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionItem }) => {
+        if (!questionItem) {
+            return null;
+        }
+    
+        return (
+            <View style={styles.generalProductContainer}> 
+                <View style={styles.productContainer} key={questionItem.uuid}>
+                    <View style={styles.button}> 
+                        <Text style={styles.showOfferText}>{questionItem.destinationQuestion}</Text>
+                        <Text style={styles.productNameText}>{questionItem.statementQuestion}</Text>
+                    </View>
+                    <View style={styles.productContent}>
+                        <Text style={styles.detailsTextPlus}>{questionItem.correctAnsQuestion}</Text>
+                        <Text style={styles.detailsText}>Points</Text>
+                    </View>
+                </View>
+            </View>
+        );
+    };
 
     return (
         <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
@@ -536,6 +663,27 @@ export default function EntertainmentGameHome() {
                 <Picker.Item label="Zaragoza" value="LEZG"/>
             </Picker>
 
+            <Modal animationType="none" transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(false) }}>
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Hello, this is a modal!</Text>
+                        <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(!modalVisible)}>
+                            <Text style={styles.buttonText}>Close</Text>
+                        </TouchableOpacity>
+                        {indexes && indexes.length === 10 && questionsLocation?.length!=undefined && questionsLocation?.length >= 10 ? (
+                            <>
+                                {indexes.map((index) => {
+                                    const questionItem = questionsLocation[index];
+                                    return <QuestionComponent key={questionItem.uuid} questionItem={questionItem} />;
+                                })}
+                            </>
+                        ) : (
+                            <Text style={styles.noNewsText}>Error Loading Questions</Text>
+                        )}
+                    </View>
+                </View>
+            </Modal>
+
             <ScrollView style={styles.scrollStyle}>
                 <TouchableOpacity style={styles.showAllButton} onPress={() => createGame()}>
                     <Text style={styles.loadAllText}>New Game</Text>
@@ -551,10 +699,15 @@ export default function EntertainmentGameHome() {
                             game.destinationGame === locationGame
                         )
                         .sort((a, b) => Number(b.pointsGame) - Number(a.pointsGame))
-                        .map((gameItem) => <OfferComponent key={gameItem.uuid} gameItem={gameItem} />))
+                        .map((gameItem) => <GameComponent key={gameItem.uuid} gameItem={gameItem} />))
                     : <Text style={styles.noNewsText}>Not Available</Text>
                 }
             </ScrollView>
         </ImageBackground>
     );
 }
+
+/*
+
+
+*/
