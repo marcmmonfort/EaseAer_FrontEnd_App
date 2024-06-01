@@ -6,7 +6,7 @@ import Title from "../components/texts/Title";
 import SubTitle from "../components/texts/Subtitle";
 import StyledTextInputs from "../components/inputs/StyledTextInputs";
 import Button_Type_1 from "../components/buttons/Button_Type_1";
-import { AuthEntity } from "../../../domain/user/user.entity";
+import { AuthEntity, UserEntity } from "../../../domain/user/user.entity";
 import { SessionService } from "../../services/user/session.service";
 import NormalText from "../components/texts/NormalText";
 import { Platform, StatusBar, TouchableOpacity, StyleSheet, ImageBackground, Image, View, Text, Alert, ScrollView, Button, Modal } from "react-native";
@@ -64,6 +64,7 @@ export default function EntertainmentGameHome() {
   const [txtAnsB, setTxtAnsB] = useState('#321e29');
   const [txtAnsC, setTxtAnsC] = useState('#321e29');
   const [txtAnsD, setTxtAnsD] = useState('#321e29');
+  const [currentUser, setCurrentUser] = useState<UserEntity | null>(null);
 
   const {t}=useTranslation();
   useEffect(() => {
@@ -733,6 +734,20 @@ export default function EntertainmentGameHome() {
         return randomNumbers;
     };      
 
+    const getUser = async (currentUserId: string) => {
+        if (currentUserId) {
+            try {
+                await CRUDService.getUserById(currentUserId).then(async (response) => {
+                if (response?.data && response.data.descriptionUser) {
+                    setCurrentUser(response.data);
+                }
+                });
+            } catch (error) {
+                console.error("Getting User:", error);
+            }
+        }
+    };
+
     const submitGame = async () => {
         const finalAnwers = selectedAnswers;
 
@@ -791,7 +806,26 @@ export default function EntertainmentGameHome() {
             })  
         } catch (error) {
             Alert.alert("EaseAer", "Error Saving Game");
-        }        
+        }
+        
+        // En caso de superar el record del usuario, lo actualizamos.
+        const currentUserId = idUserGame;
+        getUser(currentUserId);
+        if (currentUser != null){
+            if ((currentUser.recordGameUser!=undefined) && (currentUser.recordGameUser!=null) && (currentUser.recordGameUser < pointsGame)){
+                currentUser.recordGameUser = pointsGame;
+                
+                // HACER UPDATE USUARIO:
+
+                CRUDService.updateUser(currentUser).then((response)=>{
+                    if (response && response.status===200){
+                        Alert.alert("EaseAer", "New Personal Record");
+                    };
+                }).catch((error)=>{
+                    // Not Able To Update User.
+                })  
+            }
+        }
 
         // Dejamos todo de inicio.
         setModalVisible(false);

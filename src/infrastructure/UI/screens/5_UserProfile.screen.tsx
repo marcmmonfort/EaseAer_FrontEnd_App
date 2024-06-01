@@ -105,19 +105,6 @@ export default function ProfileScreen() {
                 } catch (error) {
                   console.error("Error Getting Card Of User: ", error);
                 }
-                /*
-                if (cardIdResponse) {
-                  try {
-                    await CardService.getCardById(cardIdResponse.data).then(async (response2) => {
-                      if (response2?.data && response2.data.numberCard) {
-                        setCurrentCard(response2.data);
-                      }
-                    })
-                  } catch (error) {
-                    console.error("Error Getting Card Of User: ", error);
-                  }
-                }
-                */
 
                 if (response.data.roleUser === 'business') {
                   setIcon(
