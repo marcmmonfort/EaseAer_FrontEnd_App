@@ -54,6 +54,16 @@ export default function EntertainmentGameHome() {
   const [indexes, setIndexes] = useState<number[] | null>(null);
   const [quizPage, setQuizPage] = useState<number>(0);
   const [modalVisible, setModalVisible] = useState(false);
+  const [pointsGame, setPointsGame] = useState<number>(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<string[]>(["incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect"]);
+  const [bgAnsA, setBgAnsA] = useState('white');
+  const [bgAnsB, setBgAnsB] = useState('white');
+  const [bgAnsC, setBgAnsC] = useState('white');
+  const [bgAnsD, setBgAnsD] = useState('white');
+  const [txtAnsA, setTxtAnsA] = useState('#321e29');
+  const [txtAnsB, setTxtAnsB] = useState('#321e29');
+  const [txtAnsC, setTxtAnsC] = useState('#321e29');
+  const [txtAnsD, setTxtAnsD] = useState('#321e29');
 
   const {t}=useTranslation();
   useEffect(() => {
@@ -77,31 +87,38 @@ export default function EntertainmentGameHome() {
 
   const navigation = useNavigation();
 
+  const getMyGames = async () => {
+    const userId = await SessionService.getCurrentUser();
+    if (userId) {
+        try {
+            await GameService.getGamesByUser(userId).then(async (response) => {
+                if (response?.data && response.data[0].pointsGame) {
+                    setListGames(response.data);
+                }
+                else {
+                    Alert.alert("EaseAer", "No Games Played");
+                }
+            });
+        } catch (error) {
+            console.error("Error Getting Offers: ", error);
+            Alert.alert("EaseAer", "Error Getting Games");
+        }
+    }
+  };
+
   useFocusEffect(
     React.useCallback(() => {
-      const getMyGames = async () => {
-        const userId = await SessionService.getCurrentUser();
-        if (userId) {
-            try {
-                await GameService.getGamesByUser(userId).then(async (response) => {
-                    if (response?.data && response.data[0].pointsGame) {
-                        setListGames(response.data);
-                    }
-                    else {
-                        Alert.alert("EaseAer", "No Games Played");
-                    }
-                });
-            } catch (error) {
-                console.error("Error Getting Offers: ", error);
-                Alert.alert("EaseAer", "Error Getting Games");
-            }
-        }
-      };
       getMyGames();
     }, [])
   );
 
+    function updateHistory(): void {
+      getMyGames();
+    }
+
     async function createGame(): Promise<void> {
+        setBgAnsA("white"); setTxtAnsA("#321e29"); setBgAnsB("white"); setTxtAnsB("#321e29"); setBgAnsC("white"); setTxtAnsC("#321e29"); setBgAnsD("white"); setTxtAnsD("#321e29");
+        setSelectedAnswers(["incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect"]);
         try {
             if (locationGame) {
                 let questionsResponse = await QuestionService.getQuestionsByDestination(locationGame);
@@ -261,8 +278,8 @@ export default function EntertainmentGameHome() {
         fontWeight: 'bold',
         fontSize: 20,
         color: 'white',
-      },
-      productContainer: {
+    },
+    productContainer: {
         marginBottom: 0,
         marginTop: 0,
         borderRadius: 12,
@@ -473,41 +490,164 @@ export default function EntertainmentGameHome() {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.42)',
     },
     modalView: {
-        width: '80%',
-        backgroundColor: 'white',
-        borderRadius: 10,
-        padding: 20,
+        width: '90%',
+        backgroundColor: '#e9e8e6',
+        borderRadius: 12,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
           width: 0,
-          height: 2,
+          height: 0,
         },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
+        shadowOpacity: 0,
+        shadowRadius: 0,
+        elevation: 0,
     },
-        modalText: {
-        marginBottom: 15,
+    modalText: {
+        marginBottom: 0,
         textAlign: 'center',
     },
-    closeButton: {
-        backgroundColor: '#2196F3',
-        padding: 10,
-        borderRadius: 5,
+
+    quizButton: {
+        padding: 6,
+        backgroundColor: "#875a31",
+        borderRadius: 12,
+        height: 38,
+        alignItems: 'center',
+        marginTop: 8,
+        marginBottom: 20,
+        width: 120,
     },
-    buttonText: {
+    questionNumber: {
+        color: '#321e29',
+        fontFamily: subtitleFont,
+        textAlign: 'center',
+        fontSize: 20,
+        marginTop: 18,
+    },
+    generalQuestionContainer: {
+        alignContent: 'center',
+        textAlign: 'center',
+        alignItems: 'center',
+        marginTop: 18,
+        marginBottom: 0,
+        marginLeft: 0,
+        marginRight: 0,
+    },
+    questionContainer: {
+        marginBottom: 0,
+        marginTop: 0,
+        borderRadius: 12,
+        borderWidth: 0,
+        backgroundColor: 'transparent',
+        zIndex: 1,
+    },
+    questionHeader: {
+        borderRadius: 12,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 6,
+        paddingBottom: 6,
+        justifyContent: 'center',
+        backgroundColor: '#b3b0a1',
+        zIndex: 2,
+        width: 320,
+        marginBottom: 18,
+    },
+    statementText: {
         color: 'white',
-        fontWeight: 'bold',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        textAlign: 'justify',
+    },
+    questionContent: {
+        borderRadius: 12, paddingLeft: 10, paddingRight: 10, paddingTop: 4, paddingBottom: 4, marginBottom: 10,
+    },
+    answerText: {
+        fontFamily: subtitleFont, fontSize: 18,
+    },
+    updateHistoryButton: {
+        padding: 6,
+        backgroundColor: "transparent",
+        height: 38,
+        alignItems: 'center',
+        marginTop: 12,
+        marginBottom: -18,
+    },
+    updateText: {
+        fontFamily: subtitleFont,
+        fontSize: 20,
+        color: '#875a31',
+        marginTop: 0,
     },
   });
 
   if (!fontsLoaded) {
     return null;
   }
+
+    interface QuestionComponentProps {
+        questionItem: any;
+    }
+
+    const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionItem }) => {
+        if (!questionItem) {
+            return null;
+        }
+
+        function submitAnswer(selectedAns: string): void {
+            // Marcar Selección:
+            if (selectedAns === "a"){
+                setBgAnsA("#321e29"); setTxtAnsA("white"); setBgAnsB("white"); setTxtAnsB("#321e29"); setBgAnsC("white"); setTxtAnsC("#321e29"); setBgAnsD("white"); setTxtAnsD("#321e29");
+            }
+            if (selectedAns === "b"){
+                setBgAnsA("white"); setTxtAnsA("#321e29"); setBgAnsB("#321e29"); setTxtAnsB("white"); setBgAnsC("white"); setTxtAnsC("#321e29"); setBgAnsD("white"); setTxtAnsD("#321e29");
+            }
+            if (selectedAns === "c"){
+                setBgAnsA("white"); setTxtAnsA("#321e29"); setBgAnsB("white"); setTxtAnsB("#321e29"); setBgAnsC("#321e29"); setTxtAnsC("white"); setBgAnsD("white"); setTxtAnsD("#321e29");
+            }
+            if (selectedAns === "d"){
+                setBgAnsA("white"); setTxtAnsA("#321e29"); setBgAnsB("white"); setTxtAnsB("#321e29"); setBgAnsC("white"); setTxtAnsC("#321e29"); setBgAnsD("#321e29"); setTxtAnsD("white");
+            }
+
+            // Guardar Resultado (Correcto / Incorrecto):
+            const correctAns = questionItem.correctAnsQuestion;
+            let actualResults = selectedAnswers;
+            if (selectedAns === correctAns){
+                actualResults[quizPage] = "correct";
+            } else {
+                actualResults[quizPage] = "incorrect";
+            }
+            setSelectedAnswers(actualResults);
+
+            console.log("Respuesta: " + selectedAnswers);
+        }
+
+        return (
+            <View style={styles.generalQuestionContainer}> 
+                <View style={styles.questionContainer} key={questionItem.uuid}>
+                    <View style={styles.questionHeader}> 
+                        <Text style={styles.statementText}>{questionItem.statementQuestion}</Text>
+                    </View>
+                    <TouchableOpacity style={[styles.questionContent, { backgroundColor: bgAnsA }]} onPress={() => submitAnswer("a")}>
+                        <Text style={[styles.answerText, { color: txtAnsA }]}>{questionItem.ansAQuestion}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.questionContent, { backgroundColor: bgAnsB }]} onPress={() => submitAnswer("b")}>
+                        <Text style={[styles.answerText, { color: txtAnsB }]}>{questionItem.ansBQuestion}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.questionContent, { backgroundColor: bgAnsC }]} onPress={() => submitAnswer("c")}>
+                        <Text style={[styles.answerText, { color: txtAnsC }]}>{questionItem.ansCQuestion}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.questionContent, { backgroundColor: bgAnsD }]} onPress={() => submitAnswer("d")}>
+                        <Text style={[styles.answerText, { color: txtAnsD }]}>{questionItem.ansDQuestion}</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        );
+    };
 
     const formatDestination = (icaoDestination: string) => {
         if (!icaoDestination) return null;
@@ -593,35 +733,75 @@ export default function EntertainmentGameHome() {
         return randomNumbers;
     };      
 
-    interface QuestionComponentProps {
-        questionItem: any;
-    }
+    const submitGame = async () => {
+        const finalAnwers = selectedAnswers;
 
-    const QuestionComponent: React.FC<QuestionComponentProps> = ({ questionItem }) => {
-        if (!questionItem) {
-            return null;
+        let totalPoints = 0;
+
+        for (let m = 0; m < finalAnwers.length; m++) {
+            if (finalAnwers[m] === "correct"){
+                totalPoints+=10;
+            } else {
+                totalPoints-=5;
+                if (totalPoints < 0){
+                    totalPoints = 0;
+                }
+            }
         }
-    
-        return (
-            <View style={styles.generalProductContainer}> 
-                <View style={styles.productContainer} key={questionItem.uuid}>
-                    <View style={styles.button}> 
-                        <Text style={styles.showOfferText}>{questionItem.destinationQuestion}</Text>
-                        <Text style={styles.productNameText}>{questionItem.statementQuestion}</Text>
-                    </View>
-                    <View style={styles.productContent}>
-                        <Text style={styles.detailsTextPlus}>{questionItem.correctAnsQuestion}</Text>
-                        <Text style={styles.detailsText}>Points</Text>
-                    </View>
-                </View>
-            </View>
-        );
-    };
 
-    function submitGame(): void {
+        // Creamos la entidad de la partida para guardarla.
+        const idUserGameRaw = await AsyncStorage.getItem("uuid");
+        const idUserGame = idUserGameRaw ? idUserGameRaw.replace(/"/g, '') : "";
+        const destinationGame = locationGame;
+        const questionsGame: string[] = []; 
+        if ((questionsLocation?.length != 0) && (questionsLocation != undefined) && (indexes?.length != 0) && (indexes != null)){
+            questionsGame[0] = questionsLocation[indexes[0]].uuid;
+            questionsGame[1] = questionsLocation[indexes[1]].uuid;
+            questionsGame[2] = questionsLocation[indexes[2]].uuid;
+            questionsGame[3] = questionsLocation[indexes[3]].uuid;
+            questionsGame[4] = questionsLocation[indexes[4]].uuid;
+            questionsGame[5] = questionsLocation[indexes[5]].uuid;
+            questionsGame[6] = questionsLocation[indexes[6]].uuid;
+            questionsGame[7] = questionsLocation[indexes[7]].uuid;
+            questionsGame[8] = questionsLocation[indexes[8]].uuid;
+            questionsGame[9] = questionsLocation[indexes[9]].uuid;
+        }
+        const pointsGame = totalPoints;
+
+        console.log(">> TODO PREPARADO");
+
+        try {
+            const game: GameEntity = {
+                uuid: " " ?? "",
+                idUserGame: idUserGame ?? "",
+                destinationGame: destinationGame ?? "",
+                questionsGame: questionsGame ?? [],
+                pointsGame: pointsGame ?? 0,
+                deletedGame: false,
+            };
+
+            console.log(">> HACE EL PEDIDO: " + idUserGame + "/" + destinationGame + "/" + questionsGame + "/" + pointsGame);
+        
+            GameService.createGame(game).then((response)=>{
+                if (response.status===200){
+                    Alert.alert("EaseAer", "Game Saved! You Got " + pointsGame +" / 100.");
+                };
+            }).catch((error)=>{
+                Alert.alert("EaseAer", "Error Saving Game");
+            })  
+        } catch (error) {
+            Alert.alert("EaseAer", "Error Saving Game");
+        }        
+
+        // Dejamos todo de inicio.
         setModalVisible(false);
         setQuizPage(0);
         setIndexes(null);
+    }
+
+    function nextQuestion(): void {
+        setBgAnsA("white"); setTxtAnsA("#321e29"); setBgAnsB("white"); setTxtAnsB("#321e29"); setBgAnsC("white"); setTxtAnsC("#321e29"); setBgAnsD("white"); setTxtAnsD("#321e29");
+        setQuizPage(quizPage+1);
     }
 
     return (
@@ -636,6 +816,7 @@ export default function EntertainmentGameHome() {
                     </View>
                 </View>
             </View>
+
             <Picker selectedValue={locationGame} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setLocationGame(itemValue)}>
                 <Picker.Item label="Alicante - Elche" value="LEAL"/>
                 <Picker.Item label="Ámsterdam Schiphol" value="EHAM"/> 
@@ -672,29 +853,35 @@ export default function EntertainmentGameHome() {
 
             <Modal animationType="none" transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(false) }}>
                 <View style={styles.modalOverlay}>
-                <View style={styles.modalView}>
-                    {indexes && indexes.length === 10 && questionsLocation?.length !== undefined && questionsLocation?.length >= 10 ? (
-                        <QuestionComponent key={questionsLocation[indexes[quizPage]].uuid} questionItem={questionsLocation[indexes[quizPage]]} />
-                    ) : (
-                        <Text style={styles.noNewsText}>Error Loading Questions</Text>
-                    )}
-                    {quizPage < 9 && (
-                        <TouchableOpacity style={styles.closeButton} onPress={() => setQuizPage(quizPage+1)}>
-                            <Text style={styles.buttonText}>Next</Text>
-                        </TouchableOpacity>
-                    )}
-                    {quizPage === 9 && (
-                        <TouchableOpacity style={styles.closeButton} onPress={() => submitGame()}>
-                            <Text style={styles.buttonText}>Send Answers</Text>
-                        </TouchableOpacity>
-                    )}
-                </View>
+                    <View style={styles.modalView}>
+                        {indexes && indexes.length === 10 && questionsLocation?.length !== undefined && questionsLocation?.length >= 10 ? (
+                            <View>
+                                <Text style={styles.questionNumber}>Question {quizPage+1}</Text>
+                                <QuestionComponent key={questionsLocation[indexes[quizPage]].uuid} questionItem={questionsLocation[indexes[quizPage]]}/>
+                            </View>
+                        ) : (
+                            <Text style={styles.noNewsText}>Error Loading Questions</Text>
+                        )}
+                        {quizPage < 9 && (
+                            <TouchableOpacity style={styles.quizButton} onPress={() => nextQuestion()}>
+                                <Text style={styles.loadAllText}>Next</Text>
+                            </TouchableOpacity>
+                        )}
+                        {quizPage === 9 && (
+                            <TouchableOpacity style={styles.quizButton} onPress={() => submitGame()}>
+                                <Text style={styles.loadAllText}>Send Answers</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
                 </View>
             </Modal>
 
             <ScrollView style={styles.scrollStyle}>
                 <TouchableOpacity style={styles.showAllButton} onPress={() => createGame()}>
                     <Text style={styles.loadAllText}>New Game</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.updateHistoryButton} onPress={() => updateHistory()}>
+                    <Text style={styles.updateText}>Update History</Text>
                 </TouchableOpacity>
                 {listGames
                 ? (listGames
@@ -714,8 +901,3 @@ export default function EntertainmentGameHome() {
         </ImageBackground>
     );
 }
-
-/*
-
-
-*/
