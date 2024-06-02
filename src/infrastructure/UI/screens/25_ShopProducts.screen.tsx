@@ -290,7 +290,7 @@ export default function ShopProducts() {
     titleNewsText: {
         color: 'white',
         fontFamily: subtitleFont,
-        fontSize: 22,
+        fontSize: 20,
         marginTop: 6,
         marginBottom: 6,
     },

@@ -76,8 +76,8 @@ export default function FlightsInformation() {
                 console.log("---> Busco Compañía Con ID: <" + companyId + ">");
                 
                 await CRUDService.getUserById(companyId).then(async (response) => {
+                    // Si se pide el UUID de una compañía que no existe falla el BackEnd.
                     if (response?.data && response?.data != undefined && response?.data.nameUser) {
-                        console.log("---> He Encontrado Compañía: " + response.data.nameUser);
                         setCompanyInfo(prevInfo => ({
                             ...prevInfo,
                             [flightUuid]: {
@@ -86,7 +86,6 @@ export default function FlightsInformation() {
                             }
                         }));
                     } else {
-                        console.log("---> No He Encontrado Compañía");
                         setCompanyInfo(prevInfo => ({
                             ...prevInfo,
                             [flightUuid]: {
@@ -95,7 +94,6 @@ export default function FlightsInformation() {
                             }
                         }));
                     }
-                    console.log("---> Así Queda El Vector: " + JSON.stringify(companyInfo));
                 })
             } catch (error) {
                 console.error("Error Getting Company Information:", error);
@@ -285,58 +283,6 @@ export default function FlightsInformation() {
         fontSize: 20,
         color: 'white',
       },
-      productContainer: {
-        marginBottom: -2,
-        marginTop: 26,
-        borderRadius: 12,
-        borderWidth: 0,
-        backgroundColor: 'transparent',
-        shadowColor: '#000',
-        shadowOpacity: 0,
-        shadowRadius: 10,
-        flexDirection: 'row',
-        marginLeft: 26,
-        marginRight: 26,
-    },
-    productHeader: {
-        marginBottom: 0,
-        marginTop: 0,
-        marginLeft: 0,
-        marginRight: 0,
-        borderRadius: 12,
-        borderWidth: 0,
-        backgroundColor: '#d0871e',
-        shadowColor: '#000',
-        shadowOpacity: 0,
-        shadowRadius: 10,
-        alignItems: 'center',
-        zIndex: 5,
-    },
-    productContent: {
-        marginBottom: 0,
-        marginTop: -12,
-        paddingTop: 12,
-        marginLeft: 0,
-        marginRight: 0,
-        paddingLeft: 12,
-        paddingRight: 12,
-        borderBottomLeftRadius: 12,
-        borderBottomRightRadius: 12,
-        borderWidth: 0,
-        backgroundColor: 'white',
-        shadowColor: '#000',
-        shadowOpacity: 0,
-        shadowRadius: 10,
-        alignItems: 'center',
-        zIndex: 4,
-    },
-    titleNewsText: {
-        color: 'white',
-        fontFamily: subtitleFont,
-        fontSize: 22,
-        marginTop: 6,
-        marginBottom: 6,
-    },
     subtitleNewsText: {
         color: '#321e29',
         fontFamily: subtitleFont,
@@ -351,31 +297,12 @@ export default function FlightsInformation() {
         marginTop: 4,
         marginBottom: 12,
     },
-    arrowText: {
-        color: 'white',
-        fontFamily: bodyFont,
-        fontSize: 16,
-        marginTop: 0,
-        marginBottom: 0,
-    },
     dateText: {
         color: '#e9e8e6',
         fontFamily: bodyFont,
         fontSize: 14,
         marginTop: 0,
         marginBottom: 0,
-    },
-    detailsText: {
-        color: '#b3b0a1',
-        fontFamily: bodyFont,
-        fontSize: 16,
-        marginTop: 8,
-        marginBottom: 12,
-        textAlign: 'justify',
-    },
-    image: {
-        height: 42,
-        width: 42,
     },
     profileContainer: {
         width: '100%',
@@ -398,11 +325,6 @@ export default function FlightsInformation() {
         fontSize: 18,
         marginTop: 14,
     },
-    productPack: {
-        marginLeft: 0,
-        width: '85%',
-        zIndex: 2,
-    }, 
     statusBox: {
         width: 6,
         marginRight: 8,
@@ -412,15 +334,6 @@ export default function FlightsInformation() {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1,
-    },
-    offersLink: {
-        width: '8.5%',
-        marginLeft: 8,
-        marginRight: 0,
-        borderRadius: 12,
-        backgroundColor: '#875a31',
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     scrollStyle: {
         alignContent: 'center',
@@ -459,12 +372,221 @@ export default function FlightsInformation() {
     activeProduct: {
         backgroundColor: '#51a145',
     },
+
+
+
+
+    flightContainer: {
+        marginBottom: -2,
+        marginTop: 26,
+        borderRadius: 12,
+        borderWidth: 0,
+        backgroundColor: 'transparent',
+        shadowColor: '#000',
+        shadowOpacity: 0,
+        shadowRadius: 10,
+        flexDirection: 'row',
+        marginLeft: 26,
+        marginRight: 26,
+    },
+    flightPack: {
+        marginLeft: 0,
+        width: '85%',
+        zIndex: 2,
+        flexDirection: 'row',
+    }, 
+    flightHeader: {
+        marginBottom: 0,
+        marginTop: 0,
+        marginLeft: 0,
+        marginRight: 0,
+        borderRadius: 12,
+        borderWidth: 0,
+        backgroundColor: '#b3b0a1',
+        shadowColor: '#000',
+        shadowOpacity: 0,
+        shadowRadius: 10,
+        alignItems: 'center',
+        zIndex: 5,
+    },
+    titleFlightText: {
+        color: 'white',
+        fontFamily: subtitleFont,
+        fontSize: 22,
+        marginTop: 6,
+        marginBottom: 6,
+    },
+    flightContent: {
+        borderTopRightRadius: 12,
+        borderBottomRightRadius: 12,
+        marginLeft: -12,
+        paddingLeft: 20,
+        paddingTop: 0,
+        borderWidth: 0,
+        backgroundColor: '#321e29',
+        width: '87%',
+        height: 92,
+        zIndex: 4,
+    },
+    detailsText: {
+        color: '#b3b0a1',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        marginTop: 0,
+        marginBottom: 0,
+        marginRight: 2,
+        textAlign: 'justify',
+    },
+    image: {
+        height: 66,
+        width: 66,
+        borderRadius: 12,
+    },
+    addFlightLink: {
+        width: '8%',
+        marginLeft: 24,
+        marginRight: 0,
+        borderRadius: 12,
+        backgroundColor: '#875a31',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    addText: {
+        color: 'white',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        marginTop: 0,
+        marginBottom: 0,
+    },
+    locationContent: {
+        flexDirection: 'row',
+        marginTop: 4,
+    },
+    flightDetails: {
+        flexDirection: 'row',
+        marginTop: 0,
+    },
+    flightICAO: {
+        color: '#d0871e',
+        fontFamily: titleFont,
+        fontSize: 20,
+        marginTop: 0,
+        marginBottom: 0,
+        marginRight: 4,
+        textAlign: 'justify',
+    },
+    flightLocationName: {
+        color: 'white',
+        fontFamily: titleFont,
+        fontSize: 20,
+        marginTop: 0,
+        marginBottom: 0,
+        textAlign: 'justify',
+    },
+    companyText: {
+        color: '#e9e8e6',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        textAlign: 'justify',
+    },
+    flightNumberText: {
+        color: '#92c5fc',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        marginRight: 4,
+        textAlign: 'justify',
+    },
+    statusText: {
+        color: 'white',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        marginTop: 4,
+        marginBottom: 0,
+        textAlign: 'center',
+    },
+    terminalText: {
+        color: 'white',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        marginTop: 0,
+        marginBottom: 0,
+        textAlign: 'justify',
+    },
+    scheduledText: {
+        color: 'white',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        marginTop: 0,
+        marginBottom: 0,
+        marginRight: 2,
+        textAlign: 'justify',
+        textDecorationLine: 'line-through'
+    },
+    estimatedText: {
+        color: 'yellow',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        marginTop: 0,
+        marginBottom: 0,
+        marginRight: 2,
+        textAlign: 'justify',
+    },
   });
 
   if (!fontsLoaded) {
     return null;
   }
 
+    const truncateText = (text: string, maxLength: number) => {
+        if (text.length > maxLength) {
+            return text.substring(0, maxLength) + '...';
+        }
+        return text;
+    };
+
+    const renderFlightItem = (flightItem: FlightEntity) => (
+            
+        <View style={styles.flightContainer} key={flightItem.uuid}>
+            <View style={styles.flightPack}>
+                <View style={styles.flightHeader}>
+                    <Image source={{uri: companyInfo[flightItem.uuid]?.logo} || require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png') } style={styles.image} />
+                    <Text style={styles.statusText}>{formatStatus(flightItem.statusFlight)}</Text>
+                </View>
+                <View style={styles.flightContent}>
+                    {typeFlights == "departures" && (
+                        <View style={styles.locationContent}>
+                            <Text style={styles.flightICAO}>{flightItem.destinationFlight}</Text>
+                            <Text style={styles.flightLocationName}>{truncateText(formatICAO(flightItem.destinationFlight), 24)}</Text>
+                        </View>
+                    )}
+                    {typeFlights == "arrivals" && (
+                        <View style={styles.locationContent}>
+                            <Text style={styles.flightICAO}>{flightItem.originFlight}</Text>
+                            <Text style={styles.flightLocationName}>{truncateText(formatICAO(flightItem.originFlight), 24)}</Text>
+                        </View>
+                    )}
+                    <View style={styles.flightDetails}>
+                        <Text style={styles.flightNumberText}>{flightItem.numberFlight}</Text>
+                        <Text style={styles.companyText}>{companyInfo[flightItem.uuid]?.name}</Text>
+                    </View>
+                    <View style={styles.flightDetails}>
+                        <Text style={styles.detailsText}>Departure Hour</Text>
+                        <Text style={styles.scheduledText}>{formatDate(flightItem.stdFlight.toString())}</Text>
+                        <Text style={styles.estimatedText}>{formatDate(flightItem.etdFlight.toString())}</Text>
+                    </View>
+                    <View style={styles.flightDetails}>
+                        <Text style={styles.detailsText}>Arrival Hour</Text>
+                        <Text style={styles.scheduledText}>{formatDate(flightItem.staFlight.toString())}</Text>
+                        <Text style={styles.estimatedText}>{formatDate(flightItem.etaFlight.toString())}</Text>
+                    </View>
+                    <Text style={styles.terminalText}>{formatTerminal(flightItem.depTerminalFlight)}</Text>
+                </View>
+            </View>
+            <TouchableOpacity style={styles.addFlightLink} onPress={() => showOffers(flightItem.uuid)}>
+                <Text style={styles.addText}>+</Text>
+            </TouchableOpacity>
+        </View>
+    );
 
   function showOffers(productId: string): void {
     /*
@@ -516,31 +638,39 @@ export default function FlightsInformation() {
         } 
     };
 
-    const renderFlightItem = (flightItem: FlightEntity) => (
-        
-        <View style={styles.productContainer} key={flightItem.uuid}>
-            <View style={styles.productPack}>
-                <View style={styles.productHeader}>
-                    <Text style={styles.titleNewsText}>{flightItem.numberFlight}</Text>
-                </View>
-                <View style={styles.productContent}>
-                    <Text style={styles.detailsText}>{flightItem.numberFlight}</Text>
-                    <Text style={styles.detailsText}>{companyInfo[flightItem.uuid]?.name || "Cargando..."}</Text>
-                    <Image source={{uri: companyInfo[flightItem.uuid]?.logo} || require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png') } style={styles.image} />
-                    <Text style={styles.detailsText}>{flightItem.originFlight}</Text>
-                    <Text style={styles.detailsText}>{flightItem.destinationFlight}</Text>
-                    <Text style={styles.detailsText}>{formatDate(flightItem.stdFlight.toString())} {formatDate(flightItem.etdFlight.toString())}</Text>
-                    <Text style={styles.detailsText}>{formatDate(flightItem.staFlight.toString())} {formatDate(flightItem.etaFlight.toString())}</Text>
-                    <Text style={styles.detailsText}>{formatTerminal(flightItem.depTerminalFlight)}</Text>
-                    <Text style={styles.detailsText}>{formatStatus(flightItem.statusFlight)}</Text>
-
-                </View>
-            </View>
-            <TouchableOpacity style={styles.offersLink} onPress={() => showOffers(flightItem.uuid)}>
-                <Text style={styles.arrowText}>+</Text>
-            </TouchableOpacity>
-        </View>
-    );
+    const formatICAO = (icaoCode: string | undefined) => {
+        if (icaoCode === "LEAL") return "Alicante - Elche";
+        if (icaoCode === "EHAM") return "Ámsterdam Schiphol";
+        if (icaoCode === "LEBL") return "Barcelona - El Prat";
+        if (icaoCode === "EKCH") return "Copenhague Kastrup";
+        if (icaoCode === "EIDW") return "Dublín";
+        if (icaoCode === "GCHI") return "El Hierro";
+        if (icaoCode === "ESSA") return "Estocolmo Arlanda";
+        if (icaoCode === "EDDF") return "Fráncfort Del Meno - Frankfurt";
+        if (icaoCode === "GCFV") return "Fuerteventura";
+        if (icaoCode === "LEGE") return "Girona - Costa Brava";
+        if (icaoCode === "GCLP") return "Gran Canaria";
+        if (icaoCode === "LEHC") return "Huesca - Pirineos";
+        if (icaoCode === "GCGM") return "La Gomera";
+        if (icaoCode === "GCLA") return "La Palma";
+        if (icaoCode === "LESU") return "La Seu d'Urgell";
+        if (icaoCode === "GCRR") return "Lanzarote";
+        if (icaoCode === "LEDA") return "Lleida - Alguaire";
+        if (icaoCode === "LERJ") return "Logroño";
+        if (icaoCode === "EGKK") return "Londres Gatwick";
+        if (icaoCode === "EGLL") return "Londres Heathrow";
+        if (icaoCode === "EGSS") return "Londres Stansted";
+        if (icaoCode === "LEMD") return "Madrid - Barajas Adolfo Suárez";
+        if (icaoCode === "EDDM") return "Múnich Franz Josef Strauss";
+        if (icaoCode === "ENGM") return "Oslo Gardermoen";
+        if (icaoCode === "LERS") return "Reus - Tarragona";
+        if (icaoCode === "LELL") return "Sabadell";
+        if (icaoCode === "LESO") return "San Sebastián";
+        if (icaoCode === "LGSR") return "Santorini";
+        if (icaoCode === "GCXO") return "Tenerife Norte - Los Rodeos";
+        if (icaoCode === "EPWA") return "Varsovia Chopin";
+        else return "Unknown";
+    };
 
   return (
     <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
@@ -584,8 +714,19 @@ export default function FlightsInformation() {
                         }
                         return true;
                     })
+                    .sort((a, b) => {
+                        if (typeFlights === "departures") {
+                            const dateA = new Date(a.stdFlight);
+                            const dateB = new Date(b.stdFlight);
+                            return dateA.getTime() - dateB.getTime();
+                        } else {
+                            const dateA = new Date(a.staFlight);
+                            const dateB = new Date(b.staFlight);
+                            return dateA.getTime() - dateB.getTime();
+                        }
+                    })
                     .map(renderFlightItem))
-            : <Text style={styles.noNewsText}>Not Flights</Text>
+            : <Text style={styles.noNewsText}>No Flights</Text>
             }
         </ScrollView>
     </ImageBackground>

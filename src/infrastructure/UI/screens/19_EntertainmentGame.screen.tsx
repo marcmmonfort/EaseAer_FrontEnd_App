@@ -655,7 +655,7 @@ export default function EntertainmentGameHome() {
         if (icaoDestination==="EGKK") return "Londres Gatwick";
         if (icaoDestination==="EGLL") return "Londres Heathrow";
         if (icaoDestination==="EGSS") return "Londres Stansted";
-        if (icaoDestination==="EDDF") return "Fráncfort del Meno - Frankfurt";
+        if (icaoDestination==="EDDF") return "Fráncfort Del Meno - Frankfurt";
         if (icaoDestination==="EDDM") return "Múnich Franz Josef Strauss";
         if (icaoDestination==="EHAM") return "Ámsterdam Schiphol";
         if (icaoDestination==="EKCH") return "Copenhague Kastrup";
@@ -859,7 +859,7 @@ export default function EntertainmentGameHome() {
                 <Picker.Item label="Dublín" value="EIDW"/>
                 <Picker.Item label="El Hierro" value="GCHI"/>
                 <Picker.Item label="Estocolmo Arlanda" value="ESSA"/>
-                <Picker.Item label="Fráncfort del Meno - Frankfurt" value="EDDF"/>
+                <Picker.Item label="Fráncfort Del Meno - Frankfurt" value="EDDF"/>
                 <Picker.Item label="Fuerteventura" value="GCFV"/>
                 <Picker.Item label="Girona - Costa Brava" value="LEGE"/>
                 <Picker.Item label="Gran Canaria" value="GCLP"/>
