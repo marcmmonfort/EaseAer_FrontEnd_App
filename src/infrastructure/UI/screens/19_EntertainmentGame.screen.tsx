@@ -812,12 +812,12 @@ export default function EntertainmentGameHome() {
         const currentUserId = idUserGame;
         getUser(currentUserId);
         if (currentUser != null){
-            if ((currentUser.recordGameUser!=undefined) && (currentUser.recordGameUser!=null) && (currentUser.recordGameUser < pointsGame)){
+            if ((currentUser.recordGameUser) && (currentUser.recordGameUser < pointsGame)){
                 currentUser.recordGameUser = pointsGame;
                 
                 // HACER UPDATE USUARIO:
 
-                CRUDService.updateUser(currentUser).then((response)=>{
+                CRUDService.updateUser(currentUser.uuid, currentUser).then((response)=>{
                     if (response && response.status===200){
                         Alert.alert("EaseAer", "New Personal Record");
                     };

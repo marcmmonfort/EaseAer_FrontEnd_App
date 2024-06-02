@@ -389,7 +389,7 @@ export default function FlightsMine() {
     },
     flightPack: {
         marginLeft: 0,
-        width: '85%',
+        width: '80%',
         zIndex: 2,
         flexDirection: 'row',
     }, 
@@ -422,7 +422,7 @@ export default function FlightsMine() {
         paddingTop: 0,
         borderWidth: 0,
         backgroundColor: '#321e29',
-        width: '87%',
+        width: '80%',
         height: 92,
         zIndex: 4,
     },
@@ -440,12 +440,21 @@ export default function FlightsMine() {
         width: 66,
         borderRadius: 12,
     },
-    addFlightLink: {
+    removeFlightLink: {
         width: '8%',
-        marginLeft: 24,
-        marginRight: 0,
+        marginLeft: 0,
+        marginRight: 8,
         borderRadius: 12,
         backgroundColor: '#875a31',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    addLuggageLink: {
+        width: '8%',
+        marginLeft: 8,
+        marginRight: 0,
+        borderRadius: 12,
+        backgroundColor: '#d0871e',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -564,6 +573,9 @@ export default function FlightsMine() {
     const renderFlightItem = (flightItem: FlightEntity) => (
             
         <View style={styles.flightContainer} key={flightItem.uuid}>
+            <TouchableOpacity style={styles.removeFlightLink} onPress={() => removeFlight(flightItem.uuid)}>
+                <Text style={styles.addText}>-</Text>
+            </TouchableOpacity>
             <View style={styles.flightPack}>
                 <View style={styles.flightHeader}>
                     <Image source={{uri: companyInfo[flightItem.uuid]?.logo} || require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png') } style={styles.image} />
@@ -574,12 +586,12 @@ export default function FlightsMine() {
                         <View style={styles.locationContent}>
                             <Text style={styles.flightLocationName}>Barcelona</Text>
                             <Text style={styles.flightICAO}>-</Text>
-                            <Text style={styles.flightLocationName}>{truncateText(formatICAO(flightItem.destinationFlight), 16)}</Text>
+                            <Text style={styles.flightLocationName}>{truncateText(formatICAO(flightItem.destinationFlight), 14)}</Text>
                         </View>
                     )}
                     {flightItem.destinationFlight == "LEBL" && (
                         <View style={styles.locationContent}>
-                            <Text style={styles.flightLocationName}>{truncateText(formatICAO(flightItem.originFlight), 16)}</Text>
+                            <Text style={styles.flightLocationName}>{truncateText(formatICAO(flightItem.originFlight), 14)}</Text>
                             <Text style={styles.flightICAO}>-</Text>
                             <Text style={styles.flightLocationName}>Barcelona</Text>
                         </View>
@@ -603,8 +615,8 @@ export default function FlightsMine() {
                     <Text style={styles.terminalText}>{formatTerminal(flightItem.depTerminalFlight)}</Text>
                 </View>
             </View>
-            <TouchableOpacity style={styles.addFlightLink} onPress={() => removeFlight(flightItem.uuid)}>
-                <Text style={styles.addText}>-</Text>
+            <TouchableOpacity style={styles.addLuggageLink} onPress={() => removeFlight(flightItem.uuid)}>
+                <MaterialCommunityIcons name="bag-suitcase" size={20} color='white' />
             </TouchableOpacity>
         </View>
     );
