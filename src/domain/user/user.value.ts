@@ -13,7 +13,7 @@ export class UserValue implements UserEntity {
   roleUser: "pax" | "company" | "admin" | "tech";
   privacyUser: boolean;
   recordGameUser: number;
-  flightsUser: [string];
+  flightsUser: string[];
   deletedUser: boolean;
   constructor({
     uuid,
@@ -43,7 +43,7 @@ export class UserValue implements UserEntity {
     roleUser: "pax" | "company" | "admin" | "tech";
     privacyUser: boolean;
     recordGameUser: number;
-    flightsUser: [string];
+    flightsUser: string[];
     deletedUser: boolean;
   }) {
     this.uuid = uuid,
@@ -93,7 +93,7 @@ export class UserAuthValue implements UserAuthEntity {
   roleUser: "pax" | "company" | "admin" | "tech";
   privacyUser: boolean;
   recordGameUser: number;
-  flightsUser: [string];
+  flightsUser: string[];
   deletedUser: boolean;
   constructor({
     uuid,
@@ -125,7 +125,7 @@ export class UserAuthValue implements UserAuthEntity {
     roleUser: "pax" | "company" | "admin" | "tech";
     privacyUser: boolean;
     recordGameUser: number;
-    flightsUser: [string];
+    flightsUser: string[];
     deletedUser: boolean;
   }) {
     (this.uuid = uuid), (this.appUser = appUser);

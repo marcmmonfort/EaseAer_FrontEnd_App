@@ -83,7 +83,7 @@ export default function ScreenRegisterD({
         photoUser: photoUser ?? "",
         birthdateUser: new Date(birthdateUser ?? ""),
         genderUser:
-          genderUser === "male" || genderUser === "female"
+          genderUser === "male" || genderUser === "female" || genderUser === "other"
             ? genderUser
             : "male",
         descriptionUser: descriptionUser ?? "",
@@ -96,7 +96,7 @@ export default function ScreenRegisterD({
             : "pax",
         privacyUser: privacyUser === "private" ? true : false,
         recordGameUser: 0,
-        flightsUser: ["661ec1faec20908a9de42415"], // No me deja pasar el vector vacío. No pasa nada porque el BackEnd al hacer el registro pone el vector a 0.
+        flightsUser: [],
         deletedUser: false,
       };
 

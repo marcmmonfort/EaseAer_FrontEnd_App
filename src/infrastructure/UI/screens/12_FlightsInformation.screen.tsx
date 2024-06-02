@@ -6,7 +6,7 @@ import Title from "../components/texts/Title";
 import SubTitle from "../components/texts/Subtitle";
 import StyledTextInputs from "../components/inputs/StyledTextInputs";
 import Button_Type_1 from "../components/buttons/Button_Type_1";
-import { AuthEntity } from "../../../domain/user/user.entity";
+import { AuthEntity, UserAuthEntity, UserEntity } from "../../../domain/user/user.entity";
 import { SessionService } from "../../services/user/session.service";
 import NormalText from "../components/texts/NormalText";
 import { Platform, StatusBar, TouchableOpacity, StyleSheet, ImageBackground, Image, View, Text, Alert, ScrollView} from "react-native";
@@ -60,6 +60,8 @@ export default function FlightsInformation() {
   });
 
   const navigation = useNavigation();
+
+  const [currentUser, setCurrentUser] = useState<UserEntity | null>(null);
 
   const [userDetails, setUserDetails] = useState<{ [key: string]: string }>({});
   const [searchText, setSearchText] = useState("");
@@ -582,23 +584,119 @@ export default function FlightsInformation() {
                     <Text style={styles.terminalText}>{formatTerminal(flightItem.depTerminalFlight)}</Text>
                 </View>
             </View>
-            <TouchableOpacity style={styles.addFlightLink} onPress={() => showOffers(flightItem.uuid)}>
+            <TouchableOpacity style={styles.addFlightLink} onPress={() => addFlight(flightItem.uuid)}>
                 <Text style={styles.addText}>+</Text>
             </TouchableOpacity>
         </View>
     );
 
-  function showOffers(productId: string): void {
-    /*
-    navigation.navigate('Shopping', {
-      screen: 'Offers',
-      params: {
-        productIdTransfer: productId
-      }
-    });
-    // navigation.navigate('Shopping' as never, { screen: 'ManagerShop' } as never, { screen: 'ScreenOffers' } as never, { productIdTransfer:productId } as never);
-    */
-}
+    const addFlight = async (newFlightId: string) => {
+        const thisUserId = await SessionService.getCurrentUser();
+        if (thisUserId) {
+            await CRUDService.getUserById(thisUserId).then(async (userResponse) => {
+                if (userResponse?.data) {                
+                    setCurrentUser(userResponse.data);
+                    console.log("| | | | | Se va a actualizar el usuario: " + JSON.stringify(userResponse.data));
+                    
+                    let updatedVectorFlights: string[] = [];
+
+                    if (userResponse.data.flightsUser!=undefined){
+                        let alreadyAdded = false;
+                        for (let e = 0; e < userResponse.data.flightsUser.length; e++){
+                            updatedVectorFlights.push(userResponse.data.flightsUser[e]);
+                            if (updatedVectorFlights[e] === newFlightId){
+                                alreadyAdded = true;
+                            }
+                        }
+                        if (alreadyAdded == false){
+                            updatedVectorFlights.push(newFlightId);
+
+                            console.log(">>> ASÍ QUEDA VECTOR VUELOS: " + JSON.stringify(updatedVectorFlights));
+
+                            const user: UserAuthEntity = {
+                                uuid: userResponse.data.uuid ?? "",
+                                appUser: userResponse.data.appUser ?? "",
+                                nameUser: userResponse.data.nameUser ?? "",
+                                surnameUser: userResponse.data.surnameUser ?? "",
+                                mailUser: userResponse.data.mailUser ?? "",
+                                passwordUser: userResponse.data.passwordUser ?? "",
+                                photoUser: userResponse.data.photoUser ?? "",
+                                birthdateUser: new Date(userResponse.data.birthdateUser ?? ""),
+                                genderUser:
+                                    userResponse.data.genderUser === "male" || userResponse.data.genderUser === "female" || userResponse.data.genderUser === "other"
+                                    ? userResponse.data.genderUser
+                                        : "male",
+                                descriptionUser: userResponse.data.descriptionUser ?? "",
+                                roleUser:
+                                    userResponse.data.roleUser === "pax" ||
+                                    userResponse.data.roleUser === "company" ||
+                                    userResponse.data.roleUser === "admin" ||
+                                    userResponse.data.roleUser === "tech"
+                                    ? userResponse.data.roleUser
+                                        : "pax",
+                                privacyUser: userResponse.data.privacyUser === "private" ? true : false,
+                                recordGameUser: userResponse.data.recordGameUser,
+                                flightsUser: updatedVectorFlights,
+                                deletedUser: userResponse.data.deletedUser ?? false,
+                            };
+        
+                            console.log("UPDATE: Quiere hacer el update con estos datos: " + JSON.stringify(user));
+        
+                            CRUDService.updateUser(thisUserId, user).then((response)=>{
+                                if (response?.status===200){
+                                    Alert.alert("EaseAer", "New Flight Added");
+                                };
+                            })
+
+                        } else {
+                            Alert.alert("EaseAer", "Flight Already Added");
+                        }
+                    }
+                    else {
+                        updatedVectorFlights.push(newFlightId);
+
+                        console.log(">>> ASÍ QUEDA VECTOR VUELOS: " + JSON.stringify(updatedVectorFlights));
+
+                        const user: UserAuthEntity = {
+                            uuid: userResponse.data.uuid ?? "",
+                            appUser: userResponse.data.appUser ?? "",
+                            nameUser: userResponse.data.nameUser ?? "",
+                            surnameUser: userResponse.data.surnameUser ?? "",
+                            mailUser: userResponse.data.mailUser ?? "",
+                            passwordUser: userResponse.data.passwordUser ?? "",
+                            photoUser: userResponse.data.photoUser ?? "",
+                            birthdateUser: new Date(userResponse.data.birthdateUser ?? ""),
+                            genderUser:
+                                userResponse.data.genderUser === "male" || userResponse.data.genderUser === "female" || userResponse.data.genderUser === "other"
+                                ? userResponse.data.genderUser
+                                    : "male",
+                            descriptionUser: userResponse.data.descriptionUser ?? "",
+                            roleUser:
+                                userResponse.data.roleUser === "pax" ||
+                                userResponse.data.roleUser === "company" ||
+                                userResponse.data.roleUser === "admin" ||
+                                userResponse.data.roleUser === "tech"
+                                ? userResponse.data.roleUser
+                                    : "pax",
+                            privacyUser: userResponse.data.privacyUser === "private" ? true : false,
+                            recordGameUser: userResponse.data.recordGameUser,
+                            flightsUser: updatedVectorFlights,
+                            deletedUser: userResponse.data.deletedUser ?? false,
+                        };
+    
+                        console.log("UPDATE: Quiere hacer el update con estos datos: " + JSON.stringify(user));
+    
+                        CRUDService.updateUser(thisUserId, user).then((response)=>{
+                            if (response?.status===200){
+                                Alert.alert("EaseAer", "New Flight Added");
+                            };
+                        })
+
+                    }
+                }
+            })
+        }
+    }
 
     const formatDate = (dateString: string | undefined) => {
         if (dateString != undefined) {

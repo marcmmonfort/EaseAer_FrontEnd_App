@@ -128,11 +128,11 @@ export class CRUDService{
   }
 
   // (7) UPDATE USER: [routeUser.put("/user/update/:uuid", checkJwt, userCtrl.updateUserCtrl)]
-  static async updateUser(user: any) {
+  static async updateUser(userId: string, user: UserEntity) {
     const token = await AuthHeaderService.authHeader();
     if (token) {
       try {  
-        const response = await axios.put(API_URL + "user/update/" + user.uuid, user, {headers: token});
+        const response = await axios.put(API_URL + "user/update/" + userId, user, {headers: token});
         return response;
       } catch (error) {
         console.error("Error Editing User: ", error);

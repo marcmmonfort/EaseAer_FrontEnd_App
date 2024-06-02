@@ -11,7 +11,7 @@ export interface UserEntity {
     roleUser: "pax" | "company" | "admin" | "tech";
     privacyUser: boolean;
     recordGameUser?: number;
-    flightsUser: [string];
+    flightsUser: string[];
     deletedUser: boolean;
   }
   
