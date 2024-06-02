@@ -89,7 +89,6 @@ export class SessionService {
     try {
       const userId = await AsyncStorage.getItem('uuid');  
       if (userId) {
-        console.log("User ID (Parsed Value): ", JSON.parse(userId));
         return JSON.parse(userId);
       }
       else(console.log("User ID Not Found"));

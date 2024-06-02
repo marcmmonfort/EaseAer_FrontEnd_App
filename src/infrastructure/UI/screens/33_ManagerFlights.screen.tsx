@@ -24,6 +24,7 @@ import ShopProducts from "./25_ShopProducts.screen";
 import ShopOffers from "./27_ShopOffers.screen";
 import EntertainmentGameHome from "./19_EntertainmentGame.screen";
 import FlightsInformation from "./12_FlightsInformation.screen";
+import FlightsMine from "./15_FlightsMine.screen";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -314,7 +315,7 @@ const styles = StyleSheet.create({
             ), headerShown: false,
         }} />
 
-        <Tab.Screen name="My Flights" component={ShopOffers} options={{ tabBarIcon: ({ color, size }) => (
+        <Tab.Screen name="My Flights" component={FlightsMine} options={{ tabBarIcon: ({ color, size }) => (
             <Text style={styles.navText}>My Flights</Text>
             ), headerShown: false,
         }} />
