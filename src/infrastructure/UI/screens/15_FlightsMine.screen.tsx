@@ -9,7 +9,7 @@ import Button_Type_1 from "../components/buttons/Button_Type_1";
 import { AuthEntity, UserAuthEntity, UserEntity } from "../../../domain/user/user.entity";
 import { SessionService } from "../../services/user/session.service";
 import NormalText from "../components/texts/NormalText";
-import { Platform, StatusBar, TouchableOpacity, StyleSheet, ImageBackground, Image, View, Text, Alert, ScrollView} from "react-native";
+import { Platform, StatusBar, TouchableOpacity, StyleSheet, ImageBackground, Image, View, Text, Alert, ScrollView, Modal} from "react-native";
 import Register from "../components/texts/Register";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
@@ -28,6 +28,8 @@ import QRCode from 'react-native-qrcode-svg';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlightEntity } from "../../../domain/flight/flight.entity";
 import { FlightService } from "../../services/flight/flight.service";
+import { LuggageEntity } from "../../../domain/luggage/luggage.entity";
+import { LuggageService } from "../../services/luggage/luggage.service";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -68,6 +70,10 @@ export default function FlightsMine() {
 
     const [listFlights, setListFlights] = useState<FlightEntity[]>([]);
     const [companyInfo, setCompanyInfo] = useState<{ [key: string]: { name: string, logo: string } }>({});
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [idFlightLuggage, setIdFlightLuggage] = useState("");
+    const [infoLuggage, setInfoLuggage] = useState('No Information Added');
 
     const updateCompanyInfo = async (companyId: string, flightUuid: string) => {
         const userId = await SessionService.getCurrentUser();
@@ -249,20 +255,6 @@ export default function FlightsMine() {
         marginLeft: -32,
         marginRight: -32,
     },
-    multilineTextInputStyle: {
-        fontFamily: subtitleFont,
-        fontSize: 20,
-        color: 'white',
-        fontWeight: 'bold',
-        borderWidth: 0,
-        width: 300,
-        height: 140,
-        marginTop: 20,
-        borderRadius: 12,
-        backgroundColor: '#b3b0a1',
-        paddingStart: 10,
-        padding: 8,
-    },
     submitReportButton: {
         marginRight: 4,
         marginLeft: 4,
@@ -281,13 +273,6 @@ export default function FlightsMine() {
         fontSize: 20,
         color: 'white',
       },
-    subtitleNewsText: {
-        color: '#321e29',
-        fontFamily: subtitleFont,
-        fontSize: 19,
-        marginTop: 0,
-        marginBottom: 6,
-    },
     usernameText: {
         color: '#e9e8e6',
         fontFamily: bodyFont,
@@ -337,27 +322,9 @@ export default function FlightsMine() {
         alignContent: 'center',
     },
     searcherContainer: {
-        height: 40,
+        height: 162,
         marginBottom: 0,
-    },
-    searcherPack: {
-        backgroundColor: '#b3b0a1',
-        color: 'white',
-        fontFamily: subtitleFont,
-        fontSize: 20,
-        height: 40,
         alignItems: 'center',
-        position: 'absolute',
-        width: '100%',
-        marginBottom: 0,
-        paddingLeft: 10,
-    },
-    searcherText: {
-        color: 'white',
-        fontFamily: subtitleFont,
-        fontSize: 20,
-        marginTop: 10,
-        marginBottom: 0
     },
     searcherIcon: {
         position: 'absolute',
@@ -370,10 +337,6 @@ export default function FlightsMine() {
     activeProduct: {
         backgroundColor: '#51a145',
     },
-
-
-
-
     flightContainer: {
         marginBottom: -2,
         marginTop: 26,
@@ -557,6 +520,86 @@ export default function FlightsMine() {
         marginRight: 2,
         textAlign: 'justify',
     },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.42)',
+    },
+    modalView: {
+        width: '90%',
+        backgroundColor: '#e9e8e6',
+        borderRadius: 12,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 0,
+        },
+        shadowOpacity: 0,
+        shadowRadius: 0,
+        elevation: 0,
+    },
+    quizButton: {
+        padding: 6,
+        backgroundColor: "#875a31",
+        borderRadius: 12,
+        height: 38,
+        alignItems: 'center',
+        marginTop: 8,
+        marginBottom: 20,
+        width: 80,
+        marginRight: 4,
+        marginLeft: 4,
+    },
+    loadAllText: {
+        fontFamily: subtitleFont,
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: 'white',
+        marginTop: 3.5,
+    },
+    searcherPack: {
+        backgroundColor: '#b3b0a1',
+        color: 'white',
+        fontFamily: subtitleFont,
+        fontSize: 20,
+        height: 80,
+        width: 300,
+        marginBottom: 0,
+        paddingLeft: 10,
+    },
+    searcherText: {
+        color: 'white',
+        fontFamily: subtitleFont,
+        fontSize: 20,
+        marginTop: 10,
+        marginBottom: 0
+    },
+    multilineTextInputStyle: {
+        fontFamily: subtitleFont,
+        fontSize: 20,
+        color: 'white',
+        fontWeight: 'bold',
+        borderWidth: 0,
+        width: 300,
+        height: 60,
+        marginTop: 8,
+        borderRadius: 12,
+        backgroundColor: '#b3b0a1',
+        paddingStart: 10,
+        padding: 8,
+    },
+    subtitleNewsText: {
+        color: '#321e29',
+        fontFamily: subtitleFont,
+        fontSize: 19,
+        marginTop: 14,
+        marginBottom: 0,
+    },
+    modalButtons: {
+        flexDirection: 'row',
+    }
   });
 
   if (!fontsLoaded) {
@@ -569,12 +612,9 @@ export default function FlightsMine() {
         }
         return text;
     };
+
     const removeFlight = async (flightId: string) => {
-        console.log(">>> PIDO ELIMINAR EL VUELO " + flightId);
-
         const thisUserId = await SessionService.getCurrentUser();
-        console.log(">>> QUIERO ELIMINAR EL VUELO " + flightId + " PARA EL USUARIO " + thisUserId);
-
         if (thisUserId) {
             await CRUDService.getUserById(thisUserId).then(async (userResponse) => {
                 if (userResponse?.data) {                
@@ -628,6 +668,40 @@ export default function FlightsMine() {
         }
     }
 
+    const addLuggage = async (flightId: string) => {
+        setIdFlightLuggage(flightId);
+        setModalVisible(true);
+    }
+
+    const registerLuggage = async () => {
+        const thisUserId = await SessionService.getCurrentUser();
+        if (thisUserId) {
+            await CRUDService.getUserById(thisUserId).then(async (userResponse) => {
+                if (userResponse?.data) {                
+                    setCurrentUser(userResponse.data);
+                    
+                    const newLuggage: LuggageEntity = {
+                        uuid: " " ?? "",
+                        idUserLuggage: thisUserId ?? "",
+                        idFlightLuggage: idFlightLuggage ?? "",
+                        infoLuggage: infoLuggage ?? "",
+                        statusLuggage: "waiting" ?? "",
+                        deletedLuggage: false ?? false,
+                    };
+
+                    LuggageService.createLuggage(newLuggage).then((response)=>{
+                        if (response?.status===200){
+                            Alert.alert("EaseAer", "Luggage Added");
+                        } else {
+                            Alert.alert("EaseAer", "Error Creating Luggage");
+                        }
+                    })
+                }
+            })
+        }
+        setModalVisible(false);
+    }
+
     const renderFlightItem = (flightItem: FlightEntity) => (
             
         <View style={styles.flightContainer} key={flightItem.uuid}>
@@ -673,7 +747,7 @@ export default function FlightsMine() {
                     <Text style={styles.terminalText}>{formatTerminal(flightItem.depTerminalFlight)}</Text>
                 </View>
             </View>
-            <TouchableOpacity style={styles.addLuggageLink} onPress={() => removeFlight(flightItem.uuid)}>
+            <TouchableOpacity style={styles.addLuggageLink} onPress={() => addLuggage(flightItem.uuid)}>
                 <MaterialCommunityIcons name="bag-suitcase" size={20} color='white' />
             </TouchableOpacity>
         </View>
@@ -778,6 +852,25 @@ export default function FlightsMine() {
                 </View>
             </View>
         </View>
+
+        <Modal animationType="none" transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(false) }}>
+            <View style={styles.modalOverlay}>
+                <View style={styles.modalView}>
+                    <View style={styles.searcherContainer}>
+                        <Text style={styles.subtitleNewsText}>Create Luggage</Text>
+                        <TextInput style={styles.multilineTextInputStyle} placeholder="Description" value={infoLuggage} onChangeText={ setInfoLuggage } multiline maxLength={72}/>
+                        <View style={styles.modalButtons}>
+                            <TouchableOpacity style={styles.quizButton} onPress={() => registerLuggage()}>
+                                <Text style={styles.loadAllText}>Add</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.quizButton, {backgroundColor: "#d8131b"}]} onPress={() => setModalVisible(false)}>
+                                <Text style={styles.loadAllText}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </View>
+        </Modal>
 
         <ScrollView style={styles.scrollStyle}>
         {listFlights

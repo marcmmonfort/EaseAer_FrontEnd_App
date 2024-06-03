@@ -511,7 +511,6 @@ export default function EntertainmentGameHome() {
         marginBottom: 0,
         textAlign: 'center',
     },
-
     quizButton: {
         padding: 6,
         backgroundColor: "#875a31",
