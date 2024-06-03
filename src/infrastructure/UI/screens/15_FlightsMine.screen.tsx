@@ -569,6 +569,64 @@ export default function FlightsMine() {
         }
         return text;
     };
+    const removeFlight = async (flightId: string) => {
+        console.log(">>> PIDO ELIMINAR EL VUELO " + flightId);
+
+        const thisUserId = await SessionService.getCurrentUser();
+        console.log(">>> QUIERO ELIMINAR EL VUELO " + flightId + " PARA EL USUARIO " + thisUserId);
+
+        if (thisUserId) {
+            await CRUDService.getUserById(thisUserId).then(async (userResponse) => {
+                if (userResponse?.data) {                
+                    setCurrentUser(userResponse.data);
+                    console.log(">>> Se va a actualizar el usuario: " + JSON.stringify(userResponse.data));
+                    
+                    let updatedVectorFlights: string[] = [];
+
+                    if (userResponse.data.flightsUser!=undefined){
+                        for (let r = 0; r < userResponse.data.flightsUser.length; r++){
+                            if (userResponse.data.flightsUser[r]!=flightId){
+                                updatedVectorFlights.push(userResponse.data.flightsUser[r]);
+                            }
+                        }
+                    }
+
+                    const user: UserAuthEntity = {
+                        uuid: userResponse.data.uuid ?? "",
+                        appUser: userResponse.data.appUser ?? "",
+                        nameUser: userResponse.data.nameUser ?? "",
+                        surnameUser: userResponse.data.surnameUser ?? "",
+                        mailUser: userResponse.data.mailUser ?? "",
+                        passwordUser: userResponse.data.passwordUser ?? "",
+                        photoUser: userResponse.data.photoUser ?? "",
+                        birthdateUser: new Date(userResponse.data.birthdateUser ?? ""),
+                        genderUser:
+                            userResponse.data.genderUser === "male" || userResponse.data.genderUser === "female" || userResponse.data.genderUser === "other"
+                            ? userResponse.data.genderUser
+                                : "male",
+                        descriptionUser: userResponse.data.descriptionUser ?? "",
+                        roleUser:
+                            userResponse.data.roleUser === "pax" ||
+                            userResponse.data.roleUser === "company" ||
+                            userResponse.data.roleUser === "admin" ||
+                            userResponse.data.roleUser === "tech"
+                            ? userResponse.data.roleUser
+                                : "pax",
+                        privacyUser: userResponse.data.privacyUser === "private" ? true : false,
+                        recordGameUser: userResponse.data.recordGameUser,
+                        flightsUser: updatedVectorFlights,
+                        deletedUser: userResponse.data.deletedUser ?? false,
+                    };
+
+                    CRUDService.updateUser(thisUserId, user).then((response)=>{
+                        if (response?.status===200){
+                            Alert.alert("EaseAer", "Flight Removed");
+                        };
+                    })
+                }
+            })
+        }
+    }
 
     const renderFlightItem = (flightItem: FlightEntity) => (
             
@@ -620,118 +678,6 @@ export default function FlightsMine() {
             </TouchableOpacity>
         </View>
     );
-
-    const removeFlight = async (newFlightId: string) => {
-        const thisUserId = await SessionService.getCurrentUser();
-
-        /*
-        if (thisUserId) {
-            await CRUDService.getUserById(thisUserId).then(async (userResponse) => {
-                if (userResponse?.data) {                
-                    setCurrentUser(userResponse.data);
-                    console.log("| | | | | Se va a actualizar el usuario: " + JSON.stringify(userResponse.data));
-                    
-                    let updatedVectorFlights: string[] = [];
-
-                    if (userResponse.data.flightsUser!=undefined){
-                        let alreadyAdded = false;
-                        for (let e = 0; e < userResponse.data.flightsUser.length; e++){
-                            updatedVectorFlights.push(userResponse.data.flightsUser[e]);
-                            if (updatedVectorFlights[e] === newFlightId){
-                                alreadyAdded = true;
-                            }
-                        }
-                        if (alreadyAdded == false){
-                            updatedVectorFlights.push(newFlightId);
-
-                            console.log(">>> ASÍ QUEDA VECTOR VUELOS: " + JSON.stringify(updatedVectorFlights));
-
-                            const user: UserAuthEntity = {
-                                uuid: userResponse.data.uuid ?? "",
-                                appUser: userResponse.data.appUser ?? "",
-                                nameUser: userResponse.data.nameUser ?? "",
-                                surnameUser: userResponse.data.surnameUser ?? "",
-                                mailUser: userResponse.data.mailUser ?? "",
-                                passwordUser: userResponse.data.passwordUser ?? "",
-                                photoUser: userResponse.data.photoUser ?? "",
-                                birthdateUser: new Date(userResponse.data.birthdateUser ?? ""),
-                                genderUser:
-                                    userResponse.data.genderUser === "male" || userResponse.data.genderUser === "female" || userResponse.data.genderUser === "other"
-                                    ? userResponse.data.genderUser
-                                        : "male",
-                                descriptionUser: userResponse.data.descriptionUser ?? "",
-                                roleUser:
-                                    userResponse.data.roleUser === "pax" ||
-                                    userResponse.data.roleUser === "company" ||
-                                    userResponse.data.roleUser === "admin" ||
-                                    userResponse.data.roleUser === "tech"
-                                    ? userResponse.data.roleUser
-                                        : "pax",
-                                privacyUser: userResponse.data.privacyUser === "private" ? true : false,
-                                recordGameUser: userResponse.data.recordGameUser,
-                                flightsUser: updatedVectorFlights,
-                                deletedUser: userResponse.data.deletedUser ?? false,
-                            };
-        
-                            console.log("UPDATE: Quiere hacer el update con estos datos: " + JSON.stringify(user));
-        
-                            CRUDService.updateUser(thisUserId, user).then((response)=>{
-                                if (response?.status===200){
-                                    Alert.alert("EaseAer", "New Flight Added");
-                                };
-                            })
-
-                        } else {
-                            Alert.alert("EaseAer", "Flight Already Added");
-                        }
-                    }
-                    else {
-                        updatedVectorFlights.push(newFlightId);
-
-                        console.log(">>> ASÍ QUEDA VECTOR VUELOS: " + JSON.stringify(updatedVectorFlights));
-
-                        const user: UserAuthEntity = {
-                            uuid: userResponse.data.uuid ?? "",
-                            appUser: userResponse.data.appUser ?? "",
-                            nameUser: userResponse.data.nameUser ?? "",
-                            surnameUser: userResponse.data.surnameUser ?? "",
-                            mailUser: userResponse.data.mailUser ?? "",
-                            passwordUser: userResponse.data.passwordUser ?? "",
-                            photoUser: userResponse.data.photoUser ?? "",
-                            birthdateUser: new Date(userResponse.data.birthdateUser ?? ""),
-                            genderUser:
-                                userResponse.data.genderUser === "male" || userResponse.data.genderUser === "female" || userResponse.data.genderUser === "other"
-                                ? userResponse.data.genderUser
-                                    : "male",
-                            descriptionUser: userResponse.data.descriptionUser ?? "",
-                            roleUser:
-                                userResponse.data.roleUser === "pax" ||
-                                userResponse.data.roleUser === "company" ||
-                                userResponse.data.roleUser === "admin" ||
-                                userResponse.data.roleUser === "tech"
-                                ? userResponse.data.roleUser
-                                    : "pax",
-                            privacyUser: userResponse.data.privacyUser === "private" ? true : false,
-                            recordGameUser: userResponse.data.recordGameUser,
-                            flightsUser: updatedVectorFlights,
-                            deletedUser: userResponse.data.deletedUser ?? false,
-                        };
-    
-                        console.log("UPDATE: Quiere hacer el update con estos datos: " + JSON.stringify(user));
-    
-                        CRUDService.updateUser(thisUserId, user).then((response)=>{
-                            if (response?.status===200){
-                                Alert.alert("EaseAer", "New Flight Added");
-                            };
-                        })
-
-                    }
-                }
-            })
-        }
-
-        */
-    }
 
     const formatDate = (dateString: string | undefined) => {
         if (dateString != undefined) {
