@@ -73,7 +73,7 @@ export default function FlightsMine() {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [idFlightLuggage, setIdFlightLuggage] = useState("");
-    const [infoLuggage, setInfoLuggage] = useState('No Information Added');
+    const [infoLuggage, setInfoLuggage] = useState('');
 
     const updateCompanyInfo = async (companyId: string, flightUuid: string) => {
         const userId = await SessionService.getCurrentUser();
