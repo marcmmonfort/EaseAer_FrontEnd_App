@@ -397,48 +397,21 @@ export default function LuggageMine() {
         shadowColor: '#000',
         shadowOpacity: 0,
         shadowRadius: 10,
-        flexDirection: 'row',
         marginLeft: 26,
         marginRight: 26,
     },
     flightPack: {
         marginLeft: 0,
-        width: '85%',
+        width: '70%',
         zIndex: 2,
         flexDirection: 'row',
     }, 
-    flightHeader: {
-        marginBottom: 0,
-        marginTop: 0,
-        marginLeft: 0,
-        marginRight: 0,
-        borderRadius: 12,
-        borderWidth: 0,
-        backgroundColor: '#b3b0a1',
-        shadowColor: '#000',
-        shadowOpacity: 0,
-        shadowRadius: 10,
-        alignItems: 'center',
-        zIndex: 5,
-    },
     titleFlightText: {
         color: 'white',
         fontFamily: subtitleFont,
         fontSize: 22,
         marginTop: 6,
         marginBottom: 6,
-    },
-    flightContent: {
-        borderTopRightRadius: 12,
-        borderBottomRightRadius: 12,
-        marginLeft: -12,
-        paddingLeft: 20,
-        paddingTop: 0,
-        borderWidth: 0,
-        backgroundColor: '#321e29',
-        width: '87%',
-        height: 200,
-        zIndex: 4,
     },
     detailsText: {
         color: '#b3b0a1',
@@ -488,17 +461,11 @@ export default function LuggageMine() {
         textAlign: 'justify',
     },
     flightLocationName: {
-        color: 'white',
+        color: '#321e29',
         fontFamily: titleFont,
         fontSize: 20,
         marginTop: 0,
         marginBottom: 0,
-        textAlign: 'justify',
-    },
-    companyText: {
-        color: '#e9e8e6',
-        fontFamily: bodyFont,
-        fontSize: 16,
         textAlign: 'justify',
     },
     flightNumberText: {
@@ -543,6 +510,92 @@ export default function LuggageMine() {
         marginRight: 2,
         textAlign: 'justify',
     },
+    companyIcon: {
+        marginBottom: 0,
+        marginTop: 0,
+        marginLeft: -12,
+        marginRight: 0,
+        borderRadius: 12,
+        borderWidth: 0,
+        backgroundColor: '#b3b0a1',
+        shadowColor: '#000',
+        shadowOpacity: 0,
+        shadowRadius: 10,
+        alignItems: 'center',
+        zIndex: 5,
+    },
+    luggageQr: {
+        marginBottom: 0,
+        marginTop: 0,
+        marginLeft: -12,
+        marginRight: 0,
+        borderTopRightRadius: 12,
+        borderBottomRightRadius: 12,
+        borderWidth: 0,
+        backgroundColor: '#321e29',
+        alignItems: 'center',
+        paddingLeft: 19.5,
+        paddingRight: 8.5,
+        paddingTop: 8,
+        paddingBottom: 8,
+        zIndex: 1,
+    },
+    companyText: {
+        color: '#875a31',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        textAlign: 'justify',
+    },
+    statusTitleText: {
+        color: '#875a31',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        textAlign: 'justify',
+    },
+    statusNameText: {
+        color: '#321e29',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        textAlign: 'justify',
+    },
+    statusBarText: {
+        color: '#e9e8e6',
+        fontFamily: titleFont,
+        marginTop: 2,
+        fontSize: 26,
+        textAlign: 'justify',
+    },
+    alternativeText: {
+        color: '#b3b0a1',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        textAlign: 'justify',
+    },
+    flightContent: {
+        borderTopLeftRadius: 12,
+        borderBottomLeftRadius: 12,
+        marginLeft: 0,
+        paddingLeft: 8,
+        paddingTop: 7,
+        borderWidth: 0,
+        backgroundColor: 'white',
+        width: '92.5%',
+        height: 66,
+        zIndex: 4,
+    },
+    rowContainer: {
+        flexDirection: 'row',
+    },
+    statusLuggageContainer: {
+        alignItems: 'center',
+        backgroundColor: '#b3b0a1',
+        height: 68,
+        zIndex: 1,
+        marginTop: -12,
+        paddingTop: 12,
+        borderBottomLeftRadius: 12,
+        borderBottomRightRadius: 12,
+    }
   });
 
   if (!fontsLoaded) {
@@ -562,23 +615,68 @@ export default function LuggageMine() {
             
         <View style={styles.flightContainer} key={luggageItem.uuid}>
             <View style={styles.flightPack}>
-                <View style={styles.flightHeader}>
+                <View style={styles.flightContent}>
+                    <View style={styles.rowContainer}>
+                        <Text style={styles.flightICAO}>{companyInfo[luggageItem.uuid]?.name}</Text>
+                        <Text style={styles.flightLocationName}>{companyInfo[luggageItem.uuid]?.number}</Text>
+                    </View>
+                    <View style={styles.rowContainer}>
+                        <Text style={styles.alternativeText}>From </Text>
+                        <Text style={styles.companyText}>{truncateText(formatICAO(companyInfo[luggageItem.uuid]?.origin), 10)}</Text>
+                        <Text style={styles.alternativeText}> To </Text>
+                        <Text style={styles.companyText}>{truncateText(formatICAO(companyInfo[luggageItem.uuid]?.destination), 10)}</Text>
+                    </View>
+                    <View style={styles.rowContainer}>
+                        <Text style={styles.alternativeText}>{formatDay(companyInfo[luggageItem.uuid]?.std.toString())} </Text>
+                        <Text style={styles.companyText}>{formatDate(companyInfo[luggageItem.uuid]?.std.toString())}</Text>
+                        <Text style={styles.alternativeText}> - </Text>
+                        <Text style={styles.companyText}>{formatDate(companyInfo[luggageItem.uuid]?.sta.toString())}</Text>
+                    </View>
+                </View>
+                <View style={styles.companyIcon}>
                     <Image source={{uri: companyInfo[luggageItem.uuid]?.logo} || require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png') } style={styles.image} />
                 </View>
-                <View style={styles.flightContent}>
-                    <Text style={styles.companyText}>{companyInfo[luggageItem.uuid]?.name}</Text>
-                    <Text style={styles.companyText}>{companyInfo[luggageItem.uuid]?.number}</Text>
-                    <Text style={styles.companyText}>{companyInfo[luggageItem.uuid]?.origin}</Text>
-                    <Text style={styles.companyText}>{companyInfo[luggageItem.uuid]?.destination}</Text>
-                    <Text style={styles.companyText}>{formatDate(companyInfo[luggageItem.uuid].std.toString())}</Text>
-                    <Text style={styles.companyText}>{formatDate(companyInfo[luggageItem.uuid].sta.toString())}</Text>
-                    <Text style={styles.companyText}>{luggageItem.uuid}</Text>
-                    <QRCode value={luggageItem.uuid} size={56} color="#321e29" />
-                    <Text style={styles.companyText}>{luggageItem.statusLuggage}</Text>
+                <View style={styles.luggageQr}>
+                    <QRCode value={luggageItem.uuid} size={50} color="#b3b0a1" backgroundColor="transparent" />
+                </View>
+            </View>
+            <View style={styles.statusLuggageContainer}>
+                <Text style={styles.statusBarText}>{formatStatusBar(luggageItem.statusLuggage)}</Text>
+                <View style={styles.rowContainer}>
+                    <Text style={styles.statusTitleText}>Bag Status </Text>
+                    <Text style={styles.statusNameText}>{formatLuggageStatus(luggageItem.statusLuggage)}</Text>
                 </View>
             </View>
         </View>
     );
+
+    const formatLuggageStatus = (statusLuggage: string | undefined) => {
+        if (statusLuggage != undefined) {
+            if (statusLuggage === "waiting"){ return "Waiting" }
+            if (statusLuggage === "admitted"){ return "Admitted" }
+            if (statusLuggage === "security"){ return "Security" }
+            if (statusLuggage === "presorting"){ return "Pre-Sorting" }
+            if (statusLuggage === "finalsorting"){ return "Final Sorting" }
+            if (statusLuggage === "handling"){ return "Handling" }
+            if (statusLuggage === "plane"){ return "On The Plane" }
+        } else {
+            return `Not Available`;
+        }
+    };
+
+    const formatStatusBar = (statusLuggage: string | undefined) => {
+        if (statusLuggage != undefined) {
+            if (statusLuggage === "waiting"){ return "◆ ◇ ◇ ◇ ◇ ◇ ◇" }
+            if (statusLuggage === "admitted"){ return "◆ ◆ ◇ ◇ ◇ ◇ ◇" }
+            if (statusLuggage === "security"){ return "◆ ◆ ◆ ◇ ◇ ◇ ◇" }
+            if (statusLuggage === "presorting"){ return "◆ ◆ ◆ ◆ ◇ ◇ ◇" }
+            if (statusLuggage === "finalsorting"){ return "◆ ◆ ◆ ◆ ◆ ◇ ◇" }
+            if (statusLuggage === "handling"){ return "◆ ◆ ◆ ◆ ◆ ◆ ◇" }
+            if (statusLuggage === "plane"){ return "◆ ◆ ◆ ◆ ◆ ◆ ◆" }
+        } else {
+            return `Not Available`;
+        }
+    };
 
     const formatDate = (dateString: string | undefined) => {
         if (dateString != undefined) {
@@ -590,6 +688,21 @@ export default function LuggageMine() {
             const minutes = String(date.getMinutes()).padStart(2, '0');
             const seconds = String(date.getSeconds()).padStart(2, '0');
             return `${hours}:${minutes}`;
+        } else {
+            return `Not Available`;
+        }
+    };
+
+    const formatDay = (dateString: string | undefined) => {
+        if (dateString != undefined) {
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = String(date.getFullYear()).slice(0);
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${day}.${month}.${year}`;
         } else {
             return `Not Available`;
         }
