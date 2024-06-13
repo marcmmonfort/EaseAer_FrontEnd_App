@@ -9,7 +9,7 @@ import Button_Type_1 from "../components/buttons/Button_Type_1";
 import { AuthEntity, UserAuthEntity, UserEntity } from "../../../domain/user/user.entity";
 import { SessionService } from "../../services/user/session.service";
 import NormalText from "../components/texts/NormalText";
-import { Platform, StatusBar, TouchableOpacity, StyleSheet, ImageBackground, Image, View, Text, Alert, ScrollView, Modal} from "react-native";
+import { Platform, StatusBar, TouchableOpacity, StyleSheet, ImageBackground, Image, View, Text, Alert, ScrollView, Modal, PermissionsAndroid} from "react-native";
 import Register from "../components/texts/Register";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
@@ -34,6 +34,7 @@ import { PredictionEntity } from "../../../domain/prediction/prediction.entity";
 import { PredictionService } from "../../services/prediction/prediction.service";
 import { PreferencesEntity } from "../../../domain/preferences/preferences.entity";
 import { PreferencesService } from "../../services/preferences/preferences.service";
+import * as Location from 'expo-location';
 import axios from "axios";
 
 async function loadFonts() {
@@ -88,6 +89,55 @@ export default function FlightsMine() {
     const [carParkPreferences, setCarParkPreferences] = useState("none");
     const [luggagePreferences, setLuggagePreferences] = useState("none");
     const [marginPreferences, setMarginPreferences] = useState("high");
+    const [coordinates, setCoordinates] = useState("");
+
+    const [location, setLocation] = useState(null);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (Platform.OS === 'android') {
+            requestLocationPermission();
+        } else {
+            getCurrentLocation();
+        }
+    }, []);
+
+    const requestLocationPermission = async () => {
+        try {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            {
+                title: 'Location Permission',
+                message: 'THIS APP NEEDS ACCESS TO YOUR LOCATION',
+                buttonNeutral: 'Ask Me Later',
+                buttonNegative: 'Cancel',
+                buttonPositive: 'OK',
+            }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            getCurrentLocation();
+        } else {
+            console.log('Location Permission Denied');
+        }
+        } catch (err) {
+            console.warn(err);
+        }
+    };
+
+    const getCurrentLocation = async () => {
+        try {
+          const { status } = await Location.requestForegroundPermissionsAsync();
+  
+            if (status === "granted") {
+                const location = await Location.getCurrentPositionAsync({});
+                const { latitude, longitude } = location.coords;
+                setCoordinates(latitude + "," + longitude);
+                console.log("COORDENADAS ENCONTRADAS");
+            }
+        } catch (error) {
+          console.log("Error Obteniendo Ubicación", error);
+        }
+    };
 
     const updateCompanyInfo = async (companyId: string, flightUuid: string) => {
         const userId = await SessionService.getCurrentUser();
@@ -787,7 +837,7 @@ export default function FlightsMine() {
                 if (userResponse?.data) {                
                     setCurrentUser(userResponse.data);
 
-                    const resultTimes = computePredictionTimes(datePrediction);
+                    const resultTimes = computePredictionTimes(datePrediction, coordinates);
                     console.log(">>>>> RESULTADOS TMB: " + resultTimes);
 
                     const newPrediction: PredictionEntity = {
@@ -1096,69 +1146,80 @@ export default function FlightsMine() {
         </ScrollView>
     </ImageBackground>
   );
+
+
+
+
+  
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // FUNCIÓN DE PREDICCIÓN DE TIEMPOS "DOOR TO GATE":
 
-const computePredictionTimes = (std: Date) => {
-    const stdDate = new Date(std);
-    const dayFlight = String(stdDate.getDate()).padStart(2, '0');
-    const monthFlight = String(stdDate.getMonth() + 1).padStart(2, '0');
-    const yearFlight = String(stdDate.getFullYear()).slice(0);
-    const stdHours = String(stdDate.getHours()).padStart(2, '0');
-    const stdMinutes = String(stdDate.getMinutes()).padStart(2, '0');
-    const timePlane = `${stdHours}:${stdMinutes}`;
-
-    // (1) EXIT HOME TIME:
-
-    // (2) ENTER TRANSPORT TIME:
-    let travelTime = 0;
-    const origin = '41.22047888509405, 1.7210408222311584'; // AQUÍ DEBERÍA UBICAR LAS COORDENADAS DE TU CASA
-    const destination = '41.28774514491456, 2.073313634621097'; // COORDENADAS T1 BARCELONA
-    const date = `${monthFlight}-${dayFlight}-${yearFlight}`;
-    let hourValue = stdHours;
-    let amOrPm = "am";
-    if (parseInt(hourValue, 10) > 12){
-        hourValue = (parseInt(hourValue, 10)-12).toString();
-        amOrPm = "pm";
+const computePredictionTimes = (std: Date, coordinates: string) => {
+    if (coordinates == ""){
+        Alert.alert("EaseAer", "Unable To Locate Your Position");
     }
-    const time = `${hourValue}:${stdMinutes}${amOrPm}`;
-    const arriveBy = 'true'; // 'true' = HORA LLEGADA | 'false' = HORA SALIDA
-    const mode = 'TRANSIT,WALK'; // MODOS DE TRANSPORTE
-    const url = `https://api.tmb.cat/v1/planner/plan?app_id=ee1987cb&app_key=b53bd5d74b9cfd81e5170f825d74f7f6&fromPlace=${origin}&toPlace=${destination}&date=${date}&time=${time}&arriveBy=${arriveBy}&mode=${mode}`;
-    axios.get(url)
-        .then(response => {
-            if (response.data.plan && response.data.plan.itineraries.length > 0) {
-                const result = response.data.plan.itineraries[0];
-                const duration = result.duration;
-                const durationMinutes = Math.round(duration / 60);
-                travelTime = durationMinutes;
-                console.log("TRAYECTO DE: " + durationMinutes + " MINUTOS.");
-            } else {
+    else {
+        const stdDate = new Date(std);
+        const dayFlight = String(stdDate.getDate()).padStart(2, '0');
+        const monthFlight = String(stdDate.getMonth() + 1).padStart(2, '0');
+        const yearFlight = String(stdDate.getFullYear()).slice(0);
+        const stdHours = String(stdDate.getHours()).padStart(2, '0');
+        const stdMinutes = String(stdDate.getMinutes()).padStart(2, '0');
+        const timePlane = `${stdHours}:${stdMinutes}`;
+
+        // (1) EXIT HOME TIME:
+
+        // (2) ENTER TRANSPORT TIME:
+        let travelTime = 0;
+        const origin = coordinates; // AQUÍ DEBERÍA UBICAR LAS COORDENADAS DE TU CASA
+        console.log("-----> USA LAS COORDENADAS: " + origin);
+        const destination = '41.28774514491456, 2.073313634621097'; // COORDENADAS T1 BARCELONA
+        const date = `${monthFlight}-${dayFlight}-${yearFlight}`;
+        let hourValue = stdHours;
+        let amOrPm = "am";
+        if (parseInt(hourValue, 10) > 12){
+            hourValue = (parseInt(hourValue, 10)-12).toString();
+            amOrPm = "pm";
+        }
+        const time = `${hourValue}:${stdMinutes}${amOrPm}`;
+        const arriveBy = 'true'; // 'true' = HORA LLEGADA | 'false' = HORA SALIDA
+        const mode = 'TRANSIT,WALK'; // MODOS DE TRANSPORTE
+        const url = `https://api.tmb.cat/v1/planner/plan?app_id=ee1987cb&app_key=b53bd5d74b9cfd81e5170f825d74f7f6&fromPlace=${origin}&toPlace=${destination}&date=${date}&time=${time}&arriveBy=${arriveBy}&mode=${mode}`;
+        axios.get(url)
+            .then(response => {
+                if (response.data.plan && response.data.plan.itineraries.length > 0) {
+                    const result = response.data.plan.itineraries[0];
+                    const duration = result.duration;
+                    const durationMinutes = Math.round(duration / 60);
+                    travelTime = durationMinutes;
+                    console.log("TRAYECTO DE: " + durationMinutes + " MINUTOS.");
+                } else {
+                    travelTime = -1;
+                }
+            })
+            .catch(error => {
+                console.error('Error Computing Travel Time: ', error);
                 travelTime = -1;
-            }
-        })
-        .catch(error => {
-            console.error('Error Computing Travel Time: ', error);
-            travelTime = -1;
-        });
+            });
 
-    // (3) ENTER AIRPORT TIME:
+        // (3) ENTER AIRPORT TIME:
 
-    // (4) CHECK-IN TIME (IF ANY):
+        // (4) CHECK-IN TIME (IF ANY):
 
-    // (5) SECURITY CONTROL TIME:
+        // (5) SECURITY CONTROL TIME:
 
-    // (6) PASSPORT CONTROL (IF ANY):
+        // (6) PASSPORT CONTROL (IF ANY):
 
-    // (7) BE-AT-THE-GATE TIME:
+        // (7) BE-AT-THE-GATE TIME:
 
-    return ("HOLA");
-    
-    // RETURNING THE 8 RESULTS:
-    // return `${A}|${B}|${C}|${D}|${E}|${F}|${G}|${timePlane}`;
-    // "15:30|15:45|16:30|-|17:00|-|17:30|18:00";
+        return ("HOLA");
+        
+        // RETURNING THE 8 RESULTS:
+        // return `${A}|${B}|${C}|${D}|${E}|${F}|${G}|${timePlane}`;
+        // "15:30|15:45|16:30|-|17:00|-|17:30|18:00";
+    }
 };
 
