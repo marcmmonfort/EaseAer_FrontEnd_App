@@ -39,7 +39,7 @@ async function loadFonts() {
   });
 }
 
-export default function FlightsMine() {
+export default function PredictionsMine() {
     const [fontsLoaded, setFontsLoaded] = useState(false);
     const {t}=useTranslation();
     useEffect(() => {
@@ -74,14 +74,6 @@ export default function FlightsMine() {
     const [modalVisible, setModalVisible] = useState(false);
     const [idFlightLuggage, setIdFlightLuggage] = useState("");
     const [infoLuggage, setInfoLuggage] = useState('');
-
-    const [preferencesModalVisible, setPreferencesModalVisible] = useState(false);
-    const [idFlightPrediction, setIdFlightPrediction] = useState("");
-    const [foodPreferences, setFoodPreferences] = useState("");
-    const [shopPreferences, setShopPreferences] = useState("");
-    const [carParkPreferences, setCarParkPreferences] = useState("");
-    const [luggagePreferences, setLuggagePreferences] = useState("");
-    const [marginPreferences, setMarginPreferences] = useState("");
 
     const updateCompanyInfo = async (companyId: string, flightUuid: string) => {
         const userId = await SessionService.getCurrentUser();
@@ -250,19 +242,18 @@ export default function FlightsMine() {
         borderWidth: 0,
         borderRadius: 0,
         color: "black",
-        backgroundColor: '#transparent',
-        marginTop: 10,
+        backgroundColor: '#b3b0a1',
+        marginTop: 0,
         marginBottom: 0,
         height: 40,
-        width: 255,
     },
     pickerItem:{
         fontSize: 16,
-        color: "black",
+        color: "white",
         fontFamily: subtitleFont,
         height: 40,
-        marginLeft: 0,
-        marginRight: 0,
+        marginLeft: -32,
+        marginRight: -32,
     },
     submitReportButton: {
         marginRight: 4,
@@ -608,64 +599,7 @@ export default function FlightsMine() {
     },
     modalButtons: {
         flexDirection: 'row',
-    },
-    createPredictionButton: {
-        marginTop: 10,
-        marginBottom: -4,
-        marginLeft: 25,
-        marginRight: 25,
-        borderRadius: 12,
-        height: 30,
-        backgroundColor: '#b3b0a1',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    createPredictionText: {
-        color: 'white',
-        fontFamily: subtitleFont,
-        fontSize: 18,
-        marginTop: 0,
-        marginBottom: 0,
-        textAlign: 'center',
-    },
-    modalPreferencesOverlay: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.42)',
-    },
-    modalPreferencesView: {
-        width: '90%',
-        backgroundColor: '#e9e8e6',
-        borderRadius: 12,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 0,
-        },
-        shadowOpacity: 0,
-        shadowRadius: 0,
-        elevation: 0,
-    },
-    modalPreferencesContainer: {
-        height: 480,
-        marginBottom: 0,
-        alignItems: 'center',
-    },
-    preferencesStatementText: {
-        color: '#d0871e',
-        fontFamily: bodyFont,
-        fontSize: 16,
-        marginTop: 10,
-        marginBottom: 0,
-        marginRight: 2,
-        textAlign: 'justify',
-    },
-    preferencesModalButtons: {
-        marginTop: 4,
-        flexDirection: 'row',
-    },
+    }
   });
 
   if (!fontsLoaded) {
@@ -739,11 +673,6 @@ export default function FlightsMine() {
         setModalVisible(true);
     }
 
-    const computePrediction = async (flightId: string) => {
-        setIdFlightPrediction(flightId);
-        setPreferencesModalVisible(true);
-    }
-
     const registerLuggage = async () => {
         const thisUserId = await SessionService.getCurrentUser();
         if (thisUserId) {
@@ -773,89 +702,54 @@ export default function FlightsMine() {
         setModalVisible(false);
     }
 
-    const createPreferencesAndPrediction = async () => {
-        const thisUserId = await SessionService.getCurrentUser();
-        if (thisUserId) {
-            await CRUDService.getUserById(thisUserId).then(async (userResponse) => {
-                if (userResponse?.data) {                
-                    setCurrentUser(userResponse.data);
-                    
-                    const newLuggage: LuggageEntity = {
-                        uuid: " " ?? "",
-                        idUserLuggage: thisUserId ?? "",
-                        idFlightLuggage: idFlightLuggage ?? "",
-                        infoLuggage: infoLuggage ?? "",
-                        statusLuggage: "waiting" ?? "",
-                        deletedLuggage: false ?? false,
-                    };
-
-                    LuggageService.createLuggage(newLuggage).then((response)=>{
-                        if (response?.status===200){
-                            Alert.alert("EaseAer", "Luggage Added");
-                        } else {
-                            Alert.alert("EaseAer", "Error Creating Luggage");
-                        }
-                    })
-                }
-            })
-        }
-        setModalVisible(false);
-    }
-
     const renderFlightItem = (flightItem: FlightEntity) => (
-        <View>
-            <View style={styles.flightContainer} key={flightItem.uuid}>
-                <TouchableOpacity style={styles.removeFlightLink} onPress={() => removeFlight(flightItem.uuid)}>
-                    <Text style={styles.addText}>-</Text>
-                </TouchableOpacity>
-                <View style={styles.flightPack}>
-                    <View style={styles.flightHeader}>
-                        <Image source={{uri: companyInfo[flightItem.uuid]?.logo} || require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png') } style={styles.image} />
-                        <Text style={styles.statusText}>{formatStatus(flightItem.statusFlight)}</Text>
-                    </View>
-                    <View style={styles.flightContent}>
-                        {flightItem.originFlight == "LEBL" && (
-                            <View style={styles.locationContent}>
-                                <Text style={styles.flightLocationName}>Barcelona</Text>
-                                <Text style={styles.flightICAO}>-</Text>
-                                <Text style={styles.flightLocationName}>{truncateText(formatICAO(flightItem.destinationFlight), 14)}</Text>
-                            </View>
-                        )}
-                        {flightItem.destinationFlight == "LEBL" && (
-                            <View style={styles.locationContent}>
-                                <Text style={styles.flightLocationName}>{truncateText(formatICAO(flightItem.originFlight), 14)}</Text>
-                                <Text style={styles.flightICAO}>-</Text>
-                                <Text style={styles.flightLocationName}>Barcelona</Text>
-                            </View>
-                        )}
-                        <View style={styles.flightDetails}>
-                            <Text style={styles.flightNumberText}>{flightItem.numberFlight}</Text>
-                            <Text style={styles.companyText}>{companyInfo[flightItem.uuid]?.name}</Text>
-                        </View>
-                        <View style={styles.flightDetails}>
-                            <Text style={styles.detailsText}>From</Text>
-                            <Text style={styles.scheduledText}>{formatDate(flightItem.stdFlight.toString())}</Text>
-                            <Text style={styles.estimatedText}>{formatDate(flightItem.etdFlight.toString())}</Text>
-                            <Text style={styles.detailsText}>To</Text>
-                            <Text style={styles.scheduledText}>{formatDate(flightItem.staFlight.toString())}</Text>
-                            <Text style={styles.estimatedText}>{formatDate(flightItem.etaFlight.toString())}</Text>
-                        </View>
-                        <View style={styles.flightDetails}>
-                            <Text style={styles.detailsText}>Day</Text>
-                            <Text style={styles.dayText}>{formatDay(flightItem.stdFlight.toString())}</Text>
-                        </View>
-                        <Text style={styles.terminalText}>{formatTerminal(flightItem.depTerminalFlight)}</Text>
-                    </View>
+            
+        <View style={styles.flightContainer} key={flightItem.uuid}>
+            <TouchableOpacity style={styles.removeFlightLink} onPress={() => removeFlight(flightItem.uuid)}>
+                <Text style={styles.addText}>-</Text>
+            </TouchableOpacity>
+            <View style={styles.flightPack}>
+                <View style={styles.flightHeader}>
+                    <Image source={{uri: companyInfo[flightItem.uuid]?.logo} || require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png') } style={styles.image} />
+                    <Text style={styles.statusText}>{formatStatus(flightItem.statusFlight)}</Text>
                 </View>
-                <TouchableOpacity style={styles.addLuggageLink} onPress={() => addLuggage(flightItem.uuid)}>
-                    <MaterialCommunityIcons name="bag-suitcase" size={20} color='white' />
-                </TouchableOpacity>
+                <View style={styles.flightContent}>
+                    {flightItem.originFlight == "LEBL" && (
+                        <View style={styles.locationContent}>
+                            <Text style={styles.flightLocationName}>Barcelona</Text>
+                            <Text style={styles.flightICAO}>-</Text>
+                            <Text style={styles.flightLocationName}>{truncateText(formatICAO(flightItem.destinationFlight), 14)}</Text>
+                        </View>
+                    )}
+                    {flightItem.destinationFlight == "LEBL" && (
+                        <View style={styles.locationContent}>
+                            <Text style={styles.flightLocationName}>{truncateText(formatICAO(flightItem.originFlight), 14)}</Text>
+                            <Text style={styles.flightICAO}>-</Text>
+                            <Text style={styles.flightLocationName}>Barcelona</Text>
+                        </View>
+                    )}
+                    <View style={styles.flightDetails}>
+                        <Text style={styles.flightNumberText}>{flightItem.numberFlight}</Text>
+                        <Text style={styles.companyText}>{companyInfo[flightItem.uuid]?.name}</Text>
+                    </View>
+                    <View style={styles.flightDetails}>
+                        <Text style={styles.detailsText}>From</Text>
+                        <Text style={styles.scheduledText}>{formatDate(flightItem.stdFlight.toString())}</Text>
+                        <Text style={styles.estimatedText}>{formatDate(flightItem.etdFlight.toString())}</Text>
+                        <Text style={styles.detailsText}>To</Text>
+                        <Text style={styles.scheduledText}>{formatDate(flightItem.staFlight.toString())}</Text>
+                        <Text style={styles.estimatedText}>{formatDate(flightItem.etaFlight.toString())}</Text>
+                    </View>
+                    <View style={styles.flightDetails}>
+                        <Text style={styles.detailsText}>Day</Text>
+                        <Text style={styles.dayText}>{formatDay(flightItem.stdFlight.toString())}</Text>
+                    </View>
+                    <Text style={styles.terminalText}>{formatTerminal(flightItem.depTerminalFlight)}</Text>
+                </View>
             </View>
-            <View>
-                <TouchableOpacity style={styles.createPredictionButton} onPress={() => computePrediction(flightItem.uuid)}>
-                    <Text style={styles.createPredictionText}>Calculate Prediction</Text>
-                </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.addLuggageLink} onPress={() => addLuggage(flightItem.uuid)}>
+                <MaterialCommunityIcons name="bag-suitcase" size={20} color='white' />
+            </TouchableOpacity>
         </View>
     );
 
@@ -950,7 +844,7 @@ export default function FlightsMine() {
     <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
         <View style={styles.headerContainer}>
             <View style={styles.sectionTitle}>
-                <Text style={styles.pageTitle}>My {listFlights?.length} Trips</Text>
+                <Text style={styles.pageTitle}>My Predictions</Text>
             </View>
             <View style={styles.airportContainer}>
                 <View style={styles.airportTitle}>
@@ -958,80 +852,11 @@ export default function FlightsMine() {
                 </View>
             </View>
         </View>
+    </ImageBackground>
+  );
+}
 
-        <Modal animationType="none" transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(false) }}>
-            <View style={styles.modalOverlay}>
-                <View style={styles.modalView}>
-                    <View style={styles.searcherContainer}>
-                        <Text style={styles.subtitleNewsText}>Create Luggage</Text>
-                        <TextInput style={styles.multilineTextInputStyle} placeholder="Description" value={infoLuggage} onChangeText={ setInfoLuggage } multiline maxLength={72}/>
-                        <View style={styles.modalButtons}>
-                            <TouchableOpacity style={styles.quizButton} onPress={() => registerLuggage()}>
-                                <Text style={styles.loadAllText}>Add</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.quizButton, {backgroundColor: "#d8131b"}]} onPress={() => setModalVisible(false)}>
-                                <Text style={styles.loadAllText}>Cancel</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </View>
-        </Modal>
-
-        <Modal animationType="none" transparent={true} visible={preferencesModalVisible} onRequestClose={() => { setPreferencesModalVisible(false) }}>
-            <View style={styles.modalPreferencesOverlay}>
-                <View style={styles.modalPreferencesView}>
-                    <View style={styles.modalPreferencesContainer}>
-                        <Text style={styles.subtitleNewsText}>Create Prediction</Text>
-                        
-                        <Text style={styles.preferencesStatementText}>Eating / Drinking</Text>
-                        <Picker selectedValue={foodPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setFoodPreferences(itemValue)}>
-                            <Picker.Item label="None" value="none"/>
-                            <Picker.Item label="Lunch / Dinner" value="fullmeal"/>
-                            <Picker.Item label="Snack / Drink / Light Meal" value="lightmeal"/>
-                        </Picker>
-
-                        <Text style={styles.preferencesStatementText}>Shopping</Text>
-                        <Picker selectedValue={shopPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setShopPreferences(itemValue)}>
-                            <Picker.Item label="None" value="none"/>
-                            <Picker.Item label="Buying" value="search"/>
-                            <Picker.Item label="Just Looking" value="look"/>
-                        </Picker>
-
-                        <Text style={styles.preferencesStatementText}>Own Car / Rental Car</Text>
-                        <Picker selectedValue={carParkPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setCarParkPreferences(itemValue)}>
-                            <Picker.Item label="None" value="none"/>
-                            <Picker.Item label="Returning Rental Car" value="rentacar"/>
-                            <Picker.Item label="Parking Own Car" value="own"/>
-                        </Picker>
-
-                        <Text style={styles.preferencesStatementText}>Luggage</Text>
-                        <Picker selectedValue={luggagePreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setLuggagePreferences(itemValue)}>
-                            <Picker.Item label="None" value="none"/>
-                            <Picker.Item label="1 Bag" value="one"/>
-                            <Picker.Item label="> 1 Bags" value="multiple"/>
-                            <Picker.Item label="Special Luggage" value="special"/>
-                        </Picker>
-
-                        <Text style={styles.preferencesStatementText}>Margin?</Text>
-                        <Picker selectedValue={marginPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setMarginPreferences(itemValue)}>
-                            <Picker.Item label="Comfortable" value="high"/>
-                            <Picker.Item label="Normal" value="mid"/>
-                            <Picker.Item label="Hurry" value="low"/>
-                        </Picker>                        
-                        
-                        <View style={styles.preferencesModalButtons}>
-                            <TouchableOpacity style={styles.quizButton} onPress={() => createPreferencesAndPrediction()}>
-                                <Text style={styles.loadAllText}>Calculate</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.quizButton, {backgroundColor: "#d8131b"}]} onPress={() => setPreferencesModalVisible(false)}>
-                                <Text style={styles.loadAllText}>Cancel</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </View>
-        </Modal>
+/*
 
         <ScrollView style={styles.scrollStyle}>
         {listFlights
@@ -1050,7 +875,5 @@ export default function FlightsMine() {
             : <Text style={styles.noNewsText}>No Flights</Text>
             }
         </ScrollView>
-    </ImageBackground>
-  );
-}
+*/
 

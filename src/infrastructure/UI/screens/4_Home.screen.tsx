@@ -11,6 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import ShopScreen from './31_ManagerShop.screen';
 import EntertainmentScreen from './32_ManagerEntertainment.screen';
 import FlightsScreen from './33_ManagerFlights.screen';
+import TimesScreen from './34_ManagerTime.screen';
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -88,8 +89,8 @@ export default function HomeScreen() {
         ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
       }} />
 
-      <Tab.Screen name="Map" component={MapScreen} options={{ tabBarIcon: ({ color, size }) => (
-        <MaterialCommunityIcons name="map-marker" size={25} color='#321e29' />
+      <Tab.Screen name="Map" component={TimesScreen} options={{ tabBarIcon: ({ color, size }) => (
+        <MaterialCommunityIcons name="timer-outline" size={25} color='#321e29' />
         ), headerStyle: { backgroundColor: 'white', borderBottomWidth: 0, shadowOpacity: 0 }, headerTitleStyle: { color: '#321e29', fontSize: 30 },
         headerTitle: () => ( <Image source={require('../../../../assets/easeaer_icons/EaseAer_Logo_3_Png.png')} style={{ width: 132, marginBottom: 10 }} resizeMode="contain"/>
         ),

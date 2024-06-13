@@ -1,3 +1,3 @@
 export let environment = {
-    API_URL: 'https://0ba8-83-44-218-141.ngrok-free.app/'
+    API_URL: 'https://408b-83-44-226-208.ngrok-free.app/'
 };
