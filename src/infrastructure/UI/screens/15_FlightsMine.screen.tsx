@@ -30,6 +30,10 @@ import { FlightEntity } from "../../../domain/flight/flight.entity";
 import { FlightService } from "../../services/flight/flight.service";
 import { LuggageEntity } from "../../../domain/luggage/luggage.entity";
 import { LuggageService } from "../../services/luggage/luggage.service";
+import { PredictionEntity } from "../../../domain/prediction/prediction.entity";
+import { PredictionService } from "../../services/prediction/prediction.service";
+import { PreferencesEntity } from "../../../domain/preferences/preferences.entity";
+import { PreferencesService } from "../../services/preferences/preferences.service";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -77,11 +81,12 @@ export default function FlightsMine() {
 
     const [preferencesModalVisible, setPreferencesModalVisible] = useState(false);
     const [idFlightPrediction, setIdFlightPrediction] = useState("");
-    const [foodPreferences, setFoodPreferences] = useState("");
-    const [shopPreferences, setShopPreferences] = useState("");
-    const [carParkPreferences, setCarParkPreferences] = useState("");
-    const [luggagePreferences, setLuggagePreferences] = useState("");
-    const [marginPreferences, setMarginPreferences] = useState("");
+    const [datePrediction, setDatePrediction] = useState(new Date());
+    const [foodPreferences, setFoodPreferences] = useState("none");
+    const [shopPreferences, setShopPreferences] = useState("none");
+    const [carParkPreferences, setCarParkPreferences] = useState("none");
+    const [luggagePreferences, setLuggagePreferences] = useState("none");
+    const [marginPreferences, setMarginPreferences] = useState("high");
 
     const updateCompanyInfo = async (companyId: string, flightUuid: string) => {
         const userId = await SessionService.getCurrentUser();
@@ -739,8 +744,9 @@ export default function FlightsMine() {
         setModalVisible(true);
     }
 
-    const computePrediction = async (flightId: string) => {
+    const computePrediction = async (flightId: string, std: Date) => {
         setIdFlightPrediction(flightId);
+        setDatePrediction(std);
         setPreferencesModalVisible(true);
     }
 
@@ -779,27 +785,61 @@ export default function FlightsMine() {
             await CRUDService.getUserById(thisUserId).then(async (userResponse) => {
                 if (userResponse?.data) {                
                     setCurrentUser(userResponse.data);
-                    
-                    const newLuggage: LuggageEntity = {
+
+                    const newPrediction: PredictionEntity = {
                         uuid: " " ?? "",
-                        idUserLuggage: thisUserId ?? "",
-                        idFlightLuggage: idFlightLuggage ?? "",
-                        infoLuggage: infoLuggage ?? "",
-                        statusLuggage: "waiting" ?? "",
-                        deletedLuggage: false ?? false,
+                        idUserPrediction: userResponse.data.uuid ?? "",
+                        idFlightPredition: idFlightPrediction ?? "",
+                        datePrediction: datePrediction ?? "",
+                        exitHomeTimePrediction: "12:00",
+                        transportTimePrediction: "12:10",
+                        entranceTimePrediction: "12:20",
+                        checkInTimePrediction: "12:30",
+                        securityTimePrediction: "12:40",
+                        passportTimePrediction: "12:50",
+                        gateTimePrediction: "13:00",
+                        planeTimePrediction: "12:10",
+                        deletedPrediction: false ?? false,
                     };
 
-                    LuggageService.createLuggage(newLuggage).then((response)=>{
-                        if (response?.status===200){
-                            Alert.alert("EaseAer", "Luggage Added");
+                    PredictionService.createPrediction(newPrediction).then((response)=>{
+                        if (response?.status===200 && response?.data != "ALREADY_PREDICTED"){
+                            const newPreferences: PreferencesEntity = {
+                                uuid: " " ?? "",
+                                idPredPreferences: response.data.uuid ?? "",
+                                foodPreferences:
+                                    foodPreferences === "none" || foodPreferences === "lightmeal" || foodPreferences === "fullmeal"
+                                    ? foodPreferences : "none",
+                                shopPreferences:
+                                    foodPreferences === "none" || foodPreferences === "look" || foodPreferences === "search"
+                                    ? foodPreferences : "none",
+                                carParkPreferences:
+                                    foodPreferences === "none" || foodPreferences === "own" || foodPreferences === "rentacar"
+                                    ? foodPreferences : "none",
+                                luggagePreferences:
+                                    foodPreferences === "none" || foodPreferences === "one" || foodPreferences === "multiple" || foodPreferences === "special"
+                                    ? foodPreferences : "none",
+                                marginPreferences:
+                                    foodPreferences === "none" || foodPreferences === "low" || foodPreferences === "mid" || foodPreferences === "high"
+                                    ? foodPreferences : "high",  
+                                deletedPreferences: false ?? false,
+                            };
+
+                            PreferencesService.createPreferences(newPreferences).then((responsePref)=>{
+                                if (responsePref?.status===200){
+                                    Alert.alert("EaseAer", "Prediction Created");
+                                } else {
+                                    Alert.alert("EaseAer", "Error Saving Preferences");
+                                }
+                            })
                         } else {
-                            Alert.alert("EaseAer", "Error Creating Luggage");
+                            Alert.alert("EaseAer", "Error Creating Prediction");
                         }
                     })
                 }
             })
         }
-        setModalVisible(false);
+        setPreferencesModalVisible(false);
     }
 
     const renderFlightItem = (flightItem: FlightEntity) => (
@@ -852,7 +892,7 @@ export default function FlightsMine() {
                 </TouchableOpacity>
             </View>
             <View>
-                <TouchableOpacity style={styles.createPredictionButton} onPress={() => computePrediction(flightItem.uuid)}>
+                <TouchableOpacity style={styles.createPredictionButton} onPress={() => computePrediction(flightItem.uuid, flightItem.stdFlight)}>
                     <Text style={styles.createPredictionText}>Calculate Prediction</Text>
                 </TouchableOpacity>
             </View>
