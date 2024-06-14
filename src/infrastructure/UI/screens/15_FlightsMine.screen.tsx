@@ -1219,7 +1219,9 @@ export default function FlightsMine() {
             let timeStartCheckIn = "-"; // CUANDO NO APLICA
             let checkInProcessTime = 0;
             if (luggagePreferences != "none"){ // "one" - "multiple" - "special"
-                checkInProcessTime = getCheckInTime(timeEnterSCHour, monthFlight, flightType);
+                const timePlaneSTDInMinutes = parseInt(timePlaneHours, 10)*60 + parseInt(timePlaneMinutes, 10);
+                let timeDifVsSTD = timePlaneSTDInMinutes - adjustedTimeEnterSCInMinutes;
+                checkInProcessTime = getCheckInTime(timeEnterSCHour, monthFlight, flightType, timeDifVsSTD);
                 if (luggagePreferences == "one"){ checkInTime = preCheckInDelay + checkInProcessTime*1 + postCheckInDelay; }
                 if (luggagePreferences == "multiple"){ checkInTime = preCheckInDelay + checkInProcessTime*2 + postCheckInDelay; }
                 if (luggagePreferences == "special"){ checkInTime = preCheckInDelay + checkInProcessTime*3 + postCheckInDelay; }
@@ -1421,23 +1423,331 @@ export default function FlightsMine() {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-const getCheckInTime = (finishTime: number, month: string, flightType: string) => {
-    return 5;
+const getCheckInTime = (finishTime: number, month: string, flightType: string, timeVsSTD: number) => {
+    let checkInTime = 5;
+    if (flightType === 'long'){
+        if (month === '01'){
+            if (timeVsSTD < 90)                         { checkInTime = 5 } 
+            if ((timeVsSTD >= 90)&&(timeVsSTD < 190))   { checkInTime = 10 } 
+            if (timeVsSTD >= 190)                       { checkInTime = 5 } 
+        }
+        if (month === '02'){
+            if (timeVsSTD < 90)                         { checkInTime = 5 } 
+            if ((timeVsSTD >= 90)&&(timeVsSTD < 190))   { checkInTime = 11 } 
+            if (timeVsSTD >= 190)                       { checkInTime = 6 } 
+        }
+        if (month === '03'){
+            if (timeVsSTD < 90)                         { checkInTime = 5 } 
+            if ((timeVsSTD >= 90)&&(timeVsSTD < 190))   { checkInTime = 11 } 
+            if (timeVsSTD >= 190)                       { checkInTime = 6 } 
+        }
+        if (month === '04'){
+            if (timeVsSTD < 90)                         { checkInTime = 5 } 
+            if ((timeVsSTD >= 90)&&(timeVsSTD < 190))   { checkInTime = 12 } 
+            if (timeVsSTD >= 190)                       { checkInTime = 6 } 
+        }
+        if (month === '05'){
+            if (timeVsSTD < 90)                         { checkInTime = 5 } 
+            if ((timeVsSTD >= 90)&&(timeVsSTD < 190))   { checkInTime = 11 } 
+            if (timeVsSTD >= 190)                       { checkInTime = 6 } 
+        }
+        if (month === '06'){
+            if (timeVsSTD < 90)                         { checkInTime = 5 } 
+            if ((timeVsSTD >= 90)&&(timeVsSTD < 190))   { checkInTime = 12 } 
+            if (timeVsSTD >= 190)                       { checkInTime = 6 } 
+        }
+        if (month === '07'){
+            if (timeVsSTD < 90)                         { checkInTime = 6 } 
+            if ((timeVsSTD >= 90)&&(timeVsSTD < 190))   { checkInTime = 13 } 
+            if (timeVsSTD >= 190)                       { checkInTime = 6 } 
+        }
+        if (month === '08'){
+            if (timeVsSTD < 90)                         { checkInTime = 6 } 
+            if ((timeVsSTD >= 90)&&(timeVsSTD < 190))   { checkInTime = 14 } 
+            if (timeVsSTD >= 190)                       { checkInTime = 6 } 
+        }
+        if (month === '09'){
+            if (timeVsSTD < 90)                         { checkInTime = 5 } 
+            if ((timeVsSTD >= 90)&&(timeVsSTD < 190))   { checkInTime = 12 } 
+            if (timeVsSTD >= 190)                       { checkInTime = 6 } 
+        }
+        if (month === '10'){
+            if (timeVsSTD < 90)                         { checkInTime = 5 } 
+            if ((timeVsSTD >= 90)&&(timeVsSTD < 190))   { checkInTime = 11 } 
+            if (timeVsSTD >= 190)                       { checkInTime = 6 } 
+        }
+        if (month === '11'){
+            if (timeVsSTD < 90)                         { checkInTime = 5 } 
+            if ((timeVsSTD >= 90)&&(timeVsSTD < 190))   { checkInTime = 11 } 
+            if (timeVsSTD >= 190)                       { checkInTime = 6 } 
+        }
+        if (month === '12'){
+            if (timeVsSTD < 90)                         { checkInTime = 5 } 
+            if ((timeVsSTD >= 90)&&(timeVsSTD < 190))   { checkInTime = 11 } 
+            if (timeVsSTD >= 190)                       { checkInTime = 6 } 
+        }
+    } else {
+        if (month === '01'){ // ENERO:
+            if (finishTime == 0) { checkInTime = 2 }; if (finishTime == 8) { checkInTime = 3 }; if (finishTime == 16) { checkInTime = 2 };
+            if (finishTime == 1) { checkInTime = 2 }; if (finishTime == 9) { checkInTime = 3 }; if (finishTime == 17) { checkInTime = 2 };
+            if (finishTime == 2) { checkInTime = 2 }; if (finishTime == 10) { checkInTime = 2 }; if (finishTime == 18) { checkInTime = 2 };
+            if (finishTime == 3) { checkInTime = 2 }; if (finishTime == 11) { checkInTime = 2 }; if (finishTime == 19) { checkInTime = 2 };
+            if (finishTime == 4) { checkInTime = 3 }; if (finishTime == 12) { checkInTime = 2 }; if (finishTime == 20) { checkInTime = 2 };
+            if (finishTime == 5) { checkInTime = 3 }; if (finishTime == 13) { checkInTime = 2 }; if (finishTime == 21) { checkInTime = 2 };
+            if (finishTime == 6) { checkInTime = 2 }; if (finishTime == 14) { checkInTime = 2 }; if (finishTime == 22) { checkInTime = 2 };
+            if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 2 }; if (finishTime == 23) { checkInTime = 2 };            
+        }
+        if (month === '02'){ // FEBRERO:
+            if (finishTime == 0) { checkInTime = 2 }; if (finishTime == 8) { checkInTime = 2 }; if (finishTime == 16) { checkInTime = 2 };
+            if (finishTime == 1) { checkInTime = 2 }; if (finishTime == 9) { checkInTime = 2 }; if (finishTime == 17) { checkInTime = 2 };
+            if (finishTime == 2) { checkInTime = 2 }; if (finishTime == 10) { checkInTime = 3 }; if (finishTime == 18) { checkInTime = 2 };
+            if (finishTime == 3) { checkInTime = 2 }; if (finishTime == 11) { checkInTime = 3 }; if (finishTime == 19) { checkInTime = 2 };
+            if (finishTime == 4) { checkInTime = 3 }; if (finishTime == 12) { checkInTime = 2 }; if (finishTime == 20) { checkInTime = 2 };
+            if (finishTime == 5) { checkInTime = 3 }; if (finishTime == 13) { checkInTime = 2 }; if (finishTime == 21) { checkInTime = 2 };
+            if (finishTime == 6) { checkInTime = 2 }; if (finishTime == 14) { checkInTime = 2 }; if (finishTime == 22) { checkInTime = 2 };
+            if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 2 }; if (finishTime == 23) { checkInTime = 2 };            
+        }
+        if (month === '03'){ // MARZO:
+            if (finishTime == 0) { checkInTime = 2 }; if (finishTime == 8) { checkInTime = 2 }; if (finishTime == 16) { checkInTime = 3 };
+            if (finishTime == 1) { checkInTime = 2 }; if (finishTime == 9) { checkInTime = 2 }; if (finishTime == 17) { checkInTime = 3 };
+            if (finishTime == 2) { checkInTime = 2 }; if (finishTime == 10) { checkInTime = 4 }; if (finishTime == 18) { checkInTime = 2 };
+            if (finishTime == 3) { checkInTime = 2 }; if (finishTime == 11) { checkInTime = 4 }; if (finishTime == 19) { checkInTime = 2 };
+            if (finishTime == 4) { checkInTime = 3 }; if (finishTime == 12) { checkInTime = 2 }; if (finishTime == 20) { checkInTime = 2 };
+            if (finishTime == 5) { checkInTime = 3 }; if (finishTime == 13) { checkInTime = 2 }; if (finishTime == 21) { checkInTime = 2 };
+            if (finishTime == 6) { checkInTime = 2 }; if (finishTime == 14) { checkInTime = 2 }; if (finishTime == 22) { checkInTime = 2 };
+            if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 2 }; if (finishTime == 23) { checkInTime = 2 };             
+        }
+        if (month === '04'){ // ABRIL:
+            if (finishTime == 0) { checkInTime = 2 }; if (finishTime == 8) { checkInTime = 2 }; if (finishTime == 16) { checkInTime = 4 };
+            if (finishTime == 1) { checkInTime = 2 }; if (finishTime == 9) { checkInTime = 2 }; if (finishTime == 17) { checkInTime = 4 };
+            if (finishTime == 2) { checkInTime = 2 }; if (finishTime == 10) { checkInTime = 5 }; if (finishTime == 18) { checkInTime = 3 };
+            if (finishTime == 3) { checkInTime = 2 }; if (finishTime == 11) { checkInTime = 5 }; if (finishTime == 19) { checkInTime = 3 };
+            if (finishTime == 4) { checkInTime = 6 }; if (finishTime == 12) { checkInTime = 2 }; if (finishTime == 20) { checkInTime = 2 };
+            if (finishTime == 5) { checkInTime = 6 }; if (finishTime == 13) { checkInTime = 2 }; if (finishTime == 21) { checkInTime = 2 };
+            if (finishTime == 6) { checkInTime = 2 }; if (finishTime == 14) { checkInTime = 2 }; if (finishTime == 22) { checkInTime = 2 };
+            if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 2 }; if (finishTime == 23) { checkInTime = 2 };             
+        }
+        if (month === '05'){ // MAYO:
+            if (finishTime == 0) { checkInTime = 2 }; if (finishTime == 8) { checkInTime = 3 }; if (finishTime == 16) { checkInTime = 3 };
+            if (finishTime == 1) { checkInTime = 2 }; if (finishTime == 9) { checkInTime = 3 }; if (finishTime == 17) { checkInTime = 3 };
+            if (finishTime == 2) { checkInTime = 2 }; if (finishTime == 10) { checkInTime = 5 }; if (finishTime == 18) { checkInTime = 3 };
+            if (finishTime == 3) { checkInTime = 2 }; if (finishTime == 11) { checkInTime = 5 }; if (finishTime == 19) { checkInTime = 3 };
+            if (finishTime == 4) { checkInTime = 5 }; if (finishTime == 12) { checkInTime = 3 }; if (finishTime == 20) { checkInTime = 2 };
+            if (finishTime == 5) { checkInTime = 5 }; if (finishTime == 13) { checkInTime = 3 }; if (finishTime == 21) { checkInTime = 2 };
+            if (finishTime == 6) { checkInTime = 2 }; if (finishTime == 14) { checkInTime = 3 }; if (finishTime == 22) { checkInTime = 2 };
+            if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 3 }; if (finishTime == 23) { checkInTime = 2 };            
+        }
+        if (month === '06'){ // JUNIO:
+            if (finishTime == 0) { checkInTime = 2 }; if (finishTime == 8) { checkInTime = 2 }; if (finishTime == 16) { checkInTime = 3 };
+            if (finishTime == 1) { checkInTime = 2 }; if (finishTime == 9) { checkInTime = 2 }; if (finishTime == 17) { checkInTime = 3 };
+            if (finishTime == 2) { checkInTime = 2 }; if (finishTime == 10) { checkInTime = 5 }; if (finishTime == 18) { checkInTime = 4 };
+            if (finishTime == 3) { checkInTime = 2 }; if (finishTime == 11) { checkInTime = 5 }; if (finishTime == 19) { checkInTime = 4 };
+            if (finishTime == 4) { checkInTime = 4 }; if (finishTime == 12) { checkInTime = 2 }; if (finishTime == 20) { checkInTime = 2 };
+            if (finishTime == 5) { checkInTime = 4 }; if (finishTime == 13) { checkInTime = 2 }; if (finishTime == 21) { checkInTime = 2 };
+            if (finishTime == 6) { checkInTime = 2 }; if (finishTime == 14) { checkInTime = 3 }; if (finishTime == 22) { checkInTime = 2 };
+            if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 3 }; if (finishTime == 23) { checkInTime = 2 };              
+        }
+        if (month === '07'){ // JULIO:
+            if (finishTime == 0) { checkInTime = 2 }; if (finishTime == 8) { checkInTime = 2 }; if (finishTime == 16) { checkInTime = 3 };
+            if (finishTime == 1) { checkInTime = 2 }; if (finishTime == 9) { checkInTime = 2 }; if (finishTime == 17) { checkInTime = 3 };
+            if (finishTime == 2) { checkInTime = 2 }; if (finishTime == 10) { checkInTime = 4 }; if (finishTime == 18) { checkInTime = 4 };
+            if (finishTime == 3) { checkInTime = 2 }; if (finishTime == 11) { checkInTime = 4 }; if (finishTime == 19) { checkInTime = 4 };
+            if (finishTime == 4) { checkInTime = 6 }; if (finishTime == 12) { checkInTime = 2 }; if (finishTime == 20) { checkInTime = 2 };
+            if (finishTime == 5) { checkInTime = 6 }; if (finishTime == 13) { checkInTime = 2 }; if (finishTime == 21) { checkInTime = 2 };
+            if (finishTime == 6) { checkInTime = 2 }; if (finishTime == 14) { checkInTime = 3 }; if (finishTime == 22) { checkInTime = 2 };
+            if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 3 }; if (finishTime == 23) { checkInTime = 2 };        
+        }
+        if (month === '08'){ // AGOSTO:
+            if (finishTime == 0) { checkInTime = 2 }; if (finishTime == 8) { checkInTime = 2 }; if (finishTime == 16) { checkInTime = 4 };
+            if (finishTime == 1) { checkInTime = 2 }; if (finishTime == 9) { checkInTime = 2 }; if (finishTime == 17) { checkInTime = 4 };
+            if (finishTime == 2) { checkInTime = 2 }; if (finishTime == 10) { checkInTime = 4 }; if (finishTime == 18) { checkInTime = 4 };
+            if (finishTime == 3) { checkInTime = 2 }; if (finishTime == 11) { checkInTime = 4 }; if (finishTime == 19) { checkInTime = 4 };
+            if (finishTime == 4) { checkInTime = 5 }; if (finishTime == 12) { checkInTime = 2 }; if (finishTime == 20) { checkInTime = 2 };
+            if (finishTime == 5) { checkInTime = 5 }; if (finishTime == 13) { checkInTime = 2 }; if (finishTime == 21) { checkInTime = 2 };
+            if (finishTime == 6) { checkInTime = 2 }; if (finishTime == 14) { checkInTime = 4 }; if (finishTime == 22) { checkInTime = 2 };
+            if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 4 }; if (finishTime == 23) { checkInTime = 2 };            
+        }
+        if (month === '09'){ // SEPTIEMBRE:
+            if (finishTime == 0) { checkInTime = 2 }; if (finishTime == 8) { checkInTime = 2 }; if (finishTime == 16) { checkInTime = 2 };
+            if (finishTime == 1) { checkInTime = 2 }; if (finishTime == 9) { checkInTime = 2 }; if (finishTime == 17) { checkInTime = 2 };
+            if (finishTime == 2) { checkInTime = 2 }; if (finishTime == 10) { checkInTime = 3 }; if (finishTime == 18) { checkInTime = 4 };
+            if (finishTime == 3) { checkInTime = 2 }; if (finishTime == 11) { checkInTime = 3 }; if (finishTime == 19) { checkInTime = 4 };
+            if (finishTime == 4) { checkInTime = 4 }; if (finishTime == 12) { checkInTime = 2 }; if (finishTime == 20) { checkInTime = 2 };
+            if (finishTime == 5) { checkInTime = 4 }; if (finishTime == 13) { checkInTime = 2 }; if (finishTime == 21) { checkInTime = 2 };
+            if (finishTime == 6) { checkInTime = 2 }; if (finishTime == 14) { checkInTime = 3 }; if (finishTime == 22) { checkInTime = 2 };
+            if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 3 }; if (finishTime == 23) { checkInTime = 2 };           
+        }
+        if (month === '10'){ // OCTUBRE:
+            if (finishTime == 0) { checkInTime = 2 }; if (finishTime == 8) { checkInTime = 2 }; if (finishTime == 16) { checkInTime = 3 };
+            if (finishTime == 1) { checkInTime = 2 }; if (finishTime == 9) { checkInTime = 2 }; if (finishTime == 17) { checkInTime = 3 };
+            if (finishTime == 2) { checkInTime = 2 }; if (finishTime == 10) { checkInTime = 4 }; if (finishTime == 18) { checkInTime = 4 };
+            if (finishTime == 3) { checkInTime = 2 }; if (finishTime == 11) { checkInTime = 4 }; if (finishTime == 19) { checkInTime = 4 };
+            if (finishTime == 4) { checkInTime = 4 }; if (finishTime == 12) { checkInTime = 2 }; if (finishTime == 20) { checkInTime = 2 };
+            if (finishTime == 5) { checkInTime = 4 }; if (finishTime == 13) { checkInTime = 2 }; if (finishTime == 21) { checkInTime = 2 };
+            if (finishTime == 6) { checkInTime = 2 }; if (finishTime == 14) { checkInTime = 3 }; if (finishTime == 22) { checkInTime = 2 };
+            if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 3 }; if (finishTime == 23) { checkInTime = 2 };           
+        }
+        if (month === '11'){ // NOVIEMBRE:
+            if (finishTime == 0) { checkInTime = 2 }; if (finishTime == 8) { checkInTime = 2 }; if (finishTime == 16) { checkInTime = 2 };
+            if (finishTime == 1) { checkInTime = 2 }; if (finishTime == 9) { checkInTime = 2 }; if (finishTime == 17) { checkInTime = 2 };
+            if (finishTime == 2) { checkInTime = 2 }; if (finishTime == 10) { checkInTime = 4 }; if (finishTime == 18) { checkInTime = 2 };
+            if (finishTime == 3) { checkInTime = 2 }; if (finishTime == 11) { checkInTime = 4 }; if (finishTime == 19) { checkInTime = 2 };
+            if (finishTime == 4) { checkInTime = 6 }; if (finishTime == 12) { checkInTime = 2 }; if (finishTime == 20) { checkInTime = 2 };
+            if (finishTime == 5) { checkInTime = 6 }; if (finishTime == 13) { checkInTime = 2 }; if (finishTime == 21) { checkInTime = 2 };
+            if (finishTime == 6) { checkInTime = 2 }; if (finishTime == 14) { checkInTime = 2 }; if (finishTime == 22) { checkInTime = 2 };
+            if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 2 }; if (finishTime == 23) { checkInTime = 2 };             
+        }
+        if (month === '12'){
+            if (finishTime == 0) { checkInTime = 2 }; if (finishTime == 8) { checkInTime = 2 }; if (finishTime == 16) { checkInTime = 2 };
+            if (finishTime == 1) { checkInTime = 2 }; if (finishTime == 9) { checkInTime = 2 }; if (finishTime == 17) { checkInTime = 2 };
+            if (finishTime == 2) { checkInTime = 2 }; if (finishTime == 10) { checkInTime = 4 }; if (finishTime == 18) { checkInTime = 3 };
+            if (finishTime == 3) { checkInTime = 2 }; if (finishTime == 11) { checkInTime = 4 }; if (finishTime == 19) { checkInTime = 3 };
+            if (finishTime == 4) { checkInTime = 4 }; if (finishTime == 12) { checkInTime = 2 }; if (finishTime == 20) { checkInTime = 2 };
+            if (finishTime == 5) { checkInTime = 4 }; if (finishTime == 13) { checkInTime = 2 }; if (finishTime == 21) { checkInTime = 2 };
+            if (finishTime == 6) { checkInTime = 2 }; if (finishTime == 14) { checkInTime = 2 }; if (finishTime == 22) { checkInTime = 2 };
+            if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 2 }; if (finishTime == 23) { checkInTime = 2 };           
+        }
+    }
+    return checkInTime;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 const getSecurityControlTime = (finishHour: number, month: string) => {
     // "finishHour": Hour Exitting Security Filter.
-    return 5;
+    let securityControlTime = 5;
+    if (month === '01'){ // ENERO:
+        if (finishHour == 0) { securityControlTime = 3 }; if (finishHour == 8) { securityControlTime = 4 }; if (finishHour == 16) { securityControlTime = 4 };
+        if (finishHour == 1) { securityControlTime = 3 }; if (finishHour == 9) { securityControlTime = 4 }; if (finishHour == 17) { securityControlTime = 4 };
+        if (finishHour == 2) { securityControlTime = 3 }; if (finishHour == 10) { securityControlTime = 4 }; if (finishHour == 18) { securityControlTime = 4 };
+        if (finishHour == 3) { securityControlTime = 3 }; if (finishHour == 11) { securityControlTime = 4 }; if (finishHour == 19) { securityControlTime = 4 };
+        if (finishHour == 4) { securityControlTime = 3 }; if (finishHour == 12) { securityControlTime = 4 }; if (finishHour == 20) { securityControlTime = 3 };
+        if (finishHour == 5) { securityControlTime = 3 }; if (finishHour == 13) { securityControlTime = 4 }; if (finishHour == 21) { securityControlTime = 3 };
+        if (finishHour == 6) { securityControlTime = 4 }; if (finishHour == 14) { securityControlTime = 4 }; if (finishHour == 22) { securityControlTime = 3 };
+        if (finishHour == 7) { securityControlTime = 4 }; if (finishHour == 15) { securityControlTime = 4 }; if (finishHour == 23) { securityControlTime = 3 };
+    }
+    if (month === '02'){ // FEBRERO:
+        if (finishHour == 0) { securityControlTime = 3 }; if (finishHour == 8) { securityControlTime = 4 }; if (finishHour == 16) { securityControlTime = 4 };
+        if (finishHour == 1) { securityControlTime = 3 }; if (finishHour == 9) { securityControlTime = 4 }; if (finishHour == 17) { securityControlTime = 4 };
+        if (finishHour == 2) { securityControlTime = 3 }; if (finishHour == 10) { securityControlTime = 4 }; if (finishHour == 18) { securityControlTime = 4 };
+        if (finishHour == 3) { securityControlTime = 3 }; if (finishHour == 11) { securityControlTime = 4 }; if (finishHour == 19) { securityControlTime = 4 };
+        if (finishHour == 4) { securityControlTime = 3 }; if (finishHour == 12) { securityControlTime = 4 }; if (finishHour == 20) { securityControlTime = 3 };
+        if (finishHour == 5) { securityControlTime = 3 }; if (finishHour == 13) { securityControlTime = 4 }; if (finishHour == 21) { securityControlTime = 3 };
+        if (finishHour == 6) { securityControlTime = 4 }; if (finishHour == 14) { securityControlTime = 4 }; if (finishHour == 22) { securityControlTime = 3 };
+        if (finishHour == 7) { securityControlTime = 4 }; if (finishHour == 15) { securityControlTime = 4 }; if (finishHour == 23) { securityControlTime = 3 };
+    }
+    if (month === '03'){ // MARZO:
+        if (finishHour == 0) { securityControlTime = 3 }; if (finishHour == 8) { securityControlTime = 4 }; if (finishHour == 16) { securityControlTime = 4 };
+        if (finishHour == 1) { securityControlTime = 3 }; if (finishHour == 9) { securityControlTime = 4 }; if (finishHour == 17) { securityControlTime = 4 };
+        if (finishHour == 2) { securityControlTime = 3 }; if (finishHour == 10) { securityControlTime = 4 }; if (finishHour == 18) { securityControlTime = 4 };
+        if (finishHour == 3) { securityControlTime = 3 }; if (finishHour == 11) { securityControlTime = 4 }; if (finishHour == 19) { securityControlTime = 4 };
+        if (finishHour == 4) { securityControlTime = 3 }; if (finishHour == 12) { securityControlTime = 4 }; if (finishHour == 20) { securityControlTime = 3 };
+        if (finishHour == 5) { securityControlTime = 4 }; if (finishHour == 13) { securityControlTime = 5 }; if (finishHour == 21) { securityControlTime = 3 };
+        if (finishHour == 6) { securityControlTime = 4 }; if (finishHour == 14) { securityControlTime = 4 }; if (finishHour == 22) { securityControlTime = 3 };
+        if (finishHour == 7) { securityControlTime = 4 }; if (finishHour == 15) { securityControlTime = 4 }; if (finishHour == 23) { securityControlTime = 3 };
+    }
+    if (month === '04'){ // ABRIL:
+        if (finishHour == 0) { securityControlTime = 3 }; if (finishHour == 8) { securityControlTime = 4 }; if (finishHour == 16) { securityControlTime = 4 };
+        if (finishHour == 1) { securityControlTime = 3 }; if (finishHour == 9) { securityControlTime = 4 }; if (finishHour == 17) { securityControlTime = 4 };
+        if (finishHour == 2) { securityControlTime = 3 }; if (finishHour == 10) { securityControlTime = 4 }; if (finishHour == 18) { securityControlTime = 4 };
+        if (finishHour == 3) { securityControlTime = 3 }; if (finishHour == 11) { securityControlTime = 4 }; if (finishHour == 19) { securityControlTime = 4 };
+        if (finishHour == 4) { securityControlTime = 3 }; if (finishHour == 12) { securityControlTime = 4 }; if (finishHour == 20) { securityControlTime = 3 };
+        if (finishHour == 5) { securityControlTime = 5 }; if (finishHour == 13) { securityControlTime = 6 }; if (finishHour == 21) { securityControlTime = 3 };
+        if (finishHour == 6) { securityControlTime = 5 }; if (finishHour == 14) { securityControlTime = 4 }; if (finishHour == 22) { securityControlTime = 3 };
+        if (finishHour == 7) { securityControlTime = 4 }; if (finishHour == 15) { securityControlTime = 4 }; if (finishHour == 23) { securityControlTime = 3 };
+    }
+    if (month === '05'){ // MAYO:
+        if (finishHour == 0) { securityControlTime = 3 }; if (finishHour == 8) { securityControlTime = 4 }; if (finishHour == 16) { securityControlTime = 4 };
+        if (finishHour == 1) { securityControlTime = 3 }; if (finishHour == 9) { securityControlTime = 4 }; if (finishHour == 17) { securityControlTime = 4 };
+        if (finishHour == 2) { securityControlTime = 3 }; if (finishHour == 10) { securityControlTime = 6 }; if (finishHour == 18) { securityControlTime = 4 };
+        if (finishHour == 3) { securityControlTime = 3 }; if (finishHour == 11) { securityControlTime = 4 }; if (finishHour == 19) { securityControlTime = 4 };
+        if (finishHour == 4) { securityControlTime = 3 }; if (finishHour == 12) { securityControlTime = 4 }; if (finishHour == 20) { securityControlTime = 3 };
+        if (finishHour == 5) { securityControlTime = 4 }; if (finishHour == 13) { securityControlTime = 7 }; if (finishHour == 21) { securityControlTime = 3 };
+        if (finishHour == 6) { securityControlTime = 8 }; if (finishHour == 14) { securityControlTime = 4 }; if (finishHour == 22) { securityControlTime = 3 };
+        if (finishHour == 7) { securityControlTime = 4 }; if (finishHour == 15) { securityControlTime = 4 }; if (finishHour == 23) { securityControlTime = 3 };
+    }
+    if (month === '06'){ // JUNIO:
+        if (finishHour == 0) { securityControlTime = 3 }; if (finishHour == 8) { securityControlTime = 4 }; if (finishHour == 16) { securityControlTime = 4 };
+        if (finishHour == 1) { securityControlTime = 3 }; if (finishHour == 9) { securityControlTime = 5 }; if (finishHour == 17) { securityControlTime = 4 };
+        if (finishHour == 2) { securityControlTime = 3 }; if (finishHour == 10) { securityControlTime = 8 }; if (finishHour == 18) { securityControlTime = 5 };
+        if (finishHour == 3) { securityControlTime = 3 }; if (finishHour == 11) { securityControlTime = 4 }; if (finishHour == 19) { securityControlTime = 4 };
+        if (finishHour == 4) { securityControlTime = 3 }; if (finishHour == 12) { securityControlTime = 4 }; if (finishHour == 20) { securityControlTime = 4 };
+        if (finishHour == 5) { securityControlTime = 4 }; if (finishHour == 13) { securityControlTime = 7 }; if (finishHour == 21) { securityControlTime = 4 };
+        if (finishHour == 6) { securityControlTime = 9 }; if (finishHour == 14) { securityControlTime = 4 }; if (finishHour == 22) { securityControlTime = 3 };
+        if (finishHour == 7) { securityControlTime = 4 }; if (finishHour == 15) { securityControlTime = 4 }; if (finishHour == 23) { securityControlTime = 3 };
+    }
+    if (month === '07'){ // JULIO:
+        if (finishHour == 0) { securityControlTime = 3 }; if (finishHour == 8) { securityControlTime = 4 }; if (finishHour == 16) { securityControlTime = 6 };
+        if (finishHour == 1) { securityControlTime = 3 }; if (finishHour == 9) { securityControlTime = 7 }; if (finishHour == 17) { securityControlTime = 7 };
+        if (finishHour == 2) { securityControlTime = 3 }; if (finishHour == 10) { securityControlTime = 6 }; if (finishHour == 18) { securityControlTime = 10 };
+        if (finishHour == 3) { securityControlTime = 3 }; if (finishHour == 11) { securityControlTime = 6 }; if (finishHour == 19) { securityControlTime = 6 };
+        if (finishHour == 4) { securityControlTime = 3 }; if (finishHour == 12) { securityControlTime = 6 }; if (finishHour == 20) { securityControlTime = 5 };
+        if (finishHour == 5) { securityControlTime = 5 }; if (finishHour == 13) { securityControlTime = 8 }; if (finishHour == 21) { securityControlTime = 4 };
+        if (finishHour == 6) { securityControlTime = 17 }; if (finishHour == 14) { securityControlTime = 6 }; if (finishHour == 22) { securityControlTime = 3 };
+        if (finishHour == 7) { securityControlTime = 5 }; if (finishHour == 15) { securityControlTime = 6 }; if (finishHour == 23) { securityControlTime = 3 };
+    }
+    if (month === '08'){ // AGOSTO:
+        if (finishHour == 0) { securityControlTime = 3 }; if (finishHour == 8) { securityControlTime = 4 }; if (finishHour == 16) { securityControlTime = 5 };
+        if (finishHour == 1) { securityControlTime = 3 }; if (finishHour == 9) { securityControlTime = 5 }; if (finishHour == 17) { securityControlTime = 8 };
+        if (finishHour == 2) { securityControlTime = 3 }; if (finishHour == 10) { securityControlTime = 6 }; if (finishHour == 18) { securityControlTime = 8 };
+        if (finishHour == 3) { securityControlTime = 3 }; if (finishHour == 11) { securityControlTime = 7 }; if (finishHour == 19) { securityControlTime = 6 };
+        if (finishHour == 4) { securityControlTime = 3 }; if (finishHour == 12) { securityControlTime = 6 }; if (finishHour == 20) { securityControlTime = 5 };
+        if (finishHour == 5) { securityControlTime = 6 }; if (finishHour == 13) { securityControlTime = 8 }; if (finishHour == 21) { securityControlTime = 4 };
+        if (finishHour == 6) { securityControlTime = 19 }; if (finishHour == 14) { securityControlTime = 6 }; if (finishHour == 22) { securityControlTime = 3 };
+        if (finishHour == 7) { securityControlTime = 6 }; if (finishHour == 15) { securityControlTime = 6 }; if (finishHour == 23) { securityControlTime = 3 };
+    }
+    if (month === '09'){ // SEPTIEMBRE:
+        if (finishHour == 0) { securityControlTime = 3 }; if (finishHour == 8) { securityControlTime = 4 }; if (finishHour == 16) { securityControlTime = 5 };
+        if (finishHour == 1) { securityControlTime = 3 }; if (finishHour == 9) { securityControlTime = 6 }; if (finishHour == 17) { securityControlTime = 6 };
+        if (finishHour == 2) { securityControlTime = 3 }; if (finishHour == 10) { securityControlTime = 8 }; if (finishHour == 18) { securityControlTime = 7 };
+        if (finishHour == 3) { securityControlTime = 3 }; if (finishHour == 11) { securityControlTime = 5 }; if (finishHour == 19) { securityControlTime = 5 };
+        if (finishHour == 4) { securityControlTime = 3 }; if (finishHour == 12) { securityControlTime = 5 }; if (finishHour == 20) { securityControlTime = 4 };
+        if (finishHour == 5) { securityControlTime = 5 }; if (finishHour == 13) { securityControlTime = 8 }; if (finishHour == 21) { securityControlTime = 4 };
+        if (finishHour == 6) { securityControlTime = 11 }; if (finishHour == 14) { securityControlTime = 5 }; if (finishHour == 22) { securityControlTime = 3 };
+        if (finishHour == 7) { securityControlTime = 5 }; if (finishHour == 15) { securityControlTime = 5 }; if (finishHour == 23) { securityControlTime = 3 };
+    }
+    if (month === '10'){ // OCTUBRE:
+        if (finishHour == 0) { securityControlTime = 3 }; if (finishHour == 8) { securityControlTime = 4 }; if (finishHour == 16) { securityControlTime = 4 };
+        if (finishHour == 1) { securityControlTime = 3 }; if (finishHour == 9) { securityControlTime = 5 }; if (finishHour == 17) { securityControlTime = 4 };
+        if (finishHour == 2) { securityControlTime = 3 }; if (finishHour == 10) { securityControlTime = 7 }; if (finishHour == 18) { securityControlTime = 5 };
+        if (finishHour == 3) { securityControlTime = 3 }; if (finishHour == 11) { securityControlTime = 4 }; if (finishHour == 19) { securityControlTime = 4 };
+        if (finishHour == 4) { securityControlTime = 3 }; if (finishHour == 12) { securityControlTime = 4 }; if (finishHour == 20) { securityControlTime = 4 };
+        if (finishHour == 5) { securityControlTime = 4 }; if (finishHour == 13) { securityControlTime = 7 }; if (finishHour == 21) { securityControlTime = 4 };
+        if (finishHour == 6) { securityControlTime = 9 }; if (finishHour == 14) { securityControlTime = 4 }; if (finishHour == 22) { securityControlTime = 3 };
+        if (finishHour == 7) { securityControlTime = 4 }; if (finishHour == 15) { securityControlTime = 4 }; if (finishHour == 23) { securityControlTime = 3 };
+    }
+    if (month === '11'){ // NOVIEMBRE:
+        if (finishHour == 0) { securityControlTime = 3 }; if (finishHour == 8) { securityControlTime = 4 }; if (finishHour == 16) { securityControlTime = 4 };
+        if (finishHour == 1) { securityControlTime = 3 }; if (finishHour == 9) { securityControlTime = 4 }; if (finishHour == 17) { securityControlTime = 4 };
+        if (finishHour == 2) { securityControlTime = 3 }; if (finishHour == 10) { securityControlTime = 4 }; if (finishHour == 18) { securityControlTime = 4 };
+        if (finishHour == 3) { securityControlTime = 3 }; if (finishHour == 11) { securityControlTime = 4 }; if (finishHour == 19) { securityControlTime = 4 };
+        if (finishHour == 4) { securityControlTime = 3 }; if (finishHour == 12) { securityControlTime = 4 }; if (finishHour == 20) { securityControlTime = 3 };
+        if (finishHour == 5) { securityControlTime = 4 }; if (finishHour == 13) { securityControlTime = 4 }; if (finishHour == 21) { securityControlTime = 3 };
+        if (finishHour == 6) { securityControlTime = 4 }; if (finishHour == 14) { securityControlTime = 4 }; if (finishHour == 22) { securityControlTime = 3 };
+        if (finishHour == 7) { securityControlTime = 4 }; if (finishHour == 15) { securityControlTime = 4 }; if (finishHour == 23) { securityControlTime = 3 };
+    }
+    if (month === '12'){ // DICIEMBRE:
+        if (finishHour == 0) { securityControlTime = 3 }; if (finishHour == 8) { securityControlTime = 4 }; if (finishHour == 16) { securityControlTime = 4 };
+        if (finishHour == 1) { securityControlTime = 3 }; if (finishHour == 9) { securityControlTime = 4 }; if (finishHour == 17) { securityControlTime = 4 };
+        if (finishHour == 2) { securityControlTime = 3 }; if (finishHour == 10) { securityControlTime = 4 }; if (finishHour == 18) { securityControlTime = 4 };
+        if (finishHour == 3) { securityControlTime = 3 }; if (finishHour == 11) { securityControlTime = 4 }; if (finishHour == 19) { securityControlTime = 4 };
+        if (finishHour == 4) { securityControlTime = 3 }; if (finishHour == 12) { securityControlTime = 4 }; if (finishHour == 20) { securityControlTime = 3 };
+        if (finishHour == 5) { securityControlTime = 3 }; if (finishHour == 13) { securityControlTime = 4 }; if (finishHour == 21) { securityControlTime = 3 };
+        if (finishHour == 6) { securityControlTime = 4 }; if (finishHour == 14) { securityControlTime = 4 }; if (finishHour == 22) { securityControlTime = 3 };
+        if (finishHour == 7) { securityControlTime = 4 }; if (finishHour == 15) { securityControlTime = 4 }; if (finishHour == 23) { securityControlTime = 3 };
+    }
+    return securityControlTime;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 const getPassportControlTime = (finishHour: number, month: string) => {
     // "finishHour": Hour Being At The Gate.
-
-    return 5;
+    let passportControlTime = 5;
+    if (month === '01'){
+        
+    }
+    return passportControlTime;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
