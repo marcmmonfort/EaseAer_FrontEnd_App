@@ -843,59 +843,63 @@ export default function FlightsMine() {
                 if (userResponse?.data) {                
                     setCurrentUser(userResponse.data);
 
-                    const resultTimes = computePredictionTimes(datePrediction, coordinates);
-                    console.log(">>>>> RESULTADOS TMB: " + resultTimes);
+                    const resultTimes = await computePredictionTimes(datePrediction, coordinates);
+                    console.log("---> Resultado Predicción: " + resultTimes);
+                    const timesString = "07:44|07:59|09:21|09:26|09:38|09:47|10:00|11:00";
+                    if (resultTimes != undefined) {
+                        const timesArray = resultTimes.split("|");
 
-                    const newPrediction: PredictionEntity = {
-                        uuid: " " ?? "",
-                        idUserPrediction: userResponse.data.uuid ?? "",
-                        idFlightPredition: idFlightPrediction ?? "",
-                        datePrediction: datePrediction ?? "",
-                        exitHomeTimePrediction: "12:00",
-                        transportTimePrediction: "12:10",
-                        entranceTimePrediction: "12:20",
-                        checkInTimePrediction: "12:30",
-                        securityTimePrediction: "12:40",
-                        passportTimePrediction: "12:50",
-                        gateTimePrediction: "13:00",
-                        planeTimePrediction: "12:10",
-                        deletedPrediction: false ?? false,
-                    };
+                        const newPrediction: PredictionEntity = {
+                            uuid: " " ?? "",
+                            idUserPrediction: userResponse.data.uuid ?? "",
+                            idFlightPredition: idFlightPrediction ?? "",
+                            datePrediction: datePrediction ?? "",
+                            exitHomeTimePrediction: timesArray[0],
+                            transportTimePrediction: timesArray[1],
+                            entranceTimePrediction: timesArray[2],
+                            checkInTimePrediction: timesArray[3],
+                            securityTimePrediction: timesArray[4],
+                            passportTimePrediction: timesArray[5],
+                            gateTimePrediction: timesArray[6],
+                            planeTimePrediction: timesArray[7],
+                            deletedPrediction: false ?? false,
+                        };
 
-                    PredictionService.createPrediction(newPrediction).then((response)=>{
-                        if (response?.status===200 && response?.data != "ALREADY_PREDICTED"){
-                            const newPreferences: PreferencesEntity = {
-                                uuid: " " ?? "",
-                                idPredPreferences: response.data.uuid ?? "",
-                                foodPreferences:
-                                    foodPreferences === "none" || foodPreferences === "lightmeal" || foodPreferences === "fullmeal"
-                                    ? foodPreferences : "none",
-                                shopPreferences:
-                                    shopPreferences === "none" || shopPreferences === "look" || shopPreferences === "search"
-                                    ? shopPreferences : "none",
-                                carParkPreferences:
-                                    carParkPreferences === "none" || carParkPreferences === "own" || carParkPreferences === "rentacar"
-                                    ? carParkPreferences : "none",
-                                luggagePreferences:
-                                    luggagePreferences === "none" || luggagePreferences === "one" || luggagePreferences === "multiple" || luggagePreferences === "special"
-                                    ? luggagePreferences : "none",
-                                marginPreferences:
-                                    marginPreferences === "none" || marginPreferences === "low" || marginPreferences === "mid" || marginPreferences === "high"
-                                    ? marginPreferences : "high",  
-                                deletedPreferences: false ?? false,
-                            };
-
-                            PreferencesService.createPreferences(newPreferences).then((responsePref)=>{
-                                if (responsePref?.status===200){
-                                    Alert.alert("EaseAer", "Prediction Created");
-                                } else {
-                                    Alert.alert("EaseAer", "Error Saving Preferences");
-                                }
-                            })
-                        } else {
-                            Alert.alert("EaseAer", "Error Creating Prediction");
-                        }
-                    })
+                        PredictionService.createPrediction(newPrediction).then((response)=>{
+                            if (response?.status===200 && response?.data != "ALREADY_PREDICTED"){
+                                const newPreferences: PreferencesEntity = {
+                                    uuid: " " ?? "",
+                                    idPredPreferences: response.data.uuid ?? "",
+                                    foodPreferences:
+                                        foodPreferences === "none" || foodPreferences === "lightmeal" || foodPreferences === "fullmeal"
+                                        ? foodPreferences : "none",
+                                    shopPreferences:
+                                        shopPreferences === "none" || shopPreferences === "look" || shopPreferences === "search"
+                                        ? shopPreferences : "none",
+                                    carParkPreferences:
+                                        carParkPreferences === "none" || carParkPreferences === "own" || carParkPreferences === "rentacar"
+                                        ? carParkPreferences : "none",
+                                    luggagePreferences:
+                                        luggagePreferences === "none" || luggagePreferences === "one" || luggagePreferences === "multiple" || luggagePreferences === "special"
+                                        ? luggagePreferences : "none",
+                                    marginPreferences:
+                                        marginPreferences === "none" || marginPreferences === "low" || marginPreferences === "mid" || marginPreferences === "high"
+                                        ? marginPreferences : "high",  
+                                    deletedPreferences: false ?? false,
+                                };
+    
+                                PreferencesService.createPreferences(newPreferences).then((responsePref)=>{
+                                    if (responsePref?.status===200){
+                                        Alert.alert("EaseAer", "Prediction Created");
+                                    } else {
+                                        Alert.alert("EaseAer", "Error Saving Preferences");
+                                    }
+                                })
+                            } else {
+                                Alert.alert("EaseAer", "Error Creating Prediction");
+                            }
+                        })
+                    }
                 }
             })
         }
@@ -1116,7 +1120,7 @@ export default function FlightsMine() {
 
     // FUNCIÓN DE PREDICCIÓN DE TIEMPOS "DOOR TO GATE":
 
-    const computePredictionTimes = (std: Date, coordinates: string) => {
+    const computePredictionTimes = async (std: Date, coordinates: string) => {
         if (coordinates == ""){
             Alert.alert("EaseAer", "Unable To Locate Your Position");
         }
@@ -1222,10 +1226,10 @@ export default function FlightsMine() {
             }
             const timeEnterAirportInMinutes = adjustedTimeEnterSCInMinutes - checkInTime;
             const adjustedTimeEnterAirport = (timeEnterAirportInMinutes + 24 * 60) % (24 * 60);
-            const timeEnterAirportHour = Math.floor(adjustedTimeEnterSCInMinutes / 60);
-            const timeEnterAirportMinutes = adjustedTimeEnterSCInMinutes % 60;
-            const timeEnterAirportHourFormatted = String(timeEnterSCHour).padStart(2, '0'); // 2 DÍGITOS
-            const timeEnterAirportMinutesFormatted  = String(timeEnterSCMinutes).padStart(2, '0'); // 2 DÍGITOS
+            const timeEnterAirportHour = Math.floor(adjustedTimeEnterAirport / 60);
+            const timeEnterAirportMinutes = adjustedTimeEnterAirport % 60;
+            const timeEnterAirportHourFormatted = String(timeEnterAirportHour).padStart(2, '0'); // 2 DÍGITOS
+            const timeEnterAirportMinutesFormatted  = String(timeEnterAirportMinutes).padStart(2, '0'); // 2 DÍGITOS
             const timeEnterAirport = `${timeEnterAirportHourFormatted}:${timeEnterAirportMinutesFormatted}`;
             if (luggagePreferences != "none"){ // "one" - "multiple" - "special"
                 const timeStartCheckInInMinutes = timeEnterAirportInMinutes + checkInProcessTime;
@@ -1237,63 +1241,67 @@ export default function FlightsMine() {
                 timeStartCheckIn = `${timeStartCheckInHourFormatted}:${timeStartCheckInMinutesFormatted}`;
             }
             
-            // (2) # # # # # # # # # # # # # # # ENTER TRANSPORT TIME # # # # # # # # # # # # # # # 
+            // (2, 1) # # # # # # # # # # # # # # # ENTER TRANSPORT TIME - EXIT HOME TIME # # # # # # # # # # # # # # # 
             let timeStartTrip = "-";
             let timeStartTripButInMinutes = 0;
+            let timeExitHome = "-";
             let travelTime = 0;
             const origin = coordinates;
             const destination = '41.28774514491456, 2.073313634621097'; // T1 BCN
             const date = `${monthFlight}-${dayFlight}-${yearFlight}`;
             let amOrPm = "am";
-            if (parseInt(timeEnterAirportHourFormatted, 10) > 12){
+            let timeEnterAirportHourForTMB = timeEnterAirportHour;
+            if (timeEnterAirportHourForTMB > 12){
+                timeEnterAirportHourForTMB = timeEnterAirportHourForTMB - 12;
                 amOrPm = "pm";
             }
-            const time = `${timeEnterAirportHourFormatted}:${timeEnterAirportMinutesFormatted}${amOrPm}`;
+            const time = `${timeEnterAirportHour}:${timeEnterAirportMinutes}${amOrPm}`;
             const arriveBy = 'true'; // 'true' = HORA LLEGADA | 'false' = HORA SALIDA
             const mode = 'TRANSIT,WALK'; // MODOS DE TRANSPORTE
-            const url = `https://api.tmb.cat/v1/planner/plan?app_id=ee1987cb&app_key=b53bd5d74b9cfd81e5170f825d74f7f6&fromPlace=${origin}&toPlace=${destination}&date=${date}&time=${time}&arriveBy=${arriveBy}&mode=${mode}`;
-            axios.get(url)
-                .then(response => {
+            const url = `https://api.tmb.cat/v1/planner/plan?app_id=73b4e50d&app_key=46215a9e903beb0b41208f01259f0d90&fromPlace=${origin}&toPlace=${destination}&date=${date}&time=${time}&arriveBy=${arriveBy}&mode=${mode}`;
+            console.log("PETICIÓN: " + url);
+            const getTravelTime = async () => {
+                try {
+                    const response = await axios.get(url);
                     if (response.data.plan && response.data.plan.itineraries.length > 0) {
                         const result = response.data.plan.itineraries[0];
                         const duration = result.duration;
                         const durationMinutes = Math.round(duration / 60);
                         travelTime = durationMinutes;
                         console.log("[TIME] Duración del Trayecto: " + durationMinutes + " Min.");
-
-                        const timeStartTripInMinutes = adjustedTimeEnterAirport - durationMinutes;
-                        const adjustedTimeStartTrip = (timeStartTripInMinutes + 24 * 60) % (24 * 60);
+            
+                        timeStartTripButInMinutes = adjustedTimeEnterAirport - durationMinutes;
+                        const adjustedTimeStartTrip = (timeStartTripButInMinutes + 24 * 60) % (24 * 60);
                         const timeStartTripHour = Math.floor(adjustedTimeStartTrip / 60);
                         const timeStartTripMinutes = adjustedTimeStartTrip % 60;
                         const timeStartTripHourFormatted = String(timeStartTripHour).padStart(2, '0'); // 2 DÍGITOS
-                        const timeStartTripMinutesFormatted  = String(timeStartTripMinutes).padStart(2, '0'); // 2 DÍGITOS
+                        const timeStartTripMinutesFormatted = String(timeStartTripMinutes).padStart(2, '0'); // 2 DÍGITOS
                         timeStartTrip = `${timeStartTripHourFormatted}:${timeStartTripMinutesFormatted}`;
-
                     } else {
                         travelTime = -1;
                     }
-                })
-                .catch(error => {
+                } catch (error) {
                     console.error('Error Computing Travel Time: ', error);
                     travelTime = -1;
-                });
+                }
+            };
 
-            // (1) # # # # # # # # # # # # # # # EXIT HOME TIME # # # # # # # # # # # # # # #
-            let timeExitHome = "-";
-            if (timeStartTripButInMinutes != 0){
+            await getTravelTime();
+            
+            if (timeStartTripButInMinutes != 0) {
                 let delayFromHome = 12;
-                if (marginPreferences=="low") { delayFromHome = 5; }
-                if (marginPreferences=="mid") { delayFromHome = 10; }
-                if (marginPreferences=="high") { delayFromHome = 15; }
+                if (marginPreferences == "low") { delayFromHome = 5; }
+                if (marginPreferences == "mid") { delayFromHome = 10; }
+                if (marginPreferences == "high") { delayFromHome = 15; }
                 const timeExitHomeInMinutes = timeStartTripButInMinutes - delayFromHome;
                 const adjustedTimeExitHome = (timeExitHomeInMinutes + 24 * 60) % (24 * 60);
                 const timeExitHomeHour = Math.floor(adjustedTimeExitHome / 60);
                 const timeExitHomeMinutes = adjustedTimeExitHome % 60;
                 const timeExitHomeHourFormatted = String(timeExitHomeHour).padStart(2, '0'); // 2 DÍGITOS
-                const timeExitHomeMinutesFormatted  = String(timeExitHomeMinutes).padStart(2, '0'); // 2 DÍGITOS
+                const timeExitHomeMinutesFormatted = String(timeExitHomeMinutes).padStart(2, '0'); // 2 DÍGITOS
                 timeExitHome = `${timeExitHomeHourFormatted}:${timeExitHomeMinutesFormatted}`;
-            }
-            
+            } 
+
             // # # # # # # # # # # # # # # # RETURNING THE 8 RESULTS # # # # # # # # # # # # # # # 
             return `${timeExitHome}|${timeStartTrip}|${timeEnterAirport}|${timeStartCheckIn}|${timeEnterSC}|${timeEnterPassports}|${timeGate}|${timePlane}`;
 
