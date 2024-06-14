@@ -83,6 +83,7 @@ export default function FlightsMine() {
 
     const [preferencesModalVisible, setPreferencesModalVisible] = useState(false);
     const [idFlightPrediction, setIdFlightPrediction] = useState("");
+    const [icaoFlightPrediction, setIcaoFlightPrediction] = useState("");
     const [datePrediction, setDatePrediction] = useState(new Date());
     const [foodPreferences, setFoodPreferences] = useState("none");
     const [shopPreferences, setShopPreferences] = useState("none");
@@ -132,7 +133,7 @@ export default function FlightsMine() {
                 const location = await Location.getCurrentPositionAsync({});
                 const { latitude, longitude } = location.coords;
                 setCoordinates(latitude + "," + longitude);
-                console.log("COORDENADAS ENCONTRADAS");
+                console.log("COORDENADAS ENCONTRADAS: " + latitude + "," + longitude);
             }
         } catch (error) {
           console.log("Error Obteniendo Ubicación", error);
@@ -795,10 +796,15 @@ export default function FlightsMine() {
         setModalVisible(true);
     }
 
-    const computePrediction = async (flightId: string, std: Date) => {
-        setIdFlightPrediction(flightId);
-        setDatePrediction(std);
-        setPreferencesModalVisible(true);
+    const computePrediction = async (flightId: string, std: Date, icao: string, originICAO: string) => {
+        if (originICAO === "LEBL"){
+            setIdFlightPrediction(flightId);
+            setIcaoFlightPrediction(icao);
+            setDatePrediction(std);
+            setPreferencesModalVisible(true);
+        } else {
+            Alert.alert("EaseAer", "Function Available Only For Departing Flights");
+        }        
     }
 
     const registerLuggage = async () => {
@@ -865,17 +871,17 @@ export default function FlightsMine() {
                                     foodPreferences === "none" || foodPreferences === "lightmeal" || foodPreferences === "fullmeal"
                                     ? foodPreferences : "none",
                                 shopPreferences:
-                                    foodPreferences === "none" || foodPreferences === "look" || foodPreferences === "search"
-                                    ? foodPreferences : "none",
+                                    shopPreferences === "none" || shopPreferences === "look" || shopPreferences === "search"
+                                    ? shopPreferences : "none",
                                 carParkPreferences:
-                                    foodPreferences === "none" || foodPreferences === "own" || foodPreferences === "rentacar"
-                                    ? foodPreferences : "none",
+                                    carParkPreferences === "none" || carParkPreferences === "own" || carParkPreferences === "rentacar"
+                                    ? carParkPreferences : "none",
                                 luggagePreferences:
-                                    foodPreferences === "none" || foodPreferences === "one" || foodPreferences === "multiple" || foodPreferences === "special"
-                                    ? foodPreferences : "none",
+                                    luggagePreferences === "none" || luggagePreferences === "one" || luggagePreferences === "multiple" || luggagePreferences === "special"
+                                    ? luggagePreferences : "none",
                                 marginPreferences:
-                                    foodPreferences === "none" || foodPreferences === "low" || foodPreferences === "mid" || foodPreferences === "high"
-                                    ? foodPreferences : "high",  
+                                    marginPreferences === "none" || marginPreferences === "low" || marginPreferences === "mid" || marginPreferences === "high"
+                                    ? marginPreferences : "high",  
                                 deletedPreferences: false ?? false,
                             };
 
@@ -946,7 +952,7 @@ export default function FlightsMine() {
                 </TouchableOpacity>
             </View>
             <View>
-                <TouchableOpacity style={styles.createPredictionButton} onPress={() => computePrediction(flightItem.uuid, flightItem.stdFlight)}>
+                <TouchableOpacity style={styles.createPredictionButton} onPress={() => computePrediction(flightItem.uuid, flightItem.stdFlight, flightItem.destinationFlight, flightItem.originFlight)}>
                     <Text style={styles.createPredictionText}>Calculate Prediction</Text>
                 </TouchableOpacity>
             </View>
@@ -1040,186 +1046,391 @@ export default function FlightsMine() {
         else return "Unknown";
     };
 
-  return (
-    <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
-        <View style={styles.headerContainer}>
-            <View style={styles.sectionTitle}>
-                <Text style={styles.pageTitle}>My {listFlights?.length} Trips</Text>
-            </View>
-            <View style={styles.airportContainer}>
-                <View style={styles.airportTitle}>
-                    <Text style={styles.nameTitle}>Barcelona</Text>
-                </View>
-            </View>
-        </View>
+    const getFlightRadius = (icaoCode: string | undefined) => {
+        if (icaoCode === "LELL") { return "25"; } // LELL (Sabadell): 25 km
+        if (icaoCode === "LERS") { return "78"; } // LERS (Reus - Tarragona): 78 km
+        if (icaoCode === "LEGE") { return "88"; } // LEGE (Girona - Costa Brava): 88 km
+        if (icaoCode === "LESU") { return "129"; } // LESU (La Seu d'Urgell): 129 km
+        if (icaoCode === "LEDA") { return "138"; } // LEDA (Lleida - Alguaire): 138 km
+        if (icaoCode === "LEHC") { return "217"; } // LEHC (Huesca - Pirineos): 217 km
+        if (icaoCode === "LERJ") { return "387"; } // LERJ (Logroño): 387 km
+        if (icaoCode === "LESO") { return "392"; } // LESO (San Sebastián): 392 km
+        if (icaoCode === "LEAL") { return "404"; } // LEAL (Alicante - Elche): 404 km
+        if (icaoCode === "LEMD") { return "483"; } // LEMD (Madrid - Barajas Adolfo Suárez): 483 km
+        if (icaoCode === "EDDF") { return "1094"; } // EDDF (Fráncfort Del Meno - Frankfurt): 1094 km
+        if (icaoCode === "EDDM") { return "1094"; } // EDDM (Múnich Franz Josef Strauss): 1094 km
+        if (icaoCode === "EGKK") { return "1109"; } // EGKK (Londres Gatwick): 1109 km
+        if (icaoCode === "EGLL") { return "1148"; } // EGLL (Londres Heathrow): 1148 km
+        if (icaoCode === "EGSS") { return "1186"; } // EGSS (Londres Stansted): 1186 km
+        if (icaoCode === "EHAM") { return "1241"; } // EHAM (Ámsterdam Schiphol): 1241 km
+        if (icaoCode === "EIDW") { return "1485"; } // EIDW (Dublín): 1485 km
+        if (icaoCode === "EKCH") { return "1768"; } // EKCH (Copenhague Kastrup): 1768 km
+        if (icaoCode === "EPWA") { return "1869"; } // EPWA (Varsovia Chopin): 1869 km
+        if (icaoCode === "GCRR") { return "1974"; } // GCRR (Lanzarote): 1974 km
+        if (icaoCode === "GCFV") { return "2032"; } // GCFV (Fuerteventura): 2032 km
+        if (icaoCode === "LGSR") { return "2091"; } // LGSR (Santorini): 2091 km
+        if (icaoCode === "GCLP") { return "2175"; } // GCLP (Gran Canaria): 2175 km
+        if (icaoCode === "ENGM") { return "2190"; } // ENGM (Oslo Gardermoen): 2190 km
+        if (icaoCode === "GCXO") { return "2195"; } // GCXO (Tenerife Norte - Los Rodeos): 2195 km
+        if (icaoCode === "GCLA") { return "2282"; } // GCLA (La Palma): 2282 km
+        if (icaoCode === "GCGM") { return "2291"; } // GCGM (La Gomera): 2291 km
+        if (icaoCode === "ESSA") { return "2314"; } // ESSA (Estocolmo Arlanda): 2314 km
+        if (icaoCode === "GCHI") { return "2354"; } // GCHI (El Hierro): 2354 km
+        else return "0";
+    };
 
-        <Modal animationType="none" transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(false) }}>
-            <View style={styles.modalOverlay}>
-                <View style={styles.modalView}>
-                    <View style={styles.searcherContainer}>
-                        <Text style={styles.subtitleNewsText}>Create Luggage</Text>
-                        <TextInput style={styles.multilineTextInputStyle} placeholder="Description" value={infoLuggage} onChangeText={ setInfoLuggage } multiline maxLength={72}/>
-                        <View style={styles.modalButtons}>
-                            <TouchableOpacity style={styles.quizButton} onPress={() => registerLuggage()}>
-                                <Text style={styles.loadAllText}>Add</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.quizButton, {backgroundColor: "#d8131b"}]} onPress={() => setModalVisible(false)}>
-                                <Text style={styles.loadAllText}>Cancel</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </View>
-        </Modal>
+    const getPassportRequired = (icaoCode: string | undefined) => {
+        if (icaoCode === "LELL") { return false } // LELL (Sabadell)
+        if (icaoCode === "LERS") { return false } // LERS (Reus - Tarragona)
+        if (icaoCode === "LEGE") { return false } // LEGE (Girona - Costa Brava)
+        if (icaoCode === "LESU") { return false } // LESU (La Seu d'Urgell)
+        if (icaoCode === "LEDA") { return false } // LEDA (Lleida - Alguaire)
+        if (icaoCode === "LEHC") { return false } // LEHC (Huesca - Pirineos)
+        if (icaoCode === "LERJ") { return false } // LERJ (Logroño)
+        if (icaoCode === "LESO") { return false } // LESO (San Sebastián)
+        if (icaoCode === "LEAL") { return false } // LEAL (Alicante - Elche)
+        if (icaoCode === "LEMD") { return false } // LEMD (Madrid - Barajas Adolfo Suárez)
+        if (icaoCode === "EDDF") { return false } // EDDF (Fráncfort Del Meno - Frankfurt)
+        if (icaoCode === "EDDM") { return false } // EDDM (Múnich Franz Josef Strauss)
+        if (icaoCode === "EGKK") { return true } // EGKK (Londres Gatwick)
+        if (icaoCode === "EGLL") { return true } // EGLL (Londres Heathrow)
+        if (icaoCode === "EGSS") { return true } // EGSS (Londres Stansted)
+        if (icaoCode === "EHAM") { return false } // EHAM (Ámsterdam Schiphol)
+        if (icaoCode === "EIDW") { return true } // EIDW (Dublín)
+        if (icaoCode === "EKCH") { return false } // EKCH (Copenhague Kastrup)
+        if (icaoCode === "EPWA") { return false } // EPWA (Varsovia Chopin)
+        if (icaoCode === "GCRR") { return false } // GCRR (Lanzarote)
+        if (icaoCode === "GCFV") { return false } // GCFV (Fuerteventura)
+        if (icaoCode === "LGSR") { return false } // LGSR (Santorini)
+        if (icaoCode === "GCLP") { return false } // GCLP (Gran Canaria)
+        if (icaoCode === "ENGM") { return false } // ENGM (Oslo Gardermoen)
+        if (icaoCode === "GCXO") { return false } // GCXO (Tenerife Norte - Los Rodeos)
+        if (icaoCode === "GCLA") { return false } // GCLA (La Palma)
+        if (icaoCode === "GCGM") { return false } // GCGM (La Gomera)
+        if (icaoCode === "ESSA") { return false } // ESSA (Estocolmo Arlanda)
+        if (icaoCode === "GCHI") { return false } // GCHI (El Hierro)
+        else return false;
+    };
 
-        <Modal animationType="none" transparent={true} visible={preferencesModalVisible} onRequestClose={() => { setPreferencesModalVisible(false) }}>
-            <View style={styles.modalPreferencesOverlay}>
-                <View style={styles.modalPreferencesView}>
-                    <View style={styles.modalPreferencesContainer}>
-                        <Text style={styles.subtitleNewsText}>Create Prediction</Text>
-                        
-                        <Text style={styles.preferencesStatementText}>Eating / Drinking</Text>
-                        <Picker selectedValue={foodPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setFoodPreferences(itemValue)}>
-                            <Picker.Item label="None" value="none"/>
-                            <Picker.Item label="Lunch / Dinner" value="fullmeal"/>
-                            <Picker.Item label="Snack / Drink / Light Meal" value="lightmeal"/>
-                        </Picker>
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-                        <Text style={styles.preferencesStatementText}>Shopping</Text>
-                        <Picker selectedValue={shopPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setShopPreferences(itemValue)}>
-                            <Picker.Item label="None" value="none"/>
-                            <Picker.Item label="Buying" value="search"/>
-                            <Picker.Item label="Just Looking" value="look"/>
-                        </Picker>
+    // FUNCIÓN DE PREDICCIÓN DE TIEMPOS "DOOR TO GATE":
 
-                        <Text style={styles.preferencesStatementText}>Own Car / Rental Car</Text>
-                        <Picker selectedValue={carParkPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setCarParkPreferences(itemValue)}>
-                            <Picker.Item label="None" value="none"/>
-                            <Picker.Item label="Returning Rental Car" value="rentacar"/>
-                            <Picker.Item label="Parking Own Car" value="own"/>
-                        </Picker>
+    const computePredictionTimes = (std: Date, coordinates: string) => {
+        if (coordinates == ""){
+            Alert.alert("EaseAer", "Unable To Locate Your Position");
+        }
+        else {
+            const destinationIcao = icaoFlightPrediction;
+            const passportNeeded = getPassportRequired(destinationIcao);
+            const flightRadius = getFlightRadius(destinationIcao);
+            const stdDate = new Date(std);
+            const dayFlight = String(stdDate.getDate()).padStart(2, '0');
+            const monthFlight = String(stdDate.getMonth() + 1).padStart(2, '0');
+            const yearFlight = String(stdDate.getFullYear()).slice(0);
+            let flightType = "long";
 
-                        <Text style={styles.preferencesStatementText}>Luggage</Text>
-                        <Picker selectedValue={luggagePreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setLuggagePreferences(itemValue)}>
-                            <Picker.Item label="None" value="none"/>
-                            <Picker.Item label="1 Bag" value="one"/>
-                            <Picker.Item label="> 1 Bags" value="multiple"/>
-                            <Picker.Item label="Special Luggage" value="special"/>
-                        </Picker>
+            // # # # # # # # # # # # # # # # SETTING THE MARGIN COEFFICIENTS # # # # # # # # # # # # # # # 
+            let marginCoefficient = 1;
+            if (marginPreferences=="low") { marginCoefficient = 1; }
+            if (marginPreferences=="mid") { marginCoefficient = 1.5; }
+            if (marginPreferences=="high") { marginCoefficient = 2; }
 
-                        <Text style={styles.preferencesStatementText}>Margin?</Text>
-                        <Picker selectedValue={marginPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setMarginPreferences(itemValue)}>
-                            <Picker.Item label="Comfortable" value="high"/>
-                            <Picker.Item label="Normal" value="mid"/>
-                            <Picker.Item label="Hurry" value="low"/>
-                        </Picker>                        
-                        
-                        <View style={styles.preferencesModalButtons}>
-                            <TouchableOpacity style={styles.quizButton} onPress={() => createPreferencesAndPrediction()}>
-                                <Text style={styles.loadAllText}>Calculate</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.quizButton, {backgroundColor: "#d8131b"}]} onPress={() => setPreferencesModalVisible(false)}>
-                                <Text style={styles.loadAllText}>Cancel</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </View>
-        </Modal>
+            // (8) # # # # # # # # # # # # # # # PLANE TIME # # # # # # # # # # # # # # #           
+            const timePlaneHours = String(stdDate.getHours()).padStart(2, '0');
+            const timePlaneMinutes = String(stdDate.getMinutes()).padStart(2, '0');
+            const timePlane = `${timePlaneHours}:${timePlaneMinutes}`;
 
-        <ScrollView style={styles.scrollStyle}>
-        {listFlights
-            ? (listFlights
-                .length === 0
-                ? <Text style={styles.noNewsText}>
-                    No Flights Available
-                </Text>
-                : listFlights
-                    .sort((a, b) => {
-                        const dateA = new Date(a.stdFlight);
-                        const dateB = new Date(b.stdFlight);
-                        return dateA.getTime() - dateB.getTime();
-                    })
-                    .map(renderFlightItem))
-            : <Text style={styles.noNewsText}>No Flights</Text>
+            // (7) # # # # # # # # # # # # # # # BE-AT-THE-GATE TIME # # # # # # # # # # # # # # #
+            let gateAnticipationTime = 60;
+            if (parseInt(flightRadius, 10) < 3000){
+                console.log("Vuelo Corto Radio");
+                flightType = "short";
+                if (marginPreferences=="low"){ gateAnticipationTime = 30; }
+                if (marginPreferences=="mid"){ gateAnticipationTime = 45; }
+                if (marginPreferences=="high"){ gateAnticipationTime = 60; }
+            } else {
+                console.log("Vuelo Largo Radio")
+                if (marginPreferences=="low"){ gateAnticipationTime = 40; }
+                if (marginPreferences=="mid"){ gateAnticipationTime = 50; }
+                if (marginPreferences=="high"){ gateAnticipationTime = 60; }
             }
-        </ScrollView>
-    </ImageBackground>
-  );
+            const timeGateInMinutes = parseInt(timePlaneHours, 10)*60 + parseInt(timePlaneMinutes, 10) - gateAnticipationTime;
+            const adjustedTimeGateInMinutes = (timeGateInMinutes + 24 * 60) % (24 * 60); // ASEGURAR QUE NO VOLVEMOS AL DÍA ANTERIOR
+            const timeGateHour = Math.floor(adjustedTimeGateInMinutes / 60);
+            const timeGateMinutes = adjustedTimeGateInMinutes % 60;
+            const timeGateHourFormatted = String(timeGateHour).padStart(2, '0'); // 2 DÍGITOS
+            const timeGateMinutesFormatted  = String(timeGateMinutes).padStart(2, '0'); // 2 DÍGITOS
+            const timeGate = `${timeGateHourFormatted}:${timeGateMinutesFormatted}`;
 
+            // (6) # # # # # # # # # # # # # # # PASSPORT CONTROL (IF ANY) # # # # # # # # # # # # # # #
+            let preControlDelay = 4;
+            let postControlDelay = 8;
+            if (marginPreferences=="low") { preControlDelay = 2; postControlDelay = 4; }
+            if (marginPreferences=="mid") { preControlDelay = 3; postControlDelay = 6; }
+            if (marginPreferences=="high") { preControlDelay = 4; postControlDelay = 8; }
+            let passportControlTime = 0;
+            if (passportNeeded){
+                let passportProcessDelay = getPassportControlTime(timeGateHour, monthFlight);
+                passportControlTime = preControlDelay + passportProcessDelay + postControlDelay;
+            } else {
+                passportControlTime = postControlDelay;
+            }
+            const timeExitSCInMinutes = adjustedTimeGateInMinutes - passportControlTime;
+            const adjustedTimeExitSCInMinutes = (timeExitSCInMinutes + 24 * 60) % (24 * 60);
+            const timeExitSCHour = Math.floor(adjustedTimeExitSCInMinutes / 60);
+            const timeExitSCMinutes = adjustedTimeExitSCInMinutes % 60;
+            const timeExitSCHourFormatted = String(timeExitSCHour).padStart(2, '0'); // 2 DÍGITOS
+            const timeExitSCMinutesFormatted  = String(timeExitSCMinutes).padStart(2, '0'); // 2 DÍGITOS
+            const timeExitSC = `${timeExitSCHourFormatted}:${timeExitSCMinutesFormatted}`;
+            let timeEnterPassports = "-"; // CUANDO NO APLICA
+            if (passportNeeded){
+                const timeEnterPassportsInMinutes = timeExitSCInMinutes + preControlDelay;
+                const adjustedTimeEnterPassportsInMinutes = (timeEnterPassportsInMinutes + 24 * 60) % (24 * 60);
+                const timeEnterPassportsHour = Math.floor(adjustedTimeEnterPassportsInMinutes / 60);
+                const timeEnterPassportsMinutes = adjustedTimeEnterPassportsInMinutes % 60;
+                const timeEnterPassportsHourFormatted = String(timeEnterPassportsHour).padStart(2, '0'); // 2 DÍGITOS
+                const timeEnterPassportsMinutesFormatted  = String(timeEnterPassportsMinutes).padStart(2, '0'); // 2 DÍGITOS
+                timeEnterPassports = `${timeEnterPassportsHourFormatted}:${timeEnterPassportsMinutesFormatted}`;
+            }
 
+            // (5) # # # # # # # # # # # # # # # SECURITY CONTROL TIME # # # # # # # # # # # # # # #
+            const securityFilterTime = getSecurityControlTime(timeExitSCHour, monthFlight);
+            const timeEnterSCInMinutes = adjustedTimeExitSCInMinutes - securityFilterTime;
+            const adjustedTimeEnterSCInMinutes = (timeEnterSCInMinutes + 24 * 60) % (24 * 60);
+            const timeEnterSCHour = Math.floor(adjustedTimeEnterSCInMinutes / 60);
+            const timeEnterSCMinutes = adjustedTimeEnterSCInMinutes % 60;
+            const timeEnterSCHourFormatted = String(timeEnterSCHour).padStart(2, '0'); // 2 DÍGITOS
+            const timeEnterSCMinutesFormatted  = String(timeEnterSCMinutes).padStart(2, '0'); // 2 DÍGITOS
+            const timeEnterSC = `${timeEnterSCHourFormatted}:${timeEnterSCMinutesFormatted}`;
 
+            // (4, 3) # # # # # # # # # # # # # # # CHECK-IN TIME (IF ANY) - ENTER AIRPORT TIME # # # # # # # # # # # # # # # 
+            // const getCheckInTime = (finishTime: number, month: string, flightType: string) => {
+            let preCheckInDelay = 8;
+            let postCheckInDelay = 4;
+            if (marginPreferences=="low") { preCheckInDelay = 4; postCheckInDelay = 2; }
+            if (marginPreferences=="mid") { preCheckInDelay = 6; postCheckInDelay = 3; }
+            if (marginPreferences=="high") { preCheckInDelay = 8; postCheckInDelay = 4; }
+            let checkInTime = preCheckInDelay;
+            let timeStartCheckIn = "-"; // CUANDO NO APLICA
+            let checkInProcessTime = 0;
+            if (luggagePreferences != "none"){ // "one" - "multiple" - "special"
+                checkInProcessTime = getCheckInTime(timeEnterSCHour, monthFlight, flightType);
+                if (luggagePreferences == "one"){ checkInTime = preCheckInDelay + checkInProcessTime*1 + postCheckInDelay; }
+                if (luggagePreferences == "multiple"){ checkInTime = preCheckInDelay + checkInProcessTime*2 + postCheckInDelay; }
+                if (luggagePreferences == "special"){ checkInTime = preCheckInDelay + checkInProcessTime*3 + postCheckInDelay; }
+            }
+            const timeEnterAirportInMinutes = adjustedTimeEnterSCInMinutes - checkInTime;
+            const adjustedTimeEnterAirport = (timeEnterAirportInMinutes + 24 * 60) % (24 * 60);
+            const timeEnterAirportHour = Math.floor(adjustedTimeEnterSCInMinutes / 60);
+            const timeEnterAirportMinutes = adjustedTimeEnterSCInMinutes % 60;
+            const timeEnterAirportHourFormatted = String(timeEnterSCHour).padStart(2, '0'); // 2 DÍGITOS
+            const timeEnterAirportMinutesFormatted  = String(timeEnterSCMinutes).padStart(2, '0'); // 2 DÍGITOS
+            const timeEnterAirport = `${timeEnterAirportHourFormatted}:${timeEnterAirportMinutesFormatted}`;
+            if (luggagePreferences != "none"){ // "one" - "multiple" - "special"
+                const timeStartCheckInInMinutes = timeEnterAirportInMinutes + checkInProcessTime;
+                const adjustedTimeStartCheckInInMinutes = (timeStartCheckInInMinutes + 24 * 60) % (24 * 60);
+                const timeStartCheckInHour = Math.floor(adjustedTimeStartCheckInInMinutes / 60);
+                const timeStartCheckInMinutes = adjustedTimeStartCheckInInMinutes % 60;
+                const timeStartCheckInHourFormatted = String(timeStartCheckInHour).padStart(2, '0'); // 2 DÍGITOS
+                const timeStartCheckInMinutesFormatted  = String(timeStartCheckInMinutes).padStart(2, '0'); // 2 DÍGITOS
+                timeStartCheckIn = `${timeStartCheckInHourFormatted}:${timeStartCheckInMinutesFormatted}`;
+            }
+            
+            // (2) # # # # # # # # # # # # # # # ENTER TRANSPORT TIME # # # # # # # # # # # # # # # 
+            let timeStartTrip = "-";
+            let timeStartTripButInMinutes = 0;
+            let travelTime = 0;
+            const origin = coordinates;
+            const destination = '41.28774514491456, 2.073313634621097'; // T1 BCN
+            const date = `${monthFlight}-${dayFlight}-${yearFlight}`;
+            let amOrPm = "am";
+            if (parseInt(timeEnterAirportHourFormatted, 10) > 12){
+                amOrPm = "pm";
+            }
+            const time = `${timeEnterAirportHourFormatted}:${timeEnterAirportMinutesFormatted}${amOrPm}`;
+            const arriveBy = 'true'; // 'true' = HORA LLEGADA | 'false' = HORA SALIDA
+            const mode = 'TRANSIT,WALK'; // MODOS DE TRANSPORTE
+            const url = `https://api.tmb.cat/v1/planner/plan?app_id=ee1987cb&app_key=b53bd5d74b9cfd81e5170f825d74f7f6&fromPlace=${origin}&toPlace=${destination}&date=${date}&time=${time}&arriveBy=${arriveBy}&mode=${mode}`;
+            axios.get(url)
+                .then(response => {
+                    if (response.data.plan && response.data.plan.itineraries.length > 0) {
+                        const result = response.data.plan.itineraries[0];
+                        const duration = result.duration;
+                        const durationMinutes = Math.round(duration / 60);
+                        travelTime = durationMinutes;
+                        console.log("[TIME] Duración del Trayecto: " + durationMinutes + " Min.");
 
-  
+                        const timeStartTripInMinutes = adjustedTimeEnterAirport - durationMinutes;
+                        const adjustedTimeStartTrip = (timeStartTripInMinutes + 24 * 60) % (24 * 60);
+                        const timeStartTripHour = Math.floor(adjustedTimeStartTrip / 60);
+                        const timeStartTripMinutes = adjustedTimeStartTrip % 60;
+                        const timeStartTripHourFormatted = String(timeStartTripHour).padStart(2, '0'); // 2 DÍGITOS
+                        const timeStartTripMinutesFormatted  = String(timeStartTripMinutes).padStart(2, '0'); // 2 DÍGITOS
+                        timeStartTrip = `${timeStartTripHourFormatted}:${timeStartTripMinutesFormatted}`;
+
+                    } else {
+                        travelTime = -1;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error Computing Travel Time: ', error);
+                    travelTime = -1;
+                });
+
+            // (1) # # # # # # # # # # # # # # # EXIT HOME TIME # # # # # # # # # # # # # # #
+            let timeExitHome = "-";
+            if (timeStartTripButInMinutes != 0){
+                let delayFromHome = 12;
+                if (marginPreferences=="low") { delayFromHome = 5; }
+                if (marginPreferences=="mid") { delayFromHome = 10; }
+                if (marginPreferences=="high") { delayFromHome = 15; }
+                const timeExitHomeInMinutes = timeStartTripButInMinutes - delayFromHome;
+                const adjustedTimeExitHome = (timeExitHomeInMinutes + 24 * 60) % (24 * 60);
+                const timeExitHomeHour = Math.floor(adjustedTimeExitHome / 60);
+                const timeExitHomeMinutes = adjustedTimeExitHome % 60;
+                const timeExitHomeHourFormatted = String(timeExitHomeHour).padStart(2, '0'); // 2 DÍGITOS
+                const timeExitHomeMinutesFormatted  = String(timeExitHomeMinutes).padStart(2, '0'); // 2 DÍGITOS
+                timeExitHome = `${timeExitHomeHourFormatted}:${timeExitHomeMinutesFormatted}`;
+            }
+            
+            // # # # # # # # # # # # # # # # RETURNING THE 8 RESULTS # # # # # # # # # # # # # # # 
+            return `${timeExitHome}|${timeStartTrip}|${timeEnterAirport}|${timeStartCheckIn}|${timeEnterSC}|${timeEnterPassports}|${timeGate}|${timePlane}`;
+
+            // "15:30|15:45|16:30|-|17:00|-|17:30|18:00";
+        }
+    };
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    return (
+        <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
+            <View style={styles.headerContainer}>
+                <View style={styles.sectionTitle}>
+                    <Text style={styles.pageTitle}>My {listFlights?.length} Trips</Text>
+                </View>
+                <View style={styles.airportContainer}>
+                    <View style={styles.airportTitle}>
+                        <Text style={styles.nameTitle}>Barcelona</Text>
+                    </View>
+                </View>
+            </View>
+
+            <Modal animationType="none" transparent={true} visible={modalVisible} onRequestClose={() => { setModalVisible(false) }}>
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalView}>
+                        <View style={styles.searcherContainer}>
+                            <Text style={styles.subtitleNewsText}>Create Luggage</Text>
+                            <TextInput style={styles.multilineTextInputStyle} placeholder="Description" value={infoLuggage} onChangeText={ setInfoLuggage } multiline maxLength={72}/>
+                            <View style={styles.modalButtons}>
+                                <TouchableOpacity style={styles.quizButton} onPress={() => registerLuggage()}>
+                                    <Text style={styles.loadAllText}>Add</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.quizButton, {backgroundColor: "#d8131b"}]} onPress={() => setModalVisible(false)}>
+                                    <Text style={styles.loadAllText}>Cancel</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+            <Modal animationType="none" transparent={true} visible={preferencesModalVisible} onRequestClose={() => { setPreferencesModalVisible(false) }}>
+                <View style={styles.modalPreferencesOverlay}>
+                    <View style={styles.modalPreferencesView}>
+                        <View style={styles.modalPreferencesContainer}>
+                            <Text style={styles.subtitleNewsText}>Create Prediction</Text>
+                            
+                            <Text style={styles.preferencesStatementText}>Eating / Drinking</Text>
+                            <Picker selectedValue={foodPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setFoodPreferences(itemValue)}>
+                                <Picker.Item label="None" value="none"/>
+                                <Picker.Item label="Lunch / Dinner" value="fullmeal"/>
+                                <Picker.Item label="Snack / Drink / Light Meal" value="lightmeal"/>
+                            </Picker>
+
+                            <Text style={styles.preferencesStatementText}>Shopping</Text>
+                            <Picker selectedValue={shopPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setShopPreferences(itemValue)}>
+                                <Picker.Item label="None" value="none"/>
+                                <Picker.Item label="Buying" value="search"/>
+                                <Picker.Item label="Just Looking" value="look"/>
+                            </Picker>
+
+                            <Text style={styles.preferencesStatementText}>Own Car / Rental Car</Text>
+                            <Picker selectedValue={carParkPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setCarParkPreferences(itemValue)}>
+                                <Picker.Item label="None" value="none"/>
+                                <Picker.Item label="Returning Rental Car" value="rentacar"/>
+                                <Picker.Item label="Parking Own Car" value="own"/>
+                            </Picker>
+
+                            <Text style={styles.preferencesStatementText}>Luggage</Text>
+                            <Picker selectedValue={luggagePreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setLuggagePreferences(itemValue)}>
+                                <Picker.Item label="None" value="none"/>
+                                <Picker.Item label="1 Bag" value="one"/>
+                                <Picker.Item label="> 1 Bags" value="multiple"/>
+                                <Picker.Item label="Special Luggage" value="special"/>
+                            </Picker>
+
+                            <Text style={styles.preferencesStatementText}>Margin?</Text>
+                            <Picker selectedValue={marginPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setMarginPreferences(itemValue)}>
+                                <Picker.Item label="Comfortable" value="high"/>
+                                <Picker.Item label="Normal" value="mid"/>
+                                <Picker.Item label="Hurry" value="low"/>
+                            </Picker>                        
+                            
+                            <View style={styles.preferencesModalButtons}>
+                                <TouchableOpacity style={styles.quizButton} onPress={() => createPreferencesAndPrediction()}>
+                                    <Text style={styles.loadAllText}>Calculate</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.quizButton, {backgroundColor: "#d8131b"}]} onPress={() => setPreferencesModalVisible(false)}>
+                                    <Text style={styles.loadAllText}>Cancel</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+            <ScrollView style={styles.scrollStyle}>
+            {listFlights
+                ? (listFlights
+                    .length === 0
+                    ? <Text style={styles.noNewsText}>
+                        No Flights Available
+                    </Text>
+                    : listFlights
+                        .sort((a, b) => {
+                            const dateA = new Date(a.stdFlight);
+                            const dateB = new Date(b.stdFlight);
+                            return dateA.getTime() - dateB.getTime();
+                        })
+                        .map(renderFlightItem))
+                : <Text style={styles.noNewsText}>No Flights</Text>
+                }
+            </ScrollView>
+        </ImageBackground>
+    );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// FUNCIÓN DE PREDICCIÓN DE TIEMPOS "DOOR TO GATE":
+const getCheckInTime = (finishTime: number, month: string, flightType: string) => {
+    return 5;
+}
 
-const computePredictionTimes = (std: Date, coordinates: string) => {
-    if (coordinates == ""){
-        Alert.alert("EaseAer", "Unable To Locate Your Position");
-    }
-    else {
-        const stdDate = new Date(std);
-        const dayFlight = String(stdDate.getDate()).padStart(2, '0');
-        const monthFlight = String(stdDate.getMonth() + 1).padStart(2, '0');
-        const yearFlight = String(stdDate.getFullYear()).slice(0);
-        const stdHours = String(stdDate.getHours()).padStart(2, '0');
-        const stdMinutes = String(stdDate.getMinutes()).padStart(2, '0');
-        const timePlane = `${stdHours}:${stdMinutes}`;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        // (1) EXIT HOME TIME:
+const getSecurityControlTime = (finishHour: number, month: string) => {
+    // "finishHour": Hour Exitting Security Filter.
+    return 5;
+}
 
-        // (2) ENTER TRANSPORT TIME:
-        let travelTime = 0;
-        const origin = coordinates; // AQUÍ DEBERÍA UBICAR LAS COORDENADAS DE TU CASA
-        console.log("-----> USA LAS COORDENADAS: " + origin);
-        const destination = '41.28774514491456, 2.073313634621097'; // COORDENADAS T1 BARCELONA
-        const date = `${monthFlight}-${dayFlight}-${yearFlight}`;
-        let hourValue = stdHours;
-        let amOrPm = "am";
-        if (parseInt(hourValue, 10) > 12){
-            hourValue = (parseInt(hourValue, 10)-12).toString();
-            amOrPm = "pm";
-        }
-        const time = `${hourValue}:${stdMinutes}${amOrPm}`;
-        const arriveBy = 'true'; // 'true' = HORA LLEGADA | 'false' = HORA SALIDA
-        const mode = 'TRANSIT,WALK'; // MODOS DE TRANSPORTE
-        const url = `https://api.tmb.cat/v1/planner/plan?app_id=ee1987cb&app_key=b53bd5d74b9cfd81e5170f825d74f7f6&fromPlace=${origin}&toPlace=${destination}&date=${date}&time=${time}&arriveBy=${arriveBy}&mode=${mode}`;
-        axios.get(url)
-            .then(response => {
-                if (response.data.plan && response.data.plan.itineraries.length > 0) {
-                    const result = response.data.plan.itineraries[0];
-                    const duration = result.duration;
-                    const durationMinutes = Math.round(duration / 60);
-                    travelTime = durationMinutes;
-                    console.log("TRAYECTO DE: " + durationMinutes + " MINUTOS.");
-                } else {
-                    travelTime = -1;
-                }
-            })
-            .catch(error => {
-                console.error('Error Computing Travel Time: ', error);
-                travelTime = -1;
-            });
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        // (3) ENTER AIRPORT TIME:
+const getPassportControlTime = (finishHour: number, month: string) => {
+    // "finishHour": Hour Being At The Gate.
 
-        // (4) CHECK-IN TIME (IF ANY):
+    return 5;
+}
 
-        // (5) SECURITY CONTROL TIME:
-
-        // (6) PASSPORT CONTROL (IF ANY):
-
-        // (7) BE-AT-THE-GATE TIME:
-
-        return ("HOLA");
-        
-        // RETURNING THE 8 RESULTS:
-        // return `${A}|${B}|${C}|${D}|${E}|${F}|${G}|${timePlane}`;
-        // "15:30|15:45|16:30|-|17:00|-|17:30|18:00";
-    }
-};
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
