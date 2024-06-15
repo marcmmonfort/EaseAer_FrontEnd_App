@@ -845,7 +845,6 @@ export default function FlightsMine() {
 
                     const resultTimes = await computePredictionTimes(datePrediction, coordinates);
                     console.log("---> Resultado Predicción: " + resultTimes);
-                    const timesString = "07:44|07:59|09:21|09:26|09:38|09:47|10:00|11:00";
                     if (resultTimes != undefined) {
                         const timesArray = resultTimes.split("|");
 
@@ -878,7 +877,7 @@ export default function FlightsMine() {
                                         ? shopPreferences : "none",
                                     carParkPreferences:
                                         carParkPreferences === "none" || carParkPreferences === "own" || carParkPreferences === "rentacar"
-                                        ? carParkPreferences : "none",
+                                        ? carParkPreferences : "own",
                                     luggagePreferences:
                                         luggagePreferences === "none" || luggagePreferences === "one" || luggagePreferences === "multiple" || luggagePreferences === "special"
                                         ? luggagePreferences : "none",
@@ -1174,6 +1173,24 @@ export default function FlightsMine() {
             if (marginPreferences=="mid") { preControlDelay = 3; postControlDelay = 6; }
             if (marginPreferences=="high") { preControlDelay = 4; postControlDelay = 8; }
             let passportControlTime = 0;
+            if (foodPreferences != "none"){
+                if (passportNeeded){
+                    if (foodPreferences == "lightmeal"){ preControlDelay = preControlDelay + 15; }
+                    if (foodPreferences == "fullmeal"){ preControlDelay = preControlDelay + 35; }
+                } else {
+                    if (foodPreferences == "lightmeal"){ postControlDelay = postControlDelay + 15; }
+                    if (foodPreferences == "fullmeal"){ postControlDelay = postControlDelay + 35; }
+                }
+            }
+            if (shopPreferences != "none"){
+                if (passportNeeded){
+                    if (shopPreferences == "look"){ preControlDelay = preControlDelay + 10; }
+                    if (shopPreferences == "search"){ preControlDelay = preControlDelay + 20; }
+                } else {
+                    if (shopPreferences == "look"){ postControlDelay = postControlDelay + 10; }
+                    if (shopPreferences == "search"){ postControlDelay = postControlDelay + 20; }
+                }
+            }
             if (passportNeeded){
                 let passportProcessDelay = getPassportControlTime(timeGateHour, monthFlight);
                 passportControlTime = preControlDelay + passportProcessDelay + postControlDelay;
@@ -1270,8 +1287,21 @@ export default function FlightsMine() {
                         const duration = result.duration;
                         const durationMinutes = Math.round(duration / 60);
                         travelTime = durationMinutes;
-                        console.log("[TIME] Duración del Trayecto: " + durationMinutes + " Min.");
-            
+                        console.log("[TIME] Duración del Trayecto Según TMB: " + travelTime + " Min.");
+                        if (carParkPreferences != "none"){ // ESTIMACIÓN EN CASO DE IR EN VEHÍCULO PROPIO / RENT-A-CAR:
+                            if (carParkPreferences == "ownY"){
+                                if (marginPreferences == "low"){ travelTime = Math.round(durationMinutes / 2) + 12; }
+                                if (marginPreferences == "mid"){ travelTime = Math.round(durationMinutes / 2) + 16; }
+                                if (marginPreferences == "high"){ travelTime = Math.round(durationMinutes / 2) + 20; }
+                            }
+                            if (carParkPreferences == "ownN"){
+                                travelTime = Math.round(durationMinutes / 2) + 8;
+                            }
+                            if (carParkPreferences == "rentacar"){
+                                travelTime = Math.round(durationMinutes / 2) + 12;
+                            }
+                        }
+                        console.log("[TIME] Duración del Trayecto (+ Parking (Si Aplica)): " + travelTime + " Min.");
                         timeStartTripButInMinutes = adjustedTimeEnterAirport - durationMinutes;
                         const adjustedTimeStartTrip = (timeStartTripButInMinutes + 24 * 60) % (24 * 60);
                         const timeStartTripHour = Math.floor(adjustedTimeStartTrip / 60);
@@ -1369,7 +1399,8 @@ export default function FlightsMine() {
                             <Picker selectedValue={carParkPreferences} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setCarParkPreferences(itemValue)}>
                                 <Picker.Item label="None" value="none"/>
                                 <Picker.Item label="Returning Rental Car" value="rentacar"/>
-                                <Picker.Item label="Parking Own Car" value="own"/>
+                                <Picker.Item label="Parking Own Car (Shuttle)" value="ownY"/>
+                                <Picker.Item label="Parking Own Car (No Shuttle)" value="ownN"/>
                             </Picker>
 
                             <Text style={styles.preferencesStatementText}>Luggage</Text>
