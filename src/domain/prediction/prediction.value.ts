@@ -3,7 +3,7 @@ import { PredictionEntity  } from "./prediction.entity";
 export class PredictionValue implements PredictionEntity {
     uuid: string;
     idUserPrediction: string;
-    idFlightPredition: string;
+    idFlightPrediction: string;
     datePrediction: Date;
     exitHomeTimePrediction: string;
     transportTimePrediction: string;
@@ -17,7 +17,7 @@ export class PredictionValue implements PredictionEntity {
     constructor({
         uuid,
         idUserPrediction,
-        idFlightPredition,
+        idFlightPrediction,
         datePrediction,
         exitHomeTimePrediction,
         transportTimePrediction,
@@ -31,7 +31,7 @@ export class PredictionValue implements PredictionEntity {
     }: {
         uuid: string;
         idUserPrediction: string;
-        idFlightPredition: string;
+        idFlightPrediction: string;
         datePrediction: Date;
         exitHomeTimePrediction: string;
         transportTimePrediction: string;
@@ -45,7 +45,7 @@ export class PredictionValue implements PredictionEntity {
     }) {
         this.uuid = uuid,
         this.idUserPrediction = idUserPrediction,
-        this.idFlightPredition = idFlightPredition,
+        this.idFlightPrediction = idFlightPrediction,
         this.datePrediction = datePrediction,
         this.exitHomeTimePrediction = exitHomeTimePrediction,
         this.transportTimePrediction = transportTimePrediction,

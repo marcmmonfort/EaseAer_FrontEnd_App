@@ -59,6 +59,22 @@ export class PredictionService{
         }
     }
 
+    // CASE 2.5: routePrediction.get("/prediction/getbyuser/:uuid", checkJwt, predictionCtrl.getPredictionsByUserCtrl);
+    static async getPredictionsByUser(uuid: string) {
+        const token=await AuthHeaderService.authHeader()
+        if(token){
+            try {
+                const response = await axios.get(API_URL + "prediction/getbyuser/" + uuid, { headers:  token});
+                return response;
+            } catch (error) {
+                console.error("Error Getting Predictions By User: ", error);
+                throw error;
+            }
+        } else {
+            console.log("Error Getting Prediction By ID (Token Problems)");
+        }
+    }
+
     // CASE 3: routePrediction.get("/prediction/all/count/docs", checkJwt, predictionCtrl.getNumPredictionsCtrl);
     static async getNumPredictions() {
         const token = await AuthHeaderService.authHeader()

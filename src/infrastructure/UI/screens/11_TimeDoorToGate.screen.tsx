@@ -30,6 +30,8 @@ import { FlightEntity } from "../../../domain/flight/flight.entity";
 import { FlightService } from "../../services/flight/flight.service";
 import { LuggageEntity } from "../../../domain/luggage/luggage.entity";
 import { LuggageService } from "../../services/luggage/luggage.service";
+import { PredictionService } from "../../services/prediction/prediction.service";
+import { PredictionEntity } from "../../../domain/prediction/prediction.entity";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -68,33 +70,35 @@ export default function PredictionsMine() {
     const [userDetails, setUserDetails] = useState<{ [key: string]: string }>({});
     const [searchText, setSearchText] = useState("");
 
-    const [listFlights, setListFlights] = useState<FlightEntity[]>([]);
-    const [companyInfo, setCompanyInfo] = useState<{ [key: string]: { name: string, logo: string } }>({});
+    const [listPredictions, setListPredictions] = useState<PredictionEntity[]>([]);
+    const [flightInfo, setFlightInfo] = useState<{ [key: string]: { name: string, logo: string, ICAO: string, std: Date, terminal: string } }>({});
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const [idFlightLuggage, setIdFlightLuggage] = useState("");
-    const [infoLuggage, setInfoLuggage] = useState('');
-
-    const updateCompanyInfo = async (companyId: string, flightUuid: string) => {
+    const updateCompanyInfo = async (companyId: string, flightUuid: string, flightDestination: string, flightStd: Date, flightTerminal: string) => {
         const userId = await SessionService.getCurrentUser();
         if (userId) {
             try {
                 await CRUDService.getUserById(companyId).then(async (response) => {
                     // Si se pide el UUID de una compañía que no existe falla el BackEnd.
                     if (response?.data && response?.data != undefined && response?.data.nameUser) {
-                        setCompanyInfo(prevInfo => ({
+                        setFlightInfo(prevInfo => ({
                             ...prevInfo,
                             [flightUuid]: {
-                            name: `${response.data.nameUser} ${response.data.surnameUser}`,
-                            logo: response.data.photoUser
+                                name: `${response.data.nameUser} ${response.data.surnameUser}`,
+                                logo: response.data.photoUser,
+                                ICAO: flightDestination,
+                                std: flightStd,
+                                terminal: flightTerminal,
                             }
                         }));
                     } else {
-                        setCompanyInfo(prevInfo => ({
+                        setFlightInfo(prevInfo => ({
                             ...prevInfo,
                             [flightUuid]: {
-                            name: "Unknown",
-                            logo: "Unknown"
+                                name: "Unknown",
+                                logo: "Unknown",
+                                ICAO: "Unknown",
+                                std: new Date(),
+                                terminal: "Unknown",
                             }
                         }));
                     }
@@ -108,30 +112,30 @@ export default function PredictionsMine() {
     useFocusEffect(
         React.useCallback(() => {
 
-        const getOwnFlights = async () => {
+        const getOwnPredictions = async () => {
             const userId = await SessionService.getCurrentUser();
             if (userId) {
                 try {
-                    const response = await CRUDService.getUserById(userId);
-                    if (response?.data && response.data.flightsUser) {
-                        setListFlights([]);
+                    const response = await PredictionService.getPredictionsByUser(userId);
+                    console.log("Respuesta Predicciones: " + JSON.stringify(response?.data));
+                    if (response?.data && response.data[0].idFlightPrediction) {
+                        setListPredictions(response.data);
 
-                        for (let flightId of response.data.flightsUser){
-                            console.log("PIDO EL VUELO CON ID " + flightId);
-                            const flightResponse = await FlightService.getFlightById(flightId);
+                        for (let i = 0; i < response.data.length; i++){
+                            console.log("PIDO EL VUELO CON ID " + response.data[i].idFlightPrediction);
+                            const flightResponse = await FlightService.getFlightById(response.data[i].idFlightPrediction);
                             if (flightResponse?.data) {
-                                setListFlights(prevFlights => [...prevFlights, flightResponse.data]);
-                                updateCompanyInfo(flightResponse.data.companyFlight, flightResponse.data.uuid);
+                                updateCompanyInfo(flightResponse.data.companyFlight, flightResponse.data.uuid, flightResponse.data.destinationFlight, flightResponse.data.stdFlight, flightResponse.data.depTerminalFlight);
                             }
                         }
                     }
                 } catch (error) {
-                    Alert.alert("EaseAer", "Error Loading Flights");
+                    Alert.alert("EaseAer", "Error Loading Predictions");
                 }
             }
         };
 
-        getOwnFlights();
+        getOwnPredictions();
 
         }, [])
     );
@@ -613,143 +617,33 @@ export default function PredictionsMine() {
         return text;
     };
 
-    const removeFlight = async (flightId: string) => {
-        const thisUserId = await SessionService.getCurrentUser();
-        if (thisUserId) {
-            await CRUDService.getUserById(thisUserId).then(async (userResponse) => {
-                if (userResponse?.data) {                
-                    setCurrentUser(userResponse.data);
-                    console.log(">>> Se va a actualizar el usuario: " + JSON.stringify(userResponse.data));
-                    
-                    let updatedVectorFlights: string[] = [];
-
-                    if (userResponse.data.flightsUser!=undefined){
-                        for (let r = 0; r < userResponse.data.flightsUser.length; r++){
-                            if (userResponse.data.flightsUser[r]!=flightId){
-                                updatedVectorFlights.push(userResponse.data.flightsUser[r]);
-                            }
-                        }
-                    }
-
-                    const user: UserAuthEntity = {
-                        uuid: userResponse.data.uuid ?? "",
-                        appUser: userResponse.data.appUser ?? "",
-                        nameUser: userResponse.data.nameUser ?? "",
-                        surnameUser: userResponse.data.surnameUser ?? "",
-                        mailUser: userResponse.data.mailUser ?? "",
-                        passwordUser: userResponse.data.passwordUser ?? "",
-                        photoUser: userResponse.data.photoUser ?? "",
-                        birthdateUser: new Date(userResponse.data.birthdateUser ?? ""),
-                        genderUser:
-                            userResponse.data.genderUser === "male" || userResponse.data.genderUser === "female" || userResponse.data.genderUser === "other"
-                            ? userResponse.data.genderUser
-                                : "male",
-                        descriptionUser: userResponse.data.descriptionUser ?? "",
-                        roleUser:
-                            userResponse.data.roleUser === "pax" ||
-                            userResponse.data.roleUser === "company" ||
-                            userResponse.data.roleUser === "admin" ||
-                            userResponse.data.roleUser === "tech"
-                            ? userResponse.data.roleUser
-                                : "pax",
-                        privacyUser: userResponse.data.privacyUser === "private" ? true : false,
-                        recordGameUser: userResponse.data.recordGameUser,
-                        flightsUser: updatedVectorFlights,
-                        deletedUser: userResponse.data.deletedUser ?? false,
-                    };
-
-                    CRUDService.updateUser(thisUserId, user).then((response)=>{
-                        if (response?.status===200){
-                            Alert.alert("EaseAer", "Flight Removed");
-                        };
-                    })
-                }
-            })
-        }
-    }
-
-    const addLuggage = async (flightId: string) => {
-        setIdFlightLuggage(flightId);
-        setModalVisible(true);
-    }
-
-    const registerLuggage = async () => {
-        const thisUserId = await SessionService.getCurrentUser();
-        if (thisUserId) {
-            await CRUDService.getUserById(thisUserId).then(async (userResponse) => {
-                if (userResponse?.data) {                
-                    setCurrentUser(userResponse.data);
-                    
-                    const newLuggage: LuggageEntity = {
-                        uuid: " " ?? "",
-                        idUserLuggage: thisUserId ?? "",
-                        idFlightLuggage: idFlightLuggage ?? "",
-                        infoLuggage: infoLuggage ?? "",
-                        statusLuggage: "waiting" ?? "",
-                        deletedLuggage: false ?? false,
-                    };
-
-                    LuggageService.createLuggage(newLuggage).then((response)=>{
-                        if (response?.status===200){
-                            Alert.alert("EaseAer", "Luggage Added");
-                        } else {
-                            Alert.alert("EaseAer", "Error Creating Luggage");
-                        }
-                    })
-                }
-            })
-        }
-        setModalVisible(false);
-    }
-
-    const renderFlightItem = (flightItem: FlightEntity) => (
+    const renderPredictionItem = (predictionItem: PredictionEntity) => (
             
-        <View style={styles.flightContainer} key={flightItem.uuid}>
-            <TouchableOpacity style={styles.removeFlightLink} onPress={() => removeFlight(flightItem.uuid)}>
-                <Text style={styles.addText}>-</Text>
-            </TouchableOpacity>
+        <View style={styles.flightContainer} key={predictionItem.uuid}>
             <View style={styles.flightPack}>
                 <View style={styles.flightHeader}>
-                    <Image source={{uri: companyInfo[flightItem.uuid]?.logo} || require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png') } style={styles.image} />
-                    <Text style={styles.statusText}>{formatStatus(flightItem.statusFlight)}</Text>
+                    <Image source={{uri: flightInfo[predictionItem.idFlightPrediction]?.logo} || require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png') } style={styles.image} />
                 </View>
                 <View style={styles.flightContent}>
-                    {flightItem.originFlight == "LEBL" && (
-                        <View style={styles.locationContent}>
-                            <Text style={styles.flightLocationName}>Barcelona</Text>
-                            <Text style={styles.flightICAO}>-</Text>
-                            <Text style={styles.flightLocationName}>{truncateText(formatICAO(flightItem.destinationFlight), 14)}</Text>
-                        </View>
-                    )}
-                    {flightItem.destinationFlight == "LEBL" && (
-                        <View style={styles.locationContent}>
-                            <Text style={styles.flightLocationName}>{truncateText(formatICAO(flightItem.originFlight), 14)}</Text>
-                            <Text style={styles.flightICAO}>-</Text>
-                            <Text style={styles.flightLocationName}>Barcelona</Text>
-                        </View>
-                    )}
                     <View style={styles.flightDetails}>
-                        <Text style={styles.flightNumberText}>{flightItem.numberFlight}</Text>
-                        <Text style={styles.companyText}>{companyInfo[flightItem.uuid]?.name}</Text>
+                        <Text style={styles.companyText}>{flightInfo[predictionItem.idFlightPrediction]?.name}</Text>
                     </View>
                     <View style={styles.flightDetails}>
-                        <Text style={styles.detailsText}>From</Text>
-                        <Text style={styles.scheduledText}>{formatDate(flightItem.stdFlight.toString())}</Text>
-                        <Text style={styles.estimatedText}>{formatDate(flightItem.etdFlight.toString())}</Text>
-                        <Text style={styles.detailsText}>To</Text>
-                        <Text style={styles.scheduledText}>{formatDate(flightItem.staFlight.toString())}</Text>
-                        <Text style={styles.estimatedText}>{formatDate(flightItem.etaFlight.toString())}</Text>
+                        <Text style={styles.detailsText}>{predictionItem.exitHomeTimePrediction}</Text>
+                        <Text style={styles.detailsText}>{predictionItem.transportTimePrediction}</Text>
+                        <Text style={styles.detailsText}>{predictionItem.entranceTimePrediction}</Text>
+                        <Text style={styles.detailsText}>{predictionItem.checkInTimePrediction}</Text>
+                        <Text style={styles.detailsText}>{predictionItem.securityTimePrediction}</Text>
+                        <Text style={styles.detailsText}>{predictionItem.passportTimePrediction}</Text>
+                        <Text style={styles.detailsText}>{predictionItem.gateTimePrediction}</Text>
+                        <Text style={styles.detailsText}>{predictionItem.planeTimePrediction}</Text>
                     </View>
                     <View style={styles.flightDetails}>
-                        <Text style={styles.detailsText}>Day</Text>
-                        <Text style={styles.dayText}>{formatDay(flightItem.stdFlight.toString())}</Text>
+                        <Text style={styles.dayText}>{flightInfo[predictionItem.idFlightPrediction]?.ICAO}</Text>
                     </View>
-                    <Text style={styles.terminalText}>{formatTerminal(flightItem.depTerminalFlight)}</Text>
+                    <Text style={styles.terminalText}>{flightInfo[predictionItem.idFlightPrediction]?.terminal}</Text>
                 </View>
             </View>
-            <TouchableOpacity style={styles.addLuggageLink} onPress={() => addLuggage(flightItem.uuid)}>
-                <MaterialCommunityIcons name="bag-suitcase" size={20} color='white' />
-            </TouchableOpacity>
         </View>
     );
 
@@ -852,28 +746,24 @@ export default function PredictionsMine() {
                 </View>
             </View>
         </View>
-    </ImageBackground>
-  );
-}
-
-/*
 
         <ScrollView style={styles.scrollStyle}>
-        {listFlights
-            ? (listFlights
+        {listPredictions
+            ? (listPredictions
                 .length === 0
                 ? <Text style={styles.noNewsText}>
                     No Flights Available
                 </Text>
-                : listFlights
+                : listPredictions
                     .sort((a, b) => {
-                        const dateA = new Date(a.stdFlight);
-                        const dateB = new Date(b.stdFlight);
+                        const dateA = new Date(a.datePrediction);
+                        const dateB = new Date(b.datePrediction);
                         return dateA.getTime() - dateB.getTime();
                     })
-                    .map(renderFlightItem))
+                    .map(renderPredictionItem))
             : <Text style={styles.noNewsText}>No Flights</Text>
             }
         </ScrollView>
-*/
-
+    </ImageBackground>
+  );
+}

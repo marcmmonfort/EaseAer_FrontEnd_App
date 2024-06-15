@@ -851,7 +851,7 @@ export default function FlightsMine() {
                         const newPrediction: PredictionEntity = {
                             uuid: " " ?? "",
                             idUserPrediction: userResponse.data.uuid ?? "",
-                            idFlightPredition: idFlightPrediction ?? "",
+                            idFlightPrediction: idFlightPrediction ?? "",
                             datePrediction: datePrediction ?? "",
                             exitHomeTimePrediction: timesArray[0],
                             transportTimePrediction: timesArray[1],

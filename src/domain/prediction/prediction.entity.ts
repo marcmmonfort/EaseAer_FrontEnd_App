@@ -1,7 +1,7 @@
 export interface PredictionEntity {
     uuid: string;
     idUserPrediction: string; // idUser
-    idFlightPredition: string;
+    idFlightPrediction: string;
     datePrediction: Date;
     exitHomeTimePrediction?: string;
     transportTimePrediction?: string;
