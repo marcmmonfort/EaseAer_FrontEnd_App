@@ -1608,6 +1608,7 @@ const getCheckInTime = (finishTime: number, month: string, flightType: string, t
             if (finishTime == 7) { checkInTime = 2 }; if (finishTime == 15) { checkInTime = 2 }; if (finishTime == 23) { checkInTime = 2 };           
         }
     }
+    console.log("[TIME] ---> Check-In: " + checkInTime);
     return checkInTime;
 }
 
@@ -1736,6 +1737,7 @@ const getSecurityControlTime = (finishHour: number, month: string) => {
         if (finishHour == 6) { securityControlTime = 4 }; if (finishHour == 14) { securityControlTime = 4 }; if (finishHour == 22) { securityControlTime = 3 };
         if (finishHour == 7) { securityControlTime = 4 }; if (finishHour == 15) { securityControlTime = 4 }; if (finishHour == 23) { securityControlTime = 3 };
     }
+    console.log("[TIME] ---> Security: " + securityControlTime);
     return securityControlTime;
 }
 
@@ -1744,9 +1746,127 @@ const getSecurityControlTime = (finishHour: number, month: string) => {
 const getPassportControlTime = (finishHour: number, month: string) => {
     // "finishHour": Hour Being At The Gate.
     let passportControlTime = 5;
-    if (month === '01'){
-        
+    if (month === '01'){ // ENERO:
+        if (finishHour == 0) { passportControlTime = 1 }; if (finishHour == 8) { passportControlTime = 1 }; if (finishHour == 16) { passportControlTime = 1 };
+        if (finishHour == 1) { passportControlTime = 1 }; if (finishHour == 9) { passportControlTime = 1 }; if (finishHour == 17) { passportControlTime = 1 };
+        if (finishHour == 2) { passportControlTime = 1 }; if (finishHour == 10) { passportControlTime = 1 }; if (finishHour == 18) { passportControlTime = 1 };
+        if (finishHour == 3) { passportControlTime = 1 }; if (finishHour == 11) { passportControlTime = 1 }; if (finishHour == 19) { passportControlTime = 1 };
+        if (finishHour == 4) { passportControlTime = 1 }; if (finishHour == 12) { passportControlTime = 1 }; if (finishHour == 20) { passportControlTime = 1 };
+        if (finishHour == 5) { passportControlTime = 1 }; if (finishHour == 13) { passportControlTime = 1 }; if (finishHour == 21) { passportControlTime = 1 };
+        if (finishHour == 6) { passportControlTime = 2 }; if (finishHour == 14) { passportControlTime = 1 }; if (finishHour == 22) { passportControlTime = 1 };
+        if (finishHour == 7) { passportControlTime = 1 }; if (finishHour == 15) { passportControlTime = 1 }; if (finishHour == 23) { passportControlTime = 1 };
     }
+    if (month === '02'){ // FEBRERO:
+        if (finishHour == 0) { passportControlTime = 1 }; if (finishHour == 8) { passportControlTime = 1 }; if (finishHour == 16) { passportControlTime = 1 };
+        if (finishHour == 1) { passportControlTime = 1 }; if (finishHour == 9) { passportControlTime = 1 }; if (finishHour == 17) { passportControlTime = 1 };
+        if (finishHour == 2) { passportControlTime = 1 }; if (finishHour == 10) { passportControlTime = 1 }; if (finishHour == 18) { passportControlTime = 1 };
+        if (finishHour == 3) { passportControlTime = 1 }; if (finishHour == 11) { passportControlTime = 1 }; if (finishHour == 19) { passportControlTime = 1 };
+        if (finishHour == 4) { passportControlTime = 1 }; if (finishHour == 12) { passportControlTime = 1 }; if (finishHour == 20) { passportControlTime = 1 };
+        if (finishHour == 5) { passportControlTime = 1 }; if (finishHour == 13) { passportControlTime = 1 }; if (finishHour == 21) { passportControlTime = 1 };
+        if (finishHour == 6) { passportControlTime = 2 }; if (finishHour == 14) { passportControlTime = 1 }; if (finishHour == 22) { passportControlTime = 1 };
+        if (finishHour == 7) { passportControlTime = 1 }; if (finishHour == 15) { passportControlTime = 1 }; if (finishHour == 23) { passportControlTime = 1 };
+    }
+    if (month === '03'){ // MARZO:
+        if (finishHour == 0) { passportControlTime = 1 }; if (finishHour == 8) { passportControlTime = 1 }; if (finishHour == 16) { passportControlTime = 1 };
+        if (finishHour == 1) { passportControlTime = 1 }; if (finishHour == 9) { passportControlTime = 1 }; if (finishHour == 17) { passportControlTime = 1 };
+        if (finishHour == 2) { passportControlTime = 1 }; if (finishHour == 10) { passportControlTime = 1 }; if (finishHour == 18) { passportControlTime = 1 };
+        if (finishHour == 3) { passportControlTime = 1 }; if (finishHour == 11) { passportControlTime = 1 }; if (finishHour == 19) { passportControlTime = 1 };
+        if (finishHour == 4) { passportControlTime = 1 }; if (finishHour == 12) { passportControlTime = 1 }; if (finishHour == 20) { passportControlTime = 1 };
+        if (finishHour == 5) { passportControlTime = 2 }; if (finishHour == 13) { passportControlTime = 1 }; if (finishHour == 21) { passportControlTime = 1 };
+        if (finishHour == 6) { passportControlTime = 3 }; if (finishHour == 14) { passportControlTime = 1 }; if (finishHour == 22) { passportControlTime = 1 };
+        if (finishHour == 7) { passportControlTime = 1 }; if (finishHour == 15) { passportControlTime = 1 }; if (finishHour == 23) { passportControlTime = 1 };
+    }
+    if (month === '04'){ // ABRIL:
+        if (finishHour == 0) { passportControlTime = 1 }; if (finishHour == 8) { passportControlTime = 1 }; if (finishHour == 16) { passportControlTime = 1 };
+        if (finishHour == 1) { passportControlTime = 1 }; if (finishHour == 9) { passportControlTime = 1 }; if (finishHour == 17) { passportControlTime = 2 };
+        if (finishHour == 2) { passportControlTime = 1 }; if (finishHour == 10) { passportControlTime = 1 }; if (finishHour == 18) { passportControlTime = 2 };
+        if (finishHour == 3) { passportControlTime = 1 }; if (finishHour == 11) { passportControlTime = 1 }; if (finishHour == 19) { passportControlTime = 1 };
+        if (finishHour == 4) { passportControlTime = 1 }; if (finishHour == 12) { passportControlTime = 1 }; if (finishHour == 20) { passportControlTime = 1 };
+        if (finishHour == 5) { passportControlTime = 2 }; if (finishHour == 13) { passportControlTime = 1 }; if (finishHour == 21) { passportControlTime = 1 };
+        if (finishHour == 6) { passportControlTime = 7 }; if (finishHour == 14) { passportControlTime = 1 }; if (finishHour == 22) { passportControlTime = 1 };
+        if (finishHour == 7) { passportControlTime = 1 }; if (finishHour == 15) { passportControlTime = 1 }; if (finishHour == 23) { passportControlTime = 1 };
+    }
+    if (month === '05'){ // MAYO:
+        if (finishHour == 0) { passportControlTime = 1 }; if (finishHour == 8) { passportControlTime = 1 }; if (finishHour == 16) { passportControlTime = 1 };
+        if (finishHour == 1) { passportControlTime = 1 }; if (finishHour == 9) { passportControlTime = 2 }; if (finishHour == 17) { passportControlTime = 2 };
+        if (finishHour == 2) { passportControlTime = 1 }; if (finishHour == 10) { passportControlTime = 2 }; if (finishHour == 18) { passportControlTime = 2 };
+        if (finishHour == 3) { passportControlTime = 1 }; if (finishHour == 11) { passportControlTime = 2 }; if (finishHour == 19) { passportControlTime = 1 };
+        if (finishHour == 4) { passportControlTime = 1 }; if (finishHour == 12) { passportControlTime = 2 }; if (finishHour == 20) { passportControlTime = 1 };
+        if (finishHour == 5) { passportControlTime = 4 }; if (finishHour == 13) { passportControlTime = 1 }; if (finishHour == 21) { passportControlTime = 1 };
+        if (finishHour == 6) { passportControlTime = 2 }; if (finishHour == 14) { passportControlTime = 2 }; if (finishHour == 22) { passportControlTime = 1 };
+        if (finishHour == 7) { passportControlTime = 1 }; if (finishHour == 15) { passportControlTime = 1 }; if (finishHour == 23) { passportControlTime = 1 };
+    }
+    if (month === '06'){ // JUNIO:
+        if (finishHour == 0) { passportControlTime = 1 }; if (finishHour == 8) { passportControlTime = 1 }; if (finishHour == 16) { passportControlTime = 1 };
+        if (finishHour == 1) { passportControlTime = 1 }; if (finishHour == 9) { passportControlTime = 2 }; if (finishHour == 17) { passportControlTime = 2 };
+        if (finishHour == 2) { passportControlTime = 1 }; if (finishHour == 10) { passportControlTime = 2 }; if (finishHour == 18) { passportControlTime = 2 };
+        if (finishHour == 3) { passportControlTime = 1 }; if (finishHour == 11) { passportControlTime = 2 }; if (finishHour == 19) { passportControlTime = 1 };
+        if (finishHour == 4) { passportControlTime = 1 }; if (finishHour == 12) { passportControlTime = 2 }; if (finishHour == 20) { passportControlTime = 1 };
+        if (finishHour == 5) { passportControlTime = 5 }; if (finishHour == 13) { passportControlTime = 1 }; if (finishHour == 21) { passportControlTime = 1 };
+        if (finishHour == 6) { passportControlTime = 4 }; if (finishHour == 14) { passportControlTime = 2 }; if (finishHour == 22) { passportControlTime = 1 };
+        if (finishHour == 7) { passportControlTime = 1 }; if (finishHour == 15) { passportControlTime = 2 }; if (finishHour == 23) { passportControlTime = 1 };
+    }
+    if (month === '07'){// JULIO:
+        if (finishHour == 0) { passportControlTime = 1 }; if (finishHour == 8) { passportControlTime = 1 }; if (finishHour == 16) { passportControlTime = 2 };
+        if (finishHour == 1) { passportControlTime = 1 }; if (finishHour == 9) { passportControlTime = 2 }; if (finishHour == 17) { passportControlTime = 2 };
+        if (finishHour == 2) { passportControlTime = 1 }; if (finishHour == 10) { passportControlTime = 2 }; if (finishHour == 18) { passportControlTime = 3 };
+        if (finishHour == 3) { passportControlTime = 1 }; if (finishHour == 11) { passportControlTime = 2 }; if (finishHour == 19) { passportControlTime = 2 };
+        if (finishHour == 4) { passportControlTime = 1 }; if (finishHour == 12) { passportControlTime = 2 }; if (finishHour == 20) { passportControlTime = 2 };
+        if (finishHour == 5) { passportControlTime = 1 }; if (finishHour == 13) { passportControlTime = 2 }; if (finishHour == 21) { passportControlTime = 1 };
+        if (finishHour == 6) { passportControlTime = 11 }; if (finishHour == 14) { passportControlTime = 2 }; if (finishHour == 22) { passportControlTime = 1 };
+        if (finishHour == 7) { passportControlTime = 1 }; if (finishHour == 15) { passportControlTime = 2 }; if (finishHour == 23) { passportControlTime = 1 };
+    }
+    if (month === '08'){ // AGOSTO:
+        if (finishHour == 0) { passportControlTime = 1 }; if (finishHour == 8) { passportControlTime = 1 }; if (finishHour == 16) { passportControlTime = 2 };
+        if (finishHour == 1) { passportControlTime = 1 }; if (finishHour == 9) { passportControlTime = 2 }; if (finishHour == 17) { passportControlTime = 3 };
+        if (finishHour == 2) { passportControlTime = 1 }; if (finishHour == 10) { passportControlTime = 2 }; if (finishHour == 18) { passportControlTime = 3 };
+        if (finishHour == 3) { passportControlTime = 1 }; if (finishHour == 11) { passportControlTime = 2 }; if (finishHour == 19) { passportControlTime = 2 };
+        if (finishHour == 4) { passportControlTime = 1 }; if (finishHour == 12) { passportControlTime = 2 }; if (finishHour == 20) { passportControlTime = 2 };
+        if (finishHour == 5) { passportControlTime = 3 }; if (finishHour == 13) { passportControlTime = 2 }; if (finishHour == 21) { passportControlTime = 1 };
+        if (finishHour == 6) { passportControlTime = 14 }; if (finishHour == 14) { passportControlTime = 2 }; if (finishHour == 22) { passportControlTime = 1 };
+        if (finishHour == 7) { passportControlTime = 1 }; if (finishHour == 15) { passportControlTime = 2 }; if (finishHour == 23) { passportControlTime = 1 };
+    }
+    if (month === '09'){ // SEPTIEMBRE:
+        if (finishHour == 0) { passportControlTime = 1 }; if (finishHour == 8) { passportControlTime = 1 }; if (finishHour == 16) { passportControlTime = 2 };
+        if (finishHour == 1) { passportControlTime = 1 }; if (finishHour == 9) { passportControlTime = 2 }; if (finishHour == 17) { passportControlTime = 2 };
+        if (finishHour == 2) { passportControlTime = 1 }; if (finishHour == 10) { passportControlTime = 2 }; if (finishHour == 18) { passportControlTime = 2 };
+        if (finishHour == 3) { passportControlTime = 1 }; if (finishHour == 11) { passportControlTime = 2 }; if (finishHour == 19) { passportControlTime = 2 };
+        if (finishHour == 4) { passportControlTime = 1 }; if (finishHour == 12) { passportControlTime = 2 }; if (finishHour == 20) { passportControlTime = 2 };
+        if (finishHour == 5) { passportControlTime = 8 }; if (finishHour == 13) { passportControlTime = 2 }; if (finishHour == 21) { passportControlTime = 1 };
+        if (finishHour == 6) { passportControlTime = 6 }; if (finishHour == 14) { passportControlTime = 2 }; if (finishHour == 22) { passportControlTime = 1 };
+        if (finishHour == 7) { passportControlTime = 1 }; if (finishHour == 15) { passportControlTime = 2 }; if (finishHour == 23) { passportControlTime = 1 };
+    }
+    if (month === '10'){ // OCTUBRE:
+        if (finishHour == 0) { passportControlTime = 1 }; if (finishHour == 8) { passportControlTime = 1 }; if (finishHour == 16) { passportControlTime = 1 };
+        if (finishHour == 1) { passportControlTime = 1 }; if (finishHour == 9) { passportControlTime = 2 }; if (finishHour == 17) { passportControlTime = 2 };
+        if (finishHour == 2) { passportControlTime = 1 }; if (finishHour == 10) { passportControlTime = 2 }; if (finishHour == 18) { passportControlTime = 2 };
+        if (finishHour == 3) { passportControlTime = 1 }; if (finishHour == 11) { passportControlTime = 2 }; if (finishHour == 19) { passportControlTime = 1 };
+        if (finishHour == 4) { passportControlTime = 1 }; if (finishHour == 12) { passportControlTime = 2 }; if (finishHour == 20) { passportControlTime = 1 };
+        if (finishHour == 5) { passportControlTime = 4 }; if (finishHour == 13) { passportControlTime = 1 }; if (finishHour == 21) { passportControlTime = 1 };
+        if (finishHour == 6) { passportControlTime = 4 }; if (finishHour == 14) { passportControlTime = 2 }; if (finishHour == 22) { passportControlTime = 1 };
+        if (finishHour == 7) { passportControlTime = 1 }; if (finishHour == 15) { passportControlTime = 2 }; if (finishHour == 23) { passportControlTime = 1 };
+    }
+    if (month === '11'){ // NOVIEMBRE:
+        if (finishHour == 0) { passportControlTime = 1 }; if (finishHour == 8) { passportControlTime = 1 }; if (finishHour == 16) { passportControlTime = 1 };
+        if (finishHour == 1) { passportControlTime = 1 }; if (finishHour == 9) { passportControlTime = 1 }; if (finishHour == 17) { passportControlTime = 1 };
+        if (finishHour == 2) { passportControlTime = 1 }; if (finishHour == 10) { passportControlTime = 1 }; if (finishHour == 18) { passportControlTime = 1 };
+        if (finishHour == 3) { passportControlTime = 1 }; if (finishHour == 11) { passportControlTime = 1 }; if (finishHour == 19) { passportControlTime = 1 };
+        if (finishHour == 4) { passportControlTime = 1 }; if (finishHour == 12) { passportControlTime = 1 }; if (finishHour == 20) { passportControlTime = 1 };
+        if (finishHour == 5) { passportControlTime = 2 }; if (finishHour == 13) { passportControlTime = 1 }; if (finishHour == 21) { passportControlTime = 1 };
+        if (finishHour == 6) { passportControlTime = 3 }; if (finishHour == 14) { passportControlTime = 1 }; if (finishHour == 22) { passportControlTime = 1 };
+        if (finishHour == 7) { passportControlTime = 1 }; if (finishHour == 15) { passportControlTime = 1 }; if (finishHour == 23) { passportControlTime = 1 };
+    }
+    if (month === '12'){ // DICIEMBRE:
+        if (finishHour == 0) { passportControlTime = 1 }; if (finishHour == 8) { passportControlTime = 1 }; if (finishHour == 16) { passportControlTime = 1 };
+        if (finishHour == 1) { passportControlTime = 1 }; if (finishHour == 9) { passportControlTime = 1 }; if (finishHour == 17) { passportControlTime = 1 };
+        if (finishHour == 2) { passportControlTime = 1 }; if (finishHour == 10) { passportControlTime = 1 }; if (finishHour == 18) { passportControlTime = 1 };
+        if (finishHour == 3) { passportControlTime = 1 }; if (finishHour == 11) { passportControlTime = 1 }; if (finishHour == 19) { passportControlTime = 1 };
+        if (finishHour == 4) { passportControlTime = 1 }; if (finishHour == 12) { passportControlTime = 1 }; if (finishHour == 20) { passportControlTime = 1 };
+        if (finishHour == 5) { passportControlTime = 2 }; if (finishHour == 13) { passportControlTime = 1 }; if (finishHour == 21) { passportControlTime = 1 };
+        if (finishHour == 6) { passportControlTime = 2 }; if (finishHour == 14) { passportControlTime = 1 }; if (finishHour == 22) { passportControlTime = 1 };
+        if (finishHour == 7) { passportControlTime = 1 }; if (finishHour == 15) { passportControlTime = 1 }; if (finishHour == 23) { passportControlTime = 1 };
+    }
+    console.log("[TIME] ---> Passport: " + passportControlTime);
     return passportControlTime;
 }
 
