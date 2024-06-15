@@ -141,60 +141,38 @@ export default function PredictionsMine() {
     );
 
   const styles = StyleSheet.create({
-    titleText: {
-      color: 'white',
-      fontFamily: titleFont,
-      fontSize: 80,
-      marginBottom: 10,
+    noNewsText: {
+        color: '#875a31',
+        fontFamily: bodyFont,
+        textAlign: 'center',
+        fontSize: 18,
+        marginTop: 14,
     },
-    backgroundImage: {
-      flex: 1,
-      resizeMode: 'cover',
+    scrollStyle: {
+        alignContent: 'center',
     },
-    iconContainer: {
-      flex: 1,
-      alignItems: 'center',
-      flexDirection: 'row',
-      marginBottom: 0,
+    nameTitle: {
+        color: 'white',
+        fontFamily: bodyFont,
+        fontSize: 20,
+        marginTop: 5,
+        marginLeft: 12,
     },
-    formContainer: {
-      flex: 1,
-      alignItems: 'center',
-      marginBottom: 0,
-      marginTop: 0,
+    airportContainer: {
+        flexDirection: 'row', 
+        justifyContent: 'flex-end',
     },
-    xText: {
-      color: 'white',
-      fontFamily: bodyFont,
-      fontSize: 24,
-      marginBottom: 4,
-      marginLeft: 6,
-      marginRight: 6,
-    },
-    input: {
-      width: 300,
-      height: 40,
-    },
-    normalText: {
-      color: '#321e29',
-      fontFamily: bodyFont,
-      fontSize: 20,
-      marginTop: 26,
-      marginBottom: 0,
-    },
-    bottomText: {
-      color: '#321e29',
-      fontFamily: bodyFont,
-      fontSize: 20,
-      marginTop: 20,
-      marginBottom: -4,
-    },
-    signUpText: {
-      color: '#875a31',
-      fontFamily: subtitleFont,
-      fontSize: 20,
-      marginTop: 6,
-      marginBottom: 0
+    airportTitle: {
+        backgroundColor: '#633b51',
+        fontFamily: subtitleFont,
+        fontSize: 20,
+        height: 28,
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 0,
+        borderBottomRightRadius: 0,
+        borderBottomLeftRadius: 15,
+        width: 92,
+        marginTop: 6,
     },
     sectionTitle: {
         backgroundColor: '#321e29',
@@ -213,133 +191,14 @@ export default function PredictionsMine() {
         marginTop: 10,
         marginBottom: 0
     },
-    airportContainer: {
-        flexDirection: 'row', 
-        justifyContent: 'flex-end',
-    },
-    airportTitle: {
-        backgroundColor: '#633b51',
-        fontFamily: subtitleFont,
-        fontSize: 20,
-        height: 28,
-        borderTopLeftRadius: 15,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
-        borderBottomLeftRadius: 15,
-        width: 92,
-        marginTop: 6,
-    },
-    nameTitle: {
-        color: 'white',
-        fontFamily: bodyFont,
-        fontSize: 20,
-        marginTop: 5,
-        marginLeft: 12,
-
-    },
     headerContainer: {
         position: 'relative',
         height: 40,
         marginBottom: 0,
     },
-    picker: {
-        borderWidth: 0,
-        borderRadius: 0,
-        color: "black",
-        backgroundColor: '#b3b0a1',
-        marginTop: 0,
-        marginBottom: 0,
-        height: 40,
-    },
-    pickerItem:{
-        fontSize: 16,
-        color: "white",
-        fontFamily: subtitleFont,
-        height: 40,
-        marginLeft: -32,
-        marginRight: -32,
-    },
-    submitReportButton: {
-        marginRight: 4,
-        marginLeft: 4,
-        padding: 6,
-        backgroundColor: "#875a31",
-        borderRadius: 12,
-        width: 92,
-        height: 38,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-      },
-    submitReportText: {
-        fontFamily: subtitleFont,
-        fontWeight: 'bold',
-        fontSize: 20,
-        color: 'white',
-      },
-    usernameText: {
-        color: '#e9e8e6',
-        fontFamily: bodyFont,
-        fontSize: 12,
-        marginTop: 4,
-        marginBottom: 12,
-    },
-    dateText: {
-        color: '#e9e8e6',
-        fontFamily: bodyFont,
-        fontSize: 14,
-        marginTop: 0,
-        marginBottom: 0,
-    },
-    profileContainer: {
-        width: '100%',
-        backgroundColor: 'transparent',
-        marginTop: 5,
-        marginBottom: 2,
-        marginLeft: -6,
-        marginRight: 0,
-        flexDirection: 'row',
-    },
-    profileDetailsContainer: {
-        marginLeft: 2,
-        marginTop: 5,
-        alignItems: 'center',
-    },
-    noNewsText: {
-        color: '#875a31',
-        fontFamily: bodyFont,
-        textAlign: 'center',
-        fontSize: 18,
-        marginTop: 14,
-    },
-    statusBox: {
-        width: 6,
-        marginRight: 8,
-        marginLeft: 0,
-        backgroundColor: '#d8131b',
-        borderRadius: 12,
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1,
-    },
-    scrollStyle: {
-        alignContent: 'center',
-    },
-    searcherContainer: {
-        height: 162,
-        marginBottom: 0,
-        alignItems: 'center',
-    },
-    searcherIcon: {
-        position: 'absolute',
-        right: 10,
-        top: 10,
-    },
-    deletedProduct: {
-        backgroundColor: '#d8131b',
-    },
-    activeProduct: {
-        backgroundColor: '#51a145',
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
     },
     flightContainer: {
         marginBottom: -2,
@@ -347,9 +206,6 @@ export default function PredictionsMine() {
         borderRadius: 12,
         borderWidth: 0,
         backgroundColor: 'transparent',
-        shadowColor: '#000',
-        shadowOpacity: 0,
-        shadowRadius: 10,
         flexDirection: 'row',
         marginLeft: 26,
         marginRight: 26,
@@ -359,7 +215,7 @@ export default function PredictionsMine() {
         width: '80%',
         zIndex: 2,
         flexDirection: 'row',
-    }, 
+    },
     flightHeader: {
         marginBottom: 0,
         marginTop: 0,
@@ -367,31 +223,47 @@ export default function PredictionsMine() {
         marginRight: 0,
         borderRadius: 12,
         borderWidth: 0,
-        backgroundColor: '#b3b0a1',
+        backgroundColor: '#321e29',
         shadowColor: '#000',
         shadowOpacity: 0,
         shadowRadius: 10,
         alignItems: 'center',
         zIndex: 5,
     },
-    titleFlightText: {
-        color: 'white',
-        fontFamily: subtitleFont,
-        fontSize: 22,
-        marginTop: 6,
-        marginBottom: 6,
+    image: {
+        margin: 6,
+        marginBottom: 0,
+        height: 55,
+        width: 55,
+        borderRadius: 12,
     },
-    flightContent: {
+    flightDetails: {
+        marginTop: 0,
+        backgroundColor: "white",
+        width: 288,
+        marginLeft: -12,
+        paddingLeft: 18,
+        paddingBottom: 5.5,
         borderTopRightRadius: 12,
         borderBottomRightRadius: 12,
-        marginLeft: -12,
-        paddingLeft: 20,
-        paddingTop: 0,
-        borderWidth: 0,
-        backgroundColor: '#321e29',
-        width: '80%',
-        height: 92,
-        zIndex: 4,
+    },
+    hourSTDText: {
+        color: 'white',
+        fontFamily: subtitleFont,
+        fontSize: 20,
+        marginTop: 0,
+        marginBottom: -4,
+        marginRight: 0,
+        textAlign: 'justify',
+    },
+    dateSTDText: {
+        color: '#b3b0a1',
+        fontFamily: subtitleFont,
+        fontSize: 16,
+        marginTop: 4,
+        marginBottom: 0,
+        marginRight: 0,
+        textAlign: 'justify',
     },
     detailsText: {
         color: '#b3b0a1',
@@ -402,208 +274,97 @@ export default function PredictionsMine() {
         marginRight: 2,
         textAlign: 'justify',
     },
-    image: {
-        height: 66,
-        width: 66,
-        borderRadius: 12,
-    },
-    removeFlightLink: {
-        width: '8%',
-        marginLeft: 0,
-        marginRight: 8,
-        borderRadius: 12,
-        backgroundColor: '#875a31',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    addLuggageLink: {
-        width: '8%',
-        marginLeft: 8,
-        marginRight: 0,
-        borderRadius: 12,
-        backgroundColor: '#d0871e',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    addText: {
-        color: 'white',
+    terminalText: {
+        color: '#d8131b',
         fontFamily: bodyFont,
         fontSize: 16,
         marginTop: 0,
         marginBottom: 0,
+        marginRight: 2,
+        textAlign: 'justify',
     },
-    locationContent: {
-        flexDirection: 'row',
-        marginTop: 4,
-    },
-    flightDetails: {
-        flexDirection: 'row',
-        marginTop: 0,
-    },
-    flightICAO: {
+    airlineText: {
         color: '#d0871e',
         fontFamily: titleFont,
         fontSize: 20,
-        marginTop: 0,
+        marginTop: 4,
         marginBottom: 0,
-        marginRight: 4,
+        marginRight: 2,
         textAlign: 'justify',
     },
-    fromToText: {
-        color: 'white',
+    ICAOText: {
+        color: '#875a31',
         fontFamily: titleFont,
         fontSize: 20,
-        marginTop: 0,
+        marginTop: 4,
         marginBottom: 0,
-        marginRight: 4,
+        marginRight: 2,
         textAlign: 'justify',
     },
-    flightLocationName: {
-        color: 'white',
+    arrowText: {
+        color: '#321e29',
         fontFamily: titleFont,
         fontSize: 20,
-        marginTop: 0,
+        marginTop: 4,
         marginBottom: 0,
-        marginRight: 4,
+        marginRight: 2,
         textAlign: 'justify',
     },
-    companyText: {
-        color: '#e9e8e6',
-        fontFamily: bodyFont,
-        fontSize: 16,
-        textAlign: 'justify',
+    rowView: {
+        flexDirection: "row",
+        marginBottom: -4,
     },
-    flightNumberText: {
-        color: '#92c5fc',
-        fontFamily: bodyFont,
-        fontSize: 16,
-        marginRight: 4,
-        textAlign: 'justify',
+    predictionTimeBox: {
+        marginTop: 2,
+        marginBottom: 5,
+        height: 40,
+        backgroundColor: "transparent",
+        flexDirection: "row",
     },
-    statusText: {
-        color: 'white',
+    titleBox: {
+        marginTop: 4,
+        marginLeft: 0,
+        marginRight: 0,
+        borderTopLeftRadius: 12,
+        borderBottomLeftRadius: 12,
+        height: 40,
+        width: 220,
+        backgroundColor: "#b3b0a1",
+    },
+    timeBox: {
+        marginTop: 4,
+        marginLeft: -12,
+        marginRight: 0,
+        borderRadius: 12,
+        height: 40,
+        width: 56,
+        backgroundColor: "#321e29",
+    },
+    titleTimeText: {
+        color: '#321e29',
         fontFamily: bodyFont,
         fontSize: 16,
         marginTop: 4,
         marginBottom: 0,
+        marginLeft: 8,
+        textAlign: 'justify',
+    },
+    descriptionText: {
+        color: 'white',
+        fontFamily: bodyFont,
+        fontSize: 14,
+        marginTop: 0,
+        marginLeft: 8,
+        textAlign: 'justify',
+    },
+    hourPrediction: {
+        color: 'white',
+        fontFamily: bodyFont,
+        fontSize: 16,
+        marginTop: 12,
+        marginLeft: 0,
         textAlign: 'center',
     },
-    terminalText: {
-        color: 'white',
-        fontFamily: bodyFont,
-        fontSize: 16,
-        marginTop: 0,
-        marginBottom: 0,
-        textAlign: 'justify',
-    },
-    scheduledText: {
-        color: 'white',
-        fontFamily: bodyFont,
-        fontSize: 16,
-        marginTop: 0,
-        marginBottom: 0,
-        marginRight: 2,
-        textAlign: 'justify',
-        textDecorationLine: 'line-through'
-    },
-    estimatedText: {
-        color: 'yellow',
-        fontFamily: bodyFont,
-        fontSize: 16,
-        marginTop: 0,
-        marginBottom: 0,
-        marginRight: 2,
-        textAlign: 'justify',
-    },
-    dayText: {
-        color: 'white',
-        fontFamily: bodyFont,
-        fontSize: 16,
-        marginTop: 0,
-        marginBottom: 0,
-        marginRight: 2,
-        textAlign: 'justify',
-    },
-    modalOverlay: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.42)',
-    },
-    modalView: {
-        width: '90%',
-        backgroundColor: '#e9e8e6',
-        borderRadius: 12,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 0,
-        },
-        shadowOpacity: 0,
-        shadowRadius: 0,
-        elevation: 0,
-    },
-    quizButton: {
-        padding: 6,
-        backgroundColor: "#875a31",
-        borderRadius: 12,
-        height: 38,
-        alignItems: 'center',
-        marginTop: 8,
-        marginBottom: 20,
-        width: 80,
-        marginRight: 4,
-        marginLeft: 4,
-    },
-    loadAllText: {
-        fontFamily: subtitleFont,
-        fontWeight: 'bold',
-        fontSize: 20,
-        color: 'white',
-        marginTop: 3.5,
-    },
-    searcherPack: {
-        backgroundColor: '#b3b0a1',
-        color: 'white',
-        fontFamily: subtitleFont,
-        fontSize: 20,
-        height: 80,
-        width: 300,
-        marginBottom: 0,
-        paddingLeft: 10,
-    },
-    searcherText: {
-        color: 'white',
-        fontFamily: subtitleFont,
-        fontSize: 20,
-        marginTop: 10,
-        marginBottom: 0
-    },
-    multilineTextInputStyle: {
-        fontFamily: subtitleFont,
-        fontSize: 20,
-        color: 'white',
-        fontWeight: 'bold',
-        borderWidth: 0,
-        width: 300,
-        height: 60,
-        marginTop: 8,
-        borderRadius: 12,
-        backgroundColor: '#b3b0a1',
-        paddingStart: 10,
-        padding: 8,
-    },
-    subtitleNewsText: {
-        color: '#321e29',
-        fontFamily: subtitleFont,
-        fontSize: 19,
-        marginTop: 14,
-        marginBottom: 0,
-    },
-    modalButtons: {
-        flexDirection: 'row',
-    }
   });
 
   if (!fontsLoaded) {
@@ -623,55 +384,133 @@ export default function PredictionsMine() {
             <View style={styles.flightPack}>
                 <View style={styles.flightHeader}>
                     <Image source={{uri: flightInfo[predictionItem.idFlightPrediction]?.logo} || require('../../../../assets/easeaer_icons/EaseAer_Logo_2_Png.png') } style={styles.image} />
+                    <Text style={styles.dateSTDText}>{formatDayV3(predictionItem.datePrediction.toString())}</Text>
+                    <Text style={styles.hourSTDText}>{predictionItem.planeTimePrediction}H</Text>
+                    <Text style={styles.dateSTDText}>{formatDayV2(predictionItem.datePrediction.toString())}</Text>
                 </View>
-                <View style={styles.flightContent}>
-                    <View style={styles.flightDetails}>
-                        <Text style={styles.companyText}>{flightInfo[predictionItem.idFlightPrediction]?.name}</Text>
+                <View style={styles.flightDetails}>
+                    <View style={styles.rowView}>
+                        <Text style={styles.airlineText}>{flightInfo[predictionItem.idFlightPrediction]?.name}</Text>
+                        <Text style={styles.arrowText}>→</Text>
+                        <Text style={styles.ICAOText}>{truncateText(formatICAO(flightInfo[predictionItem.idFlightPrediction]?.ICAO), 18)}</Text>
                     </View>
-                    <View style={styles.flightDetails}>
-                        <Text style={styles.detailsText}>{predictionItem.exitHomeTimePrediction}</Text>
-                        <Text style={styles.detailsText}>{predictionItem.transportTimePrediction}</Text>
-                        <Text style={styles.detailsText}>{predictionItem.entranceTimePrediction}</Text>
-                        <Text style={styles.detailsText}>{predictionItem.checkInTimePrediction}</Text>
-                        <Text style={styles.detailsText}>{predictionItem.securityTimePrediction}</Text>
-                        <Text style={styles.detailsText}>{predictionItem.passportTimePrediction}</Text>
-                        <Text style={styles.detailsText}>{predictionItem.gateTimePrediction}</Text>
-                        <Text style={styles.detailsText}>{predictionItem.planeTimePrediction}</Text>
+                    <Text style={styles.detailsText}>{formatDayV1(predictionItem.datePrediction.toString())}, {predictionItem.planeTimePrediction}</Text>
+                    <Text style={styles.terminalText}>{formatTerminal(flightInfo[predictionItem.idFlightPrediction]?.terminal)}</Text>
+                    <View style={styles.predictionTimeBox}>
+                        <View style={styles.titleBox}> 
+                            <Text style={styles.titleTimeText}>Exit Home</Text>
+                            <Text style={styles.descriptionText}>~ Time to leave home.</Text>
+                        </View>
+                        <View style={styles.timeBox}> 
+                            <Text style={styles.hourPrediction}>{predictionItem.exitHomeTimePrediction}</Text>
+                        </View>
                     </View>
-                    <View style={styles.flightDetails}>
-                        <Text style={styles.dayText}>{flightInfo[predictionItem.idFlightPrediction]?.ICAO}</Text>
+                    <View style={styles.predictionTimeBox}>
+                        <View style={styles.titleBox}> 
+                            <Text style={styles.titleTimeText}>Transport</Text>
+                            <Text style={styles.descriptionText}>~ Time to get into the vehicle.</Text>
+                        </View>
+                        <View style={styles.timeBox}> 
+                            <Text style={styles.hourPrediction}>{predictionItem.transportTimePrediction}</Text>
+                        </View>
                     </View>
-                    <Text style={styles.terminalText}>{flightInfo[predictionItem.idFlightPrediction]?.terminal}</Text>
+                    <View style={styles.predictionTimeBox}>
+                        <View style={styles.titleBox}> 
+                            <Text style={styles.titleTimeText}>Airport</Text>
+                            <Text style={styles.descriptionText}>~ Time to enter the airport.</Text>
+                        </View>
+                        <View style={styles.timeBox}> 
+                            <Text style={styles.hourPrediction}>{predictionItem.entranceTimePrediction}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.predictionTimeBox}>
+                        <View style={styles.titleBox}> 
+                            <Text style={styles.titleTimeText}>Check-In</Text>
+                            <Text style={styles.descriptionText}>~ Time to check your luggage.</Text>
+                        </View>
+                        <View style={styles.timeBox}> 
+                            <Text style={styles.hourPrediction}>{predictionItem.checkInTimePrediction}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.predictionTimeBox}>
+                        <View style={styles.titleBox}> 
+                            <Text style={styles.titleTimeText}>Security Control</Text>
+                            <Text style={styles.descriptionText}>~ Time to pass throught the filter.</Text>
+                        </View>
+                        <View style={styles.timeBox}> 
+                            <Text style={styles.hourPrediction}>{predictionItem.securityTimePrediction}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.predictionTimeBox}>
+                        <View style={styles.titleBox}> 
+                            <Text style={styles.titleTimeText}>Passport Control</Text>
+                            <Text style={styles.descriptionText}>~ Time to check your passport.</Text>
+                        </View>
+                        <View style={styles.timeBox}> 
+                            <Text style={styles.hourPrediction}>{predictionItem.passportTimePrediction}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.predictionTimeBox}>
+                        <View style={styles.titleBox}> 
+                            <Text style={styles.titleTimeText}>Gate</Text>
+                            <Text style={styles.descriptionText}>~ Time to be near the gate.</Text>
+                        </View>
+                        <View style={styles.timeBox}> 
+                            <Text style={styles.hourPrediction}>{predictionItem.gateTimePrediction}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.predictionTimeBox}>
+                        <View style={styles.titleBox}> 
+                            <Text style={styles.titleTimeText}>Plane Take-Off</Text>
+                            <Text style={styles.descriptionText}>~ Time for the plane to take-off.</Text>
+                        </View>
+                        <View style={styles.timeBox}> 
+                            <Text style={styles.hourPrediction}>{predictionItem.planeTimePrediction}</Text>
+                        </View>
+                    </View>
                 </View>
             </View>
         </View>
     );
 
-    const formatDate = (dateString: string | undefined) => {
+    const formatDayV1 = (dateString: string | undefined) => {
         if (dateString != undefined) {
             const date = new Date(dateString);
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
+            let monthName = "January";
+            if (month == "01"){ monthName = "January"; } if (month == "07"){ monthName = "July"; }
+            if (month == "02"){ monthName = "February"; } if (month == "08"){ monthName = "August"; }
+            if (month == "03"){ monthName = "March"; } if (month == "09"){ monthName = "September"; }
+            if (month == "04"){ monthName = "April"; } if (month == "10"){ monthName = "October"; }
+            if (month == "05"){ monthName = "May"; } if (month == "11"){ monthName = "November"; }
+            if (month == "06"){ monthName = "June"; } if (month == "12"){ monthName = "December"; }
             const year = String(date.getFullYear()).slice(0);
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            const seconds = String(date.getSeconds()).padStart(2, '0');
-            return `${hours}:${minutes}`;
+            return `${monthName} ${day}, ${year}`;
         } else {
             return `Not Available`;
         }
     };
 
-    const formatDay = (dateString: string | undefined) => {
+    const formatDayV2 = (dateString: string | undefined) => {
         if (dateString != undefined) {
             const date = new Date(dateString);
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = String(date.getFullYear()).slice(0);
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            const seconds = String(date.getSeconds()).padStart(2, '0');
-            return `${day}.${month}.${year}`;
+            const lastTwoDigits = year.slice(-2);
+            return `${day}.${month}.${lastTwoDigits}`;
+        } else {
+            return `Not Available`;
+        }
+    };
+
+    const formatDayV3 = (dateString: string | undefined) => {
+        if (dateString != undefined) {
+            const date = new Date(dateString);
+            const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const dayOfWeek = daysOfWeek[date.getDay()];
+            return `${dayOfWeek}`;
         } else {
             return `Not Available`;
         }
@@ -752,7 +591,7 @@ export default function PredictionsMine() {
             ? (listPredictions
                 .length === 0
                 ? <Text style={styles.noNewsText}>
-                    No Flights Available
+                    No Predictions Created
                 </Text>
                 : listPredictions
                     .sort((a, b) => {
@@ -761,7 +600,7 @@ export default function PredictionsMine() {
                         return dateA.getTime() - dateB.getTime();
                     })
                     .map(renderPredictionItem))
-            : <Text style={styles.noNewsText}>No Flights</Text>
+            : <Text style={styles.noNewsText}>No Predictions Created</Text>
             }
         </ScrollView>
     </ImageBackground>
