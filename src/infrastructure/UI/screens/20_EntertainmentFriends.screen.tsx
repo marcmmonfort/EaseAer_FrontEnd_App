@@ -66,28 +66,55 @@ export default function EntertainmentFriendsHome() {
     const [currentUser, setCurrentUser] = useState<UserEntity | null>(null);
 
     const [listUsers, setListUsers] = useState<UserEntity[] | null>(null);
+    const [listFlights, setListFlights] = useState<FlightEntity[]>([]);
+
+    const [flightId, setFlightId] = useState("");
+
+    const getUsersByFlight = async (flightId: string) => {
+        const userId = await SessionService.getCurrentUser();
+        if (userId) {
+            setCurrentUser(userId);
+            try {
+                const response = await CRUDService.getUsersByFlightId(flightId);
+                console.log("OBTENGO " + response?.data.length + " USUARIOS");
+                if (response?.data && response.data[0]?.nameUser) {
+                    setListUsers(response.data);
+                    console.log("GUARDO: " + JSON.stringify(response.data));
+                } else {
+                    Alert.alert("EaseAer", "No Users Available");
+                }
+            } catch (error) {
+                Alert.alert("EaseAer", "Error Loading Users");
+            }
+        }
+    };
 
     useFocusEffect(
         React.useCallback(() => {
-        const getUsersByFlight = async () => {
-            const userId = await SessionService.getCurrentUser();
-            if (userId) {
-                setCurrentUser(userId);
-                try {
-                    const response = await CRUDService.getUsersByFlightId("665c53bd3f4aebb74408558d");
-                    console.log("OBTENGO " + response?.data.length + " USUARIOS");
-                    if (response?.data && response.data[0]?.nameUser) {
-                        setListUsers(response.data);
-                        console.log("GUARDO: " + JSON.stringify(response.data));
-                    } else {
-                        Alert.alert("EaseAer", "No Users Available");
+            const getMyFlights = async () => {
+                const userId = await SessionService.getCurrentUser();
+                if (userId) {
+                    setCurrentUser(userId);
+                    try {
+                        const response = await CRUDService.getUserById(userId);
+                        if (response?.data && response.data.flightsUser) {
+                            setListFlights([]);
+
+                            console.log("¡SE HAN GUARDADO LOS VUELOS DEL USUARIO!");
+    
+                            for (let flightId of response.data.flightsUser){
+                                const flightResponse = await FlightService.getFlightById(flightId);
+                                if (flightResponse?.data) {
+                                    setListFlights(prevFlights => [...prevFlights, flightResponse.data]);
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        Alert.alert("EaseAer", "Error Loading Flights");
                     }
-                } catch (error) {
-                    Alert.alert("EaseAer", "Error Loading Users");
                 }
-            }
-        };
-        getUsersByFlight();
+            };
+        getMyFlights();
         }, [])
     );
 
@@ -229,11 +256,11 @@ export default function EntertainmentFriendsHome() {
             padding: 6,
             backgroundColor: "#875a31",
             borderRadius: 12,
-            width: 92,
+            width: 220,
             height: 38,
             justifyContent: 'center',
             alignItems: 'center',
-            marginTop: 20,
+            marginTop: 24,
         },
         submitReportText: {
             fontFamily: subtitleFont,
@@ -354,7 +381,8 @@ export default function EntertainmentFriendsHome() {
             borderRadius: 12,
             overflow: 'hidden',
             backgroundColor: "transparent",
-            marginTop: 26,
+            position: 'absolute',
+            top: 164,
             marginLeft: 20,
             marginRight: 20,
         },
@@ -605,37 +633,49 @@ export default function EntertainmentFriendsHome() {
     );
 
     const formatICAO = (icaoCode: string | undefined) => {
-        if (icaoCode === "LEAL") return "Alicante - Elche";
-        if (icaoCode === "EHAM") return "Ámsterdam Schiphol";
-        if (icaoCode === "LEBL") return "Barcelona - El Prat";
-        if (icaoCode === "EKCH") return "Copenhague Kastrup";
+        if (icaoCode === "LEAL") return "Alicante";
+        if (icaoCode === "EHAM") return "Ámsterdam";
+        if (icaoCode === "LEBL") return "Barcelona";
+        if (icaoCode === "EKCH") return "Copenhague";
         if (icaoCode === "EIDW") return "Dublín";
         if (icaoCode === "GCHI") return "El Hierro";
-        if (icaoCode === "ESSA") return "Estocolmo Arlanda";
-        if (icaoCode === "EDDF") return "Fráncfort Del Meno - Frankfurt";
+        if (icaoCode === "ESSA") return "Estocolmo";
+        if (icaoCode === "EDDF") return "Frankfurt";
         if (icaoCode === "GCFV") return "Fuerteventura";
-        if (icaoCode === "LEGE") return "Girona - Costa Brava";
+        if (icaoCode === "LEGE") return "Girona";
         if (icaoCode === "GCLP") return "Gran Canaria";
-        if (icaoCode === "LEHC") return "Huesca - Pirineos";
+        if (icaoCode === "LEHC") return "Huesca";
         if (icaoCode === "GCGM") return "La Gomera";
         if (icaoCode === "GCLA") return "La Palma";
-        if (icaoCode === "LESU") return "La Seu d'Urgell";
+        if (icaoCode === "LESU") return "La Seu";
         if (icaoCode === "GCRR") return "Lanzarote";
-        if (icaoCode === "LEDA") return "Lleida - Alguaire";
+        if (icaoCode === "LEDA") return "Lleida";
         if (icaoCode === "LERJ") return "Logroño";
-        if (icaoCode === "EGKK") return "Londres Gatwick";
-        if (icaoCode === "EGLL") return "Londres Heathrow";
-        if (icaoCode === "EGSS") return "Londres Stansted";
-        if (icaoCode === "LEMD") return "Madrid - Barajas Adolfo Suárez";
-        if (icaoCode === "EDDM") return "Múnich Franz Josef Strauss";
-        if (icaoCode === "ENGM") return "Oslo Gardermoen";
-        if (icaoCode === "LERS") return "Reus - Tarragona";
+        if (icaoCode === "EGKK") return "L. Gatwick";
+        if (icaoCode === "EGLL") return "L. Heathrow";
+        if (icaoCode === "EGSS") return "L. Stansted";
+        if (icaoCode === "LEMD") return "Madrid";
+        if (icaoCode === "EDDM") return "Múnich";
+        if (icaoCode === "ENGM") return "Oslo";
+        if (icaoCode === "LERS") return "Reus";
         if (icaoCode === "LELL") return "Sabadell";
         if (icaoCode === "LESO") return "San Sebastián";
         if (icaoCode === "LGSR") return "Santorini";
-        if (icaoCode === "GCXO") return "Tenerife Norte - Los Rodeos";
+        if (icaoCode === "GCXO") return "Tenerife Norte";
         if (icaoCode === "EPWA") return "Varsovia Chopin";
         else return "Unknown";
+    };
+
+    const formatDay = (dateString: string | undefined) => {
+        if (dateString != undefined) {
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = String(date.getFullYear()).slice(0);
+            return `${day}.${month}.${year}`;
+        } else {
+            return `Not Available`;
+        }
     };
 
   return (
@@ -651,6 +691,18 @@ export default function EntertainmentFriendsHome() {
             </View>
         </View>
 
+        <Picker selectedValue={flightId} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setFlightId(itemValue)}>
+            {listFlights && listFlights.map(flight => (
+                <Picker.Item key={flight.uuid} label={`${formatDay(flight.stdFlight.toString())} | ${formatICAO(flight.originFlight)} → ${formatICAO(flight.destinationFlight)}`} value={flight.uuid} />
+            ))}
+        </Picker>
+
+        <View style={styles.formContainer}>
+            <TouchableOpacity onPress={() => { getUsersByFlight(flightId) }} style={styles.submitReportButton}>
+                <Text style={styles.submitReportText}>Search Public Passengers</Text>
+            </TouchableOpacity>
+        </View>
+
         <View style={styles.viewScrollStyle}>
             <ScrollView style={styles.scrollStyle} horizontal={true} showsHorizontalScrollIndicator={false}>
                 {listUsers
@@ -661,12 +713,10 @@ export default function EntertainmentFriendsHome() {
                         return true;
                     })
                     .length === 0
-                    ? <Text style={styles.noNewsText}>
-                        No Luggage Available
-                    </Text>
+                    ? <Text style={styles.noNewsText}> </Text>
                     : listUsers
                         .map(renderUserItem))
-                : <Text style={styles.noNewsText}>No Users</Text>
+                : <Text style={styles.noNewsText}> </Text>
                 }
             </ScrollView>
         </View>   

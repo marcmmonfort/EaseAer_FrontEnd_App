@@ -133,32 +133,32 @@ export default function FlightsInformation() {
 
   useFocusEffect(
     React.useCallback(() => {
-      const getFlights = async () => {
+      const getMyFlights = async () => {
         const userId = await SessionService.getCurrentUser();
         if (userId) {
-          try {
-            const startOfDay = new Date();
-            startOfDay.setHours(0, 0, 0, 0);
-            const endOfDay = new Date();
-            endOfDay.setHours(23, 59, 59, 999);
+            try {
+                const startOfDay = new Date();
+                startOfDay.setHours(0, 0, 0, 0);
+                const endOfDay = new Date();
+                endOfDay.setHours(23, 59, 59, 999);
 
-            const response = await FlightService.getFlightsByAirportAndInterval("LEBL", startOfDay, endOfDay);
-            if (response?.data && response.data[0]?.numberFlight) {
-              setListFlights(response.data);
+                const response = await FlightService.getFlightsByAirportAndInterval("LEBL", startOfDay, endOfDay);
+                if (response?.data && response.data[0]?.numberFlight) {
+                setListFlights(response.data);
 
-              response.data.forEach((flight: FlightEntity) => {
-                console.log("> Flight ID: " + flight.uuid);
-                updateCompanyInfo(flight.companyFlight, flight.uuid);
-              });
-            } else {
-              Alert.alert("EaseAer", "No Flights Available");
+                response.data.forEach((flight: FlightEntity) => {
+                    console.log("> Flight ID: " + flight.uuid);
+                    updateCompanyInfo(flight.companyFlight, flight.uuid);
+                });
+                } else {
+                Alert.alert("EaseAer", "No Flights Available");
+                }
+            } catch (error) {
+                Alert.alert("EaseAer", "Error Loading Flights");
             }
-          } catch (error) {
-            Alert.alert("EaseAer", "Error Loading Flights");
-          }
         }
       };
-      getFlights();
+      getMyFlights();
     }, [])
   );
 
