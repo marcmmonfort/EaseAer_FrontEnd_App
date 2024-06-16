@@ -28,6 +28,8 @@ import QRCode from 'react-native-qrcode-svg';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FlightEntity } from "../../../domain/flight/flight.entity";
 import { FlightService } from "../../services/flight/flight.service";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import ButtonGradientBirthdate from "../components/buttons/Button_Type_Birthdate";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -38,37 +40,63 @@ async function loadFonts() {
 }
 
 export default function FlightsInformation() {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
-  const {t}=useTranslation();
-  useEffect(() => {
-    loadFonts().then(() => {
-      setFontsLoaded(true);
+    const [fontsLoaded, setFontsLoaded] = useState(false);
+    const {t}=useTranslation();
+    useEffect(() => {
+        loadFonts().then(() => {
+        setFontsLoaded(true);
+        });
+    }, []);
+
+    const titleFont = Platform.select({
+        ios: 'Emirates',
+        android: 'Emirates',
     });
-  }, []);
+    const subtitleFont = Platform.select({
+        ios: 'Corporate',
+        android: 'Corporate',
+    });
+    const bodyFont = Platform.select({
+        ios: 'SFNS',
+        android: 'SFNS',
+    });
 
-  const titleFont = Platform.select({
-    ios: 'Emirates',
-    android: 'Emirates',
-  });
-  const subtitleFont = Platform.select({
-    ios: 'Corporate',
-    android: 'Corporate',
-  });
-  const bodyFont = Platform.select({
-    ios: 'SFNS',
-    android: 'SFNS',
-  });
+    const navigation = useNavigation();
 
-  const navigation = useNavigation();
+    const [currentUser, setCurrentUser] = useState<UserEntity | null>(null);
 
-  const [currentUser, setCurrentUser] = useState<UserEntity | null>(null);
+    const [userDetails, setUserDetails] = useState<{ [key: string]: string }>({});
+    const [searchText, setSearchText] = useState("");
+    const [typeFlights, setTypeFlights] = useState("arrivals");
 
-  const [userDetails, setUserDetails] = useState<{ [key: string]: string }>({});
-  const [searchText, setSearchText] = useState("");
-  const [typeFlights, setTypeFlights] = useState("arrivals");
+    const [listFlights, setListFlights] = useState<FlightEntity[] | null>(null);
+    const [companyInfo, setCompanyInfo] = useState<{ [key: string]: { name: string, logo: string } }>({});
 
-  const [listFlights, setListFlights] = useState<FlightEntity[] | null>(null);
-  const [companyInfo, setCompanyInfo] = useState<{ [key: string]: { name: string, logo: string } }>({});
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [birthdateUser, setbirthdateUser] = useState("");
+
+    const getTodayDay = () => {
+        const currentDate = new Date();
+        const day = String(currentDate.getDate());
+        return day;
+    };
+
+    const getTodayMonth = () => {
+        const currentDate = new Date();
+        const month = String(currentDate.getMonth() + 1);
+        return month;
+    };
+
+    const getTodayYear = () => {
+        const currentDate = new Date();
+        const year = String(currentDate.getFullYear());
+        return year;
+    };
+
+    const [searchDay, setSearchDay] = useState(getTodayDay());
+    const [searchMonth, setSearchMonth] = useState(getTodayMonth());
+    const [searchYear, setSearchYear] = useState(getTodayYear());
 
     const updateCompanyInfo = async (companyId: string, flightUuid: string) => {
         const userId = await SessionService.getCurrentUser();
@@ -164,10 +192,6 @@ export default function FlightsInformation() {
       marginBottom: 4,
       marginLeft: 6,
       marginRight: 6,
-    },
-    input: {
-      width: 300,
-      height: 40,
     },
     normalText: {
       color: '#321e29',
@@ -273,7 +297,7 @@ export default function FlightsInformation() {
         padding: 6,
         backgroundColor: "#875a31",
         borderRadius: 12,
-        width: 92,
+        width: 160,
         height: 38,
         justifyContent: 'center',
         alignItems: 'center',
@@ -374,13 +398,9 @@ export default function FlightsInformation() {
     activeProduct: {
         backgroundColor: '#51a145',
     },
-
-
-
-
     flightContainer: {
-        marginBottom: -2,
-        marginTop: 26,
+        marginBottom: 0,
+        marginTop: 20,
         borderRadius: 12,
         borderWidth: 0,
         backgroundColor: 'transparent',
@@ -533,6 +553,45 @@ export default function FlightsInformation() {
         marginRight: 2,
         textAlign: 'justify',
     },
+    dateTimePickerContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+        marginBottom: 0,
+      },
+      dateTimePicker: {
+        backgroundColor: 'transparent',
+      },
+      buttonContainerB: {
+        flexDirection: "row",
+        justifyContent: "center",
+        marginTop: 20,
+      },
+      input: {
+        marginRight: 4,
+        marginLeft: 4,
+        width: 80,
+        height: 40,
+        backgroundColor: "white",
+        color: "black",
+        alignItems: 'center',
+        textAlign: 'center',
+        paddingRight: 12,
+    },
+      dateInput: {
+        flexDirection: "row",
+        marginLeft: 55,
+        marginRight: 55,
+      },
+      splitBarText: {
+        color: 'white',
+        fontFamily: titleFont,
+        fontSize: 20,
+        marginTop: 30,
+        marginLeft: 2,
+        marginRight: 2,
+        textAlign: 'justify',
+      }
   });
 
   if (!fontsLoaded) {
@@ -770,6 +829,53 @@ export default function FlightsInformation() {
         else return "Unknown";
     };
 
+    const handleDateChange = (event: any, selectedDate: any) => {
+        setShowDatePicker(false);
+        if (selectedDate) {
+          setSelectedDate(selectedDate);
+          setbirthdateUser(selectedDate.toISOString());
+        }
+      };
+
+      const handleShowDatePicker = () => {
+        setShowDatePicker(true);
+      };    
+
+      const getFlightsByDate = async () => {
+        const userId = await SessionService.getCurrentUser();
+        if (userId) {
+          try {
+            const daySearch = searchDay;
+            const monthSearch = searchMonth;
+            const yearSearch = searchYear;
+            if ((parseInt(daySearch, 10)>0) && (parseInt(daySearch, 10)<32) && (parseInt(monthSearch, 10)>0) && (parseInt(monthSearch, 10)<=12) && (parseInt(yearSearch, 10)>2000) && (parseInt(yearSearch, 10)<2030)){
+                
+                const searchDate = new Date(parseInt(yearSearch, 10), parseInt(monthSearch, 10) - 1, parseInt(daySearch, 10));
+                const endOfDay = new Date(parseInt(yearSearch, 10), parseInt(monthSearch, 10) - 1, parseInt(daySearch, 10));
+                endOfDay.setHours(23, 59, 59, 999);
+
+                console.log("BUSCO VUELOS PARA EL: " + searchDate + "/" + endOfDay);
+    
+                const response = await FlightService.getFlightsByAirportAndInterval("LEBL", searchDate, endOfDay);
+                if (response?.data && response.data[0]?.numberFlight) {
+                  setListFlights(response.data);
+    
+                  response.data.forEach((flight: FlightEntity) => {
+                    console.log("> Flight ID: " + flight.uuid);
+                    updateCompanyInfo(flight.companyFlight, flight.uuid);
+                  });
+                } else {
+                  Alert.alert("EaseAer", "No Flights Available");
+                }
+            } else {
+                Alert.alert("EaseAer","Incorrect Date");
+            }
+          } catch (error) {
+            Alert.alert("EaseAer", "Error Loading Flights");
+          }
+        }
+      };
+
   return (
     <ImageBackground style={[styles.backgroundImage, { backgroundColor: '#e9e8e6' }]}>
         <View style={styles.headerContainer}>
@@ -784,11 +890,23 @@ export default function FlightsInformation() {
         </View>
 
         <Picker selectedValue={typeFlights} style={styles.picker} itemStyle={styles.pickerItem} onValueChange={(itemValue) => setTypeFlights(itemValue)}>
-            <Picker.Item label="Today's Arrivals" value="arrivals"/>
-            <Picker.Item label="Today's Departures" value="departures"/> 
+            <Picker.Item label="Arrivals" value="arrivals"/>
+            <Picker.Item label="Departures" value="departures"/> 
         </Picker>
 
         <ScrollView style={styles.scrollStyle}>
+            <View style={styles.dateInput}>
+                <StyledTextInputs style={styles.input} placeholder="Day" value={searchDay} onChangeText={setSearchDay}/>
+                <Text style={styles.splitBarText}>/</Text>
+                <StyledTextInputs style={styles.input} placeholder="Month" value={searchMonth} onChangeText={setSearchMonth}/>
+                <Text style={styles.splitBarText}>/</Text>
+                <StyledTextInputs style={styles.input} placeholder="Year" value={searchYear} onChangeText={setSearchYear}/>
+            </View>
+            <View style={styles.formContainer}>
+                <TouchableOpacity onPress={() => { getFlightsByDate() }} style={styles.submitReportButton}>
+                    <Text style={styles.submitReportText}>Update Search</Text>
+                </TouchableOpacity>
+            </View>
             {listFlights
             ? (listFlights
                 .filter(flight => {
