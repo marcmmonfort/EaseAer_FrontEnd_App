@@ -93,59 +93,59 @@ export default function EntertainmentFriendsHome() {
 
     const styles = StyleSheet.create({
         titleText: {
-        color: 'white',
-        fontFamily: titleFont,
-        fontSize: 80,
-        marginBottom: 10,
+            color: 'white',
+            fontFamily: titleFont,
+            fontSize: 80,
+            marginBottom: 10,
         },
         backgroundImage: {
-        flex: 1,
-        resizeMode: 'cover',
+            flex: 1,
+            resizeMode: 'cover',
         },
         iconContainer: {
-        flex: 1,
-        alignItems: 'center',
-        flexDirection: 'row',
-        marginBottom: 0,
+            flex: 1,
+            alignItems: 'center',
+            flexDirection: 'row',
+            marginBottom: 0,
         },
         formContainer: {
-        flex: 1,
-        alignItems: 'center',
-        marginBottom: 0,
-        marginTop: 0,
+            flex: 1,
+            alignItems: 'center',
+            marginBottom: 0,
+            marginTop: 0,
         },
         xText: {
-        color: 'white',
-        fontFamily: bodyFont,
-        fontSize: 24,
-        marginBottom: 4,
-        marginLeft: 6,
-        marginRight: 6,
+            color: 'white',
+            fontFamily: bodyFont,
+            fontSize: 24,
+            marginBottom: 4,
+            marginLeft: 6,
+            marginRight: 6,
         },
         input: {
-        width: 300,
-        height: 40,
+            width: 300,
+            height: 40,
         },
         normalText: {
-        color: '#321e29',
-        fontFamily: bodyFont,
-        fontSize: 20,
-        marginTop: 26,
-        marginBottom: 0,
+            color: '#321e29',
+            fontFamily: bodyFont,
+            fontSize: 20,
+            marginTop: 26,
+            marginBottom: 0,
         },
         bottomText: {
-        color: '#321e29',
-        fontFamily: bodyFont,
-        fontSize: 20,
-        marginTop: 20,
-        marginBottom: -4,
+            color: '#321e29',
+            fontFamily: bodyFont,
+            fontSize: 20,
+            marginTop: 20,
+            marginBottom: -4,
         },
         signUpText: {
-        color: '#875a31',
-        fontFamily: subtitleFont,
-        fontSize: 20,
-        marginTop: 6,
-        marginBottom: 0
+            color: '#875a31',
+            fontFamily: subtitleFont,
+            fontSize: 20,
+            marginTop: 6,
+            marginBottom: 0
         },
         sectionTitle: {
             backgroundColor: '#321e29',
@@ -186,7 +186,6 @@ export default function EntertainmentFriendsHome() {
             fontSize: 20,
             marginTop: 5,
             marginLeft: 12,
-
         },
         headerContainer: {
             position: 'relative',
@@ -329,7 +328,7 @@ export default function EntertainmentFriendsHome() {
             backgroundColor: '#51a145',
         },
         flightContainer: {
-            marginBottom: -2,
+            marginBottom: 0,
             borderRadius: 12,
             borderWidth: 0,
             marginLeft: 6,
@@ -515,11 +514,17 @@ export default function EntertainmentFriendsHome() {
             color: '#e9e8e6',
             fontFamily: titleFont,
             marginTop: 2,
-            fontSize: 26,
+            fontSize: 22,
             textAlign: 'justify',
         },
         alternativeText: {
             color: '#b3b0a1',
+            fontFamily: subtitleFont,
+            fontSize: 16,
+            textAlign: 'justify',
+        },
+        ageText: {
+            color: '#d0871e',
             fontFamily: bodyFont,
             fontSize: 16,
             textAlign: 'justify',
@@ -548,6 +553,16 @@ export default function EntertainmentFriendsHome() {
             paddingTop: 12,
             borderBottomLeftRadius: 12,
             borderBottomRightRadius: 12,
+        },
+        userDescriptionBox: {
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            alignItems: 'center',
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            paddingTop: 4,
+            paddingBottom: 10,
         }
     });
 
@@ -562,14 +577,29 @@ export default function EntertainmentFriendsHome() {
         return text;
     };
 
+    const formatAge = (dateString: string | undefined) => {
+        if (dateString != undefined) {
+            const birthDate = new Date(dateString);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDifference = today.getMonth() - birthDate.getMonth();
+            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return `${age}`;
+        } else {
+            return `??`;
+        }
+    };
+
     const renderUserItem = (userItem: UserEntity) => (            
         <View style={styles.flightContainer} key={userItem.uuid}>
             <ImageBackground source={{uri: userItem.photoUser}} style={styles.flightPack}>
-                <Text style={styles.alternativeText}>{userItem.nameUser}</Text>
-                <Text style={styles.alternativeText}>{userItem.surnameUser}</Text>
-                <Text style={styles.alternativeText}>{userItem.mailUser}</Text>
-                <Text style={styles.alternativeText}>{userItem.birthdateUser.toString()}</Text>
-                <Text style={styles.statusBarText}>Text</Text>
+                <View style={styles.userDescriptionBox}>
+                    <Text style={styles.statusBarText}>{userItem.nameUser}</Text>
+                    <Text style={styles.ageText}>{formatAge(userItem.birthdateUser.toString())} Years Old</Text>
+                    <Text style={styles.alternativeText}>{userItem.mailUser}</Text>
+                </View>
             </ImageBackground>
         </View>
     );
