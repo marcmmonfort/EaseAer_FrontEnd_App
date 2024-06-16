@@ -6,6 +6,8 @@ import { UserAuthEntity } from "../../../../domain/user/user.entity";
 import * as Font from 'expo-font';
 import MainContainer from "../../components/containers/Main";
 import { useTranslation } from "react-i18next";
+import { CardEntity } from "../../../../domain/card/card.entity";
+import { CardService } from "../../../services/card/card.service";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -106,7 +108,25 @@ export default function ScreenRegisterD({
         console.log(response);
         if(response.status===200){
           console.log(JSON.stringify(response.data));
-          Alert.alert("EaseAer", "You're In!");
+
+          const userCard: CardEntity = {
+            uuid: " " ?? "",
+            idUserCard: response.data.uuid ?? "",
+            numberCard: response.data.uuid ?? "",
+            pointsCard: 0,
+            levelCard: "rookie",
+            deletedCard: false,
+          };
+
+          CardService.createCard(userCard).then((response)=>{
+            console.log(response);
+            if(response.status===200){
+              Alert.alert("EaseAer", "You're In!");
+            };
+          }).catch((error)=>{
+            console.log("Error: " + error);
+            Alert.alert("EaseAer", "Error");
+          })
         };
       }).catch((error)=>{
         console.log("Error: " + error);
