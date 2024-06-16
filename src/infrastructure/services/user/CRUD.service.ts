@@ -47,6 +47,22 @@ export class CRUDService{
     }
   }
 
+  // (1.5) GET USERS BY FLIGHT ID: routeUser.get("/user/getByFlightId/:uuid", checkJwt, userCtrl.getUsersByFlightIdCtrl);
+  static async getUsersByFlightId(flightId: string) {
+    const token=await AuthHeaderService.authHeader()
+    if(token){
+      try {
+        const response = await axios.get(API_URL + "user/getByFlightId/" + flightId, { headers:  token});
+        return response;
+      } catch (error) {
+        console.error("Error Getting Users By Flight ID: ", error);
+        throw error;
+      }
+    } else {
+      console.log("Error Getting Users By Flight ID (Token Problems)");
+    }
+  }
+
   // (2) GET USER BY MAIL: [routeUser.get("/user/getByEmail/:mailUser", userCtrl.getUserByEmailCtrl)]
   static async getUserByEmail(mailUser: string) {
     const token=await AuthHeaderService.authHeader()

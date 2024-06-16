@@ -23,6 +23,9 @@ import HelpNews from "./22_HelpNews.screen";
 import ShopProducts from "./25_ShopProducts.screen";
 import ShopOffers from "./27_ShopOffers.screen";
 import EntertainmentGameHome from "./19_EntertainmentGame.screen";
+import EntertainmentHistoryHome from "./18_EntertainmentHistory.screen";
+import EntertainmentStatisticsHome from "./17_EntertainmentStatistics.screen";
+import EntertainmentFriendsHome from "./20_EntertainmentFriends.screen";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -325,12 +328,12 @@ const styles = StyleSheet.create({
   return (
     <Tab.Navigator screenOptions={{ tabBarStyle: { backgroundColor: '#b3b0a1', borderTopWidth: 0, height: 60, marginBottom: -19.5 }, tabBarShowLabel: false }}>
 
-        <Tab.Screen name="History" component={ShopProducts} options={{ tabBarIcon: ({ color, size }) => (
+        <Tab.Screen name="History" component={EntertainmentHistoryHome} options={{ tabBarIcon: ({ color, size }) => (
             <Text style={styles.navText}>History</Text>
             ), headerShown: false,
         }} />
 
-        <Tab.Screen name="Statistics" component={ShopOffers} options={{ tabBarIcon: ({ color, size }) => (
+        <Tab.Screen name="Statistics" component={EntertainmentStatisticsHome} options={{ tabBarIcon: ({ color, size }) => (
             <Text style={styles.navText}>Statistics</Text>
             ), headerShown: false,
         }} />
@@ -340,7 +343,7 @@ const styles = StyleSheet.create({
             ), headerShown: false,
         }} />
 
-        <Tab.Screen name="Friends" component={ShopOffers} options={{ tabBarIcon: ({ color, size }) => (
+        <Tab.Screen name="Friends" component={EntertainmentFriendsHome} options={{ tabBarIcon: ({ color, size }) => (
             <Text style={styles.navText}>Friends</Text>
             ), headerShown: false,
         }} />
